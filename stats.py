@@ -20,23 +20,39 @@ for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
         yearLows.append(dates[i]) #then this is a 52 week low (save the date)
 
 
-def numFiftyTwo():
+def numFiftyTwo(low):
+    
     return 0
 
-def slopeMin():
+def slopeMin(minimum):
     return 0
 
-def slopeMax():
+def slopeMax(maximum):
     return 0
+
+def findMin():
+    return dates[0]
+
+def findMax():
+    return dates[0]
         
 coordinates = {}
 for low in yearLows:
-    coordinates[low] = [numFiftyTwo(),slopeMin(),slopeMax()]
+    minimum = findMin()
+    maximum = findMax()
+    coordinates[low] = [numFiftyTwo(low),slopeMin(minimum),slopeMax(maximum),
+                        pointMap[low][2],pointMap[low][1]-pointMap[low][2],pointMap[low][4],
+                        pointMap[minimum][4],pointMap[maximum][4]]
 
 #For each 52 week low, we want to know:
 #1: number of 52 week lows in last 10 days
 #2: slope from local min
 #3: slope from local max
+#price,
+#volatility,
+#volume,
+#volume on max,
+#volume on min
 
 #These will be mapped to the date and pickled out
 pickle.dump(coordinates,open("coordinates.p","wb"))
