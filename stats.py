@@ -1,15 +1,13 @@
 import pickle
 pointMap = pickle.load(open("points.p","rb"))
+dates = pickle.load(open("dates.p","rb"))
 
 #Here looking just at daily lows
 low = 100000000
 i=0
 yearLows = []
 
-#So far, a global low. 52 week low is a little tougher.
-for point in pointMap:
-	if (pointMap[point][3] < low):
-		low = pointMap[point][3]
+#Find each 52 week low and add to yearLows. Map is not in order so iterate over dates
 
 #For each 52 week low, we want to know:
 #1: number of 52 week lows in last 10 days
