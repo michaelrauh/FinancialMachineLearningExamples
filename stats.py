@@ -7,7 +7,7 @@ dates = pickle.load(open("dates.p","rb"))
 #make list of lows
 lows = []
 for date in dates:
-    lows.append(pointMap[date][3])
+    lows.append(pointMap[date][2])
 
 yearLows = []
 fiftytwoweeks= 5 * 52
@@ -20,8 +20,7 @@ for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
         yearLows.append(dates[i]) #then this is a 52 week low (save the date)
 
 
-def numFiftyTwo(low):
-    
+def numFiftyTwo(date):
     return 0
 
 def slopeMin(minimum):
@@ -30,19 +29,28 @@ def slopeMin(minimum):
 def slopeMax(maximum):
     return 0
 
-def findMin():
+def findMax(date):
     return dates[0]
 
-def findMax():
+def findMin(maximum):
     return dates[0]
-        
+
+#Normalize the coordinates     
 coordinates = {}
-for low in yearLows:
-    minimum = findMin()
-    maximum = findMax()
-    coordinates[low] = [numFiftyTwo(low),slopeMin(minimum),slopeMax(maximum),
-                        pointMap[low][2],pointMap[low][1]-pointMap[low][2],pointMap[low][4],
-                        pointMap[minimum][4],pointMap[maximum][4]]
+for date in yearLows:
+    maximum = findMax(date)
+    minimum = findMin(maximum)
+    coordinates[date] = []
+    coordinates[date].append(numFiftyTwo(date))
+    coordinates[date].append(slopeMax(maximum))
+    coordinates[date].append(slopeMin(minimum))
+    coordinates[date].append(pointMap[date][2])
+    coordinates[date].append(pointMap[date][1]-pointMap[date][2])
+    coordinates[date].append(pointMap[date][4])
+    coordinates[date].append(pointMap[maximum][4])
+    coordinates[date].append(pointMap[minimum][4])
+    coordinates[date].append(pointMap[maximum][1] - pointMap[maximum][2])
+    coordinates[date].append(pointMap[minimum][1] - pointMap[minimum][2])
 
 #For each 52 week low, we want to know:
 #1: number of 52 week lows in last 10 days
@@ -53,6 +61,7 @@ for low in yearLows:
 #volume,
 #volume on max,
 #volume on min
+#volatility on max, min
 
 #These will be mapped to the date and pickled out
 pickle.dump(coordinates,open("coordinates.p","wb"))

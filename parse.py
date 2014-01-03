@@ -12,10 +12,14 @@ points = data.replace('\n',',').split(',') # here is a list with each thing
 pointMap = {}
 dates = []
 for i in range (7,len(points)-7,7):
-    pointMap[points[i]] = (float(points[i+1]),float(points[i+2]),float(points[i+3]),float(points[i+4]),float(points[i+5]),float(points[i+6]))
+    pointMap[points[i]] = (float(points[i+1]),float(points[i+2]),
+                           float(points[i+3]),float(points[i+4]),
+                           float(points[i+5]),float(points[i+6]))
     dates.append(points[i])
 
 #dump data for later usage
 dates.reverse()
 pickle.dump(dates,open("dates.p","wb"))
 pickle.dump(pointMap,open("points.p","wb"))
+
+#Open,High,Low,Close,Volume,Adj Close
