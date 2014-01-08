@@ -21,6 +21,7 @@ for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
 
 
 def numFiftyTwo(date):
+    #find number of 52 week lows in 10 day period before date
     return 0
 
 def slopeMin(minimum):
