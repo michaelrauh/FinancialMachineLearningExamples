@@ -1,7 +1,5 @@
-import pickle
 import math
-pointMap = pickle.load(open("points.p","rb"))
-dates = pickle.load(open("dates.p","rb"))
+from parse import *
 
 
 #make list of lows
@@ -20,31 +18,54 @@ for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
         yearLows.append(dates[i]) #then this is a 52 week low (save the date)
 
 
-def numFiftyTwo(date):
+def numFiftyTwo(date,yearLows,dates):
     #find number of 52 week lows in 10 day period before date
-    return 0
+    count = 0
+    last_ten = dates[dates.index(date)-10:dates.index(date)]
+    for day in last_ten:
+        count += yearLows.count(day)
+    return count
 
-def slopeMin(minimum):
-    return 0
+def slopeMin(date, minimum,pointMap):
+    #find slope from min to date
+    rise = pointMap[minimum][2] - pointMap[date][2]
+    run = dates.index(date) - dates.index(minimum)
+    if (rise == 0):
+        slope = 0
+    else:
+        slope = rise/run
+    return slope
 
-def slopeMax(maximum):
-    return 0
+def slopeMax(date, maximum,pointMap):
+    rise = pointMap[maximum][1] - pointMap[date][1]
+    run = dates.index(date) - dates.index(maximum)
+    if (rise == 0):
+        slope = 0
+    else:
+        slope = rise/run
+    return slope
 
 def findMax(date):
-    return dates[0]
+    date_index = dates.index(date)
+    while(pointMap[dates[date_index]][1] < pointMap[dates[date_index-1]][1]):
+        date_index -= 1
+    return dates[date_index]
 
 def findMin(maximum):
-    return dates[0]
+    date_index = dates.index(maximum)
+    while(pointMap[dates[date_index]][2] > pointMap[dates[date_index-1]][2]):
+        date_index -= 1
+    return dates[date_index]
 
-#Normalize the coordinates     
+#Normalize the coordinates- Seriously, don't forget to do this later   
 coordinates = {}
 for date in yearLows:
     maximum = findMax(date)
     minimum = findMin(maximum)
     coordinates[date] = []
-    coordinates[date].append(numFiftyTwo(date))
-    coordinates[date].append(slopeMax(maximum))
-    coordinates[date].append(slopeMin(minimum))
+    coordinates[date].append(numFiftyTwo(date,yearLows,dates))
+    coordinates[date].append(slopeMax(date, maximum,pointMap))
+    coordinates[date].append(slopeMin(date, minimum,pointMap))
     coordinates[date].append(pointMap[date][2])
     coordinates[date].append(pointMap[date][1]-pointMap[date][2])
     coordinates[date].append(pointMap[date][4])
@@ -65,4 +86,5 @@ for date in yearLows:
 #volatility on max, min
 
 #These will be mapped to the date and pickled out
-pickle.dump(coordinates,open("coordinates.p","wb"))
+
+#open,high,low,close,volume

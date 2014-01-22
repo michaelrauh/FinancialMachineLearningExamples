@@ -1,6 +1,5 @@
-import pickle
-points = pickle.load(open("coordinates.p","rb"))
-
+from stats import *
+points = coordinates
 #Get centroids for each year
 yearPoints={}
 years = []
@@ -12,5 +11,3 @@ for point in points:
 		years.append(point[0:4])
 	yearPoints[point[0:4]].append((point,points[point]))
 #find centroid trend and predict next year's centroids
-
-#pickle centroids out
