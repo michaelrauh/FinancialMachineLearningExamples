@@ -1,23 +1,9 @@
-"""This module is concerned with generating stats from raw stock data"""
+"""This module is concerned with generating stats from stock data"""
+#crypto slide 20
 
 import math
 from parse import *
-
-#make list of lows
-lows = []
-for date in dates:
-    lows.append(point_map[date][2])
-
-yearLows = []
-fiftytwoweeks= 5 * 52
-
-#Find each 52 week low and add to yearLows. Map is not in order so iterate
-#over dates
-
-for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
-    if min(lows[i - fiftytwoweeks:i-1]) > lows[i]: # if lowest in last 52 weeks is greater than current
-        yearLows.append(dates[i]) #then this is a 52 week low (save the date)
-
+import random
 
 def num_fifty_two(date,yearLows,dates):
     #find number of 52 week lows in 10 day period before date
@@ -58,19 +44,58 @@ def find_min(maximum):
         date_index -= 1
     return dates[date_index]
 
-#Normalize the coordinates- Seriously, don't forget to do this later   
-coordinates = {}
-for date in yearLows:
-    maximum = find_max(date)
-    minimum = find_min(maximum)
-    coordinates[date] = []
-    coordinates[date].append(num_fifty_two(date,yearLows,dates)) # Number of 52 week lows in 10 day period #
-    coordinates[date].append(slope_max(date,maximum,point_map)) # Slope from local max # 
-    coordinates[date].append(slope_min(date,minimum,point_map)) # Slope from local min #
-    coordinates[date].append(point_map[date][2]) # Day high #
-    coordinates[date].append(point_map[date][1]-point_map[date][2]) # Volatility #
-    coordinates[date].append(point_map[date][4]) # Volume #
-    coordinates[date].append(point_map[maximum][4]) # Bull power #
-    coordinates[date].append(point_map[minimum][4]) # Bear power #
-    coordinates[date].append(point_map[maximum][1] - point_map[maximum][2]) # Volatility at maximum #
-    coordinates[date].append(point_map[minimum][1] - point_map[minimum][2]) # Volatility at minimum #
+def good_buy(date, info): #Returns True if stock is a good buy
+    return random.choice([True,False])
+
+all_points = []
+for stock in stocks:
+    #make list of lows
+    lows = []
+    dates = stock[0]
+    point_map = stock[1]
+    for date in dates:
+        lows.append(point_map[date][2])
+    yearLows = []
+    fiftytwoweeks= 5 * 52
+
+    #Find each 52 week low and add to yearLows. Map is not in order so iterate over dates
+    for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
+        if min(lows[i - fiftytwoweeks:i-1]) > lows[i]: # if lowest in last 52 weeks is greater than current
+            yearLows.append(dates[i]) #then this is a 52 week low (save the date)
+
+    coordinates = {}
+    for date in yearLows:
+        maximum = find_max(date)
+        minimum = find_min(maximum)
+        coordinates[date] = []
+        coordinates[date].append(num_fifty_two(date,yearLows,dates)) # Number of 52 week lows in 10 day period #
+        coordinates[date].append(slope_max(date,maximum,point_map)) # Slope from local max # 
+        coordinates[date].append(slope_min(date,minimum,point_map)) # Slope from local min #
+        coordinates[date].append(point_map[date][1]-point_map[date][2]) # Volatility #
+        coordinates[date].append(point_map[date][4]) # Volume #
+        coordinates[date].append(point_map[maximum][4]) # Bull power #
+        coordinates[date].append(point_map[minimum][4]) # Bear power #
+        coordinates[date].append(point_map[maximum][1] - point_map[maximum][2]) # Volatility at maximum #
+        coordinates[date].append(point_map[minimum][1] - point_map[minimum][2]) # Volatility at minimum #
+    all_points.append(coordinates)
+
+for stock in all_points:
+    flipped = [[],[],[],[],[],[],[],[],[]]
+    for date in stock:
+        for i in range(0,len(flipped)):
+            flipped[i].append(stock[date][i])
+    for date in stock:
+        for i in range(0,len(flipped)):
+            stock[date][i] /= max(flipped[i]) #For now we will divide by max to get range from 0 to 1. Not ideal.
+
+# Produce map from years to buy/sell to list of data. Eg. years[2008][True][0][0] => Open of first good stock in 2008
+years= {}
+for stock in all_points:
+    for date in stock:
+        good = good_buy (date,stock[date])
+        year = int(date[0:4])
+        if not year in years:
+            years[year] = {}
+            years[year][True] = []
+            years[year][False] = []
+        years[year][good].append(stock[date])
