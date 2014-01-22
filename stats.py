@@ -1,11 +1,12 @@
+"""This module is concerned with generating stats from raw stock data"""
+
 import math
 from parse import *
-
 
 #make list of lows
 lows = []
 for date in dates:
-    lows.append(pointMap[date][2])
+    lows.append(point_map[date][2])
 
 yearLows = []
 fiftytwoweeks= 5 * 52
@@ -18,7 +19,7 @@ for i in range(fiftytwoweeks,len(dates)): #for dates after first buffer year
         yearLows.append(dates[i]) #then this is a 52 week low (save the date)
 
 
-def numFiftyTwo(date,yearLows,dates):
+def num_fifty_two(date,yearLows,dates):
     #find number of 52 week lows in 10 day period before date
     count = 0
     last_ten = dates[dates.index(date)-10:dates.index(date)]
@@ -26,9 +27,9 @@ def numFiftyTwo(date,yearLows,dates):
         count += yearLows.count(day)
     return count
 
-def slopeMin(date, minimum,pointMap):
+def slope_min(date, minimum,point_map):
     #find slope from min to date
-    rise = pointMap[minimum][2] - pointMap[date][2]
+    rise = point_map[minimum][2] - point_map[date][2]
     run = dates.index(date) - dates.index(minimum)
     if (rise == 0):
         slope = 0
@@ -36,8 +37,8 @@ def slopeMin(date, minimum,pointMap):
         slope = rise/run
     return slope
 
-def slopeMax(date, maximum,pointMap):
-    rise = pointMap[maximum][1] - pointMap[date][1]
+def slope_max(date, maximum,point_map):
+    rise = point_map[maximum][1] - point_map[date][1]
     run = dates.index(date) - dates.index(maximum)
     if (rise == 0):
         slope = 0
@@ -45,46 +46,31 @@ def slopeMax(date, maximum,pointMap):
         slope = rise/run
     return slope
 
-def findMax(date):
+def find_max(date):
     date_index = dates.index(date)
-    while(pointMap[dates[date_index]][1] < pointMap[dates[date_index-1]][1]):
+    while(point_map[dates[date_index]][1] < point_map[dates[date_index-1]][1]):
         date_index -= 1
     return dates[date_index]
 
-def findMin(maximum):
+def find_min(maximum):
     date_index = dates.index(maximum)
-    while(pointMap[dates[date_index]][2] > pointMap[dates[date_index-1]][2]):
+    while(point_map[dates[date_index]][2] > point_map[dates[date_index-1]][2]):
         date_index -= 1
     return dates[date_index]
 
 #Normalize the coordinates- Seriously, don't forget to do this later   
 coordinates = {}
 for date in yearLows:
-    maximum = findMax(date)
-    minimum = findMin(maximum)
+    maximum = find_max(date)
+    minimum = find_min(maximum)
     coordinates[date] = []
-    coordinates[date].append(numFiftyTwo(date,yearLows,dates))
-    coordinates[date].append(slopeMax(date, maximum,pointMap))
-    coordinates[date].append(slopeMin(date, minimum,pointMap))
-    coordinates[date].append(pointMap[date][2])
-    coordinates[date].append(pointMap[date][1]-pointMap[date][2])
-    coordinates[date].append(pointMap[date][4])
-    coordinates[date].append(pointMap[maximum][4])
-    coordinates[date].append(pointMap[minimum][4])
-    coordinates[date].append(pointMap[maximum][1] - pointMap[maximum][2])
-    coordinates[date].append(pointMap[minimum][1] - pointMap[minimum][2])
-
-#For each 52 week low, we want to know:
-#1: number of 52 week lows in last 10 days
-#2: slope from local min
-#3: slope from local max
-#price,
-#volatility,
-#volume,
-#volume on max,
-#volume on min
-#volatility on max, min
-
-#These will be mapped to the date and pickled out
-
-#open,high,low,close,volume
+    coordinates[date].append(num_fifty_two(date,yearLows,dates)) # Number of 52 week lows in 10 day period #
+    coordinates[date].append(slope_max(date,maximum,point_map)) # Slope from local max # 
+    coordinates[date].append(slope_min(date,minimum,point_map)) # Slope from local min #
+    coordinates[date].append(point_map[date][2]) # Day high #
+    coordinates[date].append(point_map[date][1]-point_map[date][2]) # Volatility #
+    coordinates[date].append(point_map[date][4]) # Volume #
+    coordinates[date].append(point_map[maximum][4]) # Bull power #
+    coordinates[date].append(point_map[minimum][4]) # Bear power #
+    coordinates[date].append(point_map[maximum][1] - point_map[maximum][2]) # Volatility at maximum #
+    coordinates[date].append(point_map[minimum][1] - point_map[minimum][2]) # Volatility at minimum #

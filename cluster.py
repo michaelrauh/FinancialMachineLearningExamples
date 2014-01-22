@@ -1,5 +1,8 @@
+"""Take coordinates from stats and cluster them to determine biy/sell split"""
+
 from stats import *
 points = coordinates
+
 #Get centroids for each year
 yearPoints={}
 years = []
@@ -10,4 +13,5 @@ for point in points:
 		yearPoints[point[0:4]] = []
 		years.append(point[0:4])
 	yearPoints[point[0:4]].append((point,points[point]))
+	
 #find centroid trend and predict next year's centroids
