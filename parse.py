@@ -1,7 +1,7 @@
 """This script is concerned with taking in CSV files and making them into usable
 #python data structures"""
 
-file = open("table.csv",'r')
+file = open("data/table.csv",'r')
 data = file.read()
 
 points = data.replace('\n',',').split(',') # here is a list with each thing
