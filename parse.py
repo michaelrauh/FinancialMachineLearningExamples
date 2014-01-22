@@ -1,5 +1,3 @@
-import pickle
-
 # This script is concerned with taking in CSV files and making them into usable
 #python data structures and then pickling them out. For now, an example
 
@@ -19,7 +17,5 @@ for i in range (7,len(points)-7,7):
 
 #dump data for later usage
 dates.reverse()
-pickle.dump(dates,open("dates.p","wb"))
-pickle.dump(pointMap,open("points.p","wb"))
 
 #Open,High,Low,Close,Volume,Adj Close

@@ -1,7 +1,5 @@
-import pickle
 import math
-pointMap = pickle.load(open("points.p","rb"))
-dates = pickle.load(open("dates.p","rb"))
+from parse import *
 
 
 #make list of lows
@@ -30,7 +28,7 @@ def numFiftyTwo(date,yearLows,dates):
 
 def slopeMin(date, minimum,pointMap):
     #find slope from min to date
-    rise = pointMap[date][2] - pointMap[minimum][2]
+    rise = pointMap[minimum][2] - pointMap[date][2]
     run = dates.index(date) - dates.index(minimum)
     if (rise == 0):
         slope = 0
@@ -39,7 +37,7 @@ def slopeMin(date, minimum,pointMap):
     return slope
 
 def slopeMax(date, maximum,pointMap):
-    rise = pointMap[date][1] - pointMap[maximum][1]
+    rise = pointMap[maximum][1] - pointMap[date][1]
     run = dates.index(date) - dates.index(maximum)
     if (rise == 0):
         slope = 0
@@ -88,6 +86,5 @@ for date in yearLows:
 #volatility on max, min
 
 #These will be mapped to the date and pickled out
-pickle.dump(coordinates,open("coordinates.p","wb"))
 
 #open,high,low,close,volume
