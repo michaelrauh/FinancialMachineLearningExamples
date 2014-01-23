@@ -86,7 +86,10 @@ for stock in all_points:
             flipped[i].append(stock[date][i])
     for date in stock:
         for i in range(0,len(flipped)):
-            stock[date][i] /= max(flipped[i]) #For now we will divide by max to get range from 0 to 1. Not ideal.
+            if stock[date][i] != 0:
+                stock[date][i] /= max(flipped[i]) #For now we will divide by max to get range from 0 to 1. Not ideal.
+            else:
+                stock[date][i] = 0
 
 # Produce map from years to buy/sell to list of data. Eg. years[2008][True][0][0] => Open of first good stock in 2008
 years= {}

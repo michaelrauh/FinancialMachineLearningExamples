@@ -18,10 +18,3 @@ for name in files:
     dates.reverse() #Dates earliest to latest
     stock = (dates,point_map)
     stocks.append(stock)
-
-# Here we have a list of stocks. Each stock is a dates, point_map tuple
-# dates is a list of dates
-# point_map is a map from dates to a list of data
-
-# Later, there will be a list of coordinates
-# Then, this list will be split to a map. One entry for each year has each stock
