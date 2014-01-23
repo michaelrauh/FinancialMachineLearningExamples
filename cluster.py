@@ -8,7 +8,13 @@ def avg(points):
         else:
                 return 0
 
-#for each year, find average location of good points, average location of bad points.
+def extrapolate(avg,i): # Obviously not a very good function yet
+        years = list(avg.keys())
+        years.sort()
+        diff = avg[years[-1]][i] - avg[years[-2]][i]
+        return avg[years[-1]][i] + diff
+
+# For each year, find average location of good points, average location of bad points.
 avg_good = {}
 avg_bad = {}
 flipped = [[],[],[],[],[],[],[],[],[]]
@@ -31,4 +37,10 @@ for year in years:
                         avg_bad[year] = [0,0,0,0,0,0,0,0,0]
                 avg_bad[year][n] = avg(flipped[n])
                         
-#find centroid trend and predict next year's centroids
+# Find centroid trend and predict next year's centroids
+next_good = [0,0,0,0,0,0,0,0,0]
+next_bad = [0,0,0,0,0,0,0,0,0]
+
+for i in range (0,len(flipped)):
+        next_good[i] = extrapolate(avg_good,i)
+        next_bad[i] = extrapolate(avg_bad,i)
