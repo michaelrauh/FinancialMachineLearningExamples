@@ -1,7 +1,7 @@
 """Take coordinates from stats and cluster them to determine biy/sell split. This iteration will use an average location for good/bad as its algorithm"""
 
-from stats import *
-
+import cPickle as pickle
+years = pickle.load(open("pickles/years.p","rb"))
 def avg(points):
         if sum(points) != 0:
                 return sum(points)/len(points)
@@ -44,3 +44,6 @@ next_bad = [0,0,0,0,0,0,0,0,0]
 for i in range (0,len(flipped)):
         next_good[i] = extrapolate(avg_good,i)
         next_bad[i] = extrapolate(avg_bad,i)
+
+pickle.dump(next_good,open("pickles/next_good.p","wb"))
+pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
