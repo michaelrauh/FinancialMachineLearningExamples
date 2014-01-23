@@ -1,17 +1,34 @@
-"""Take coordinates from stats and cluster them to determine biy/sell split"""
+"""Take coordinates from stats and cluster them to determine biy/sell split. This iteration will use an average location for good/bad as its algorithm"""
 
 from stats import *
-points = coordinates
 
-#Get centroids for each year
-yearPoints={}
-years = []
+def avg(points):
+        if sum(points) != 0:
+                return sum(points)/len(points)
+        else:
+                return 0
 
-#First we have to separate points by year. This maps years to lists of tuples containing dates and data.
-for point in points:
-	if not point[0:4] in list(yearPoints):
-		yearPoints[point[0:4]] = []
-		years.append(point[0:4])
-	yearPoints[point[0:4]].append((point,points[point]))
-	
+#for each year, find average location of good points, average location of bad points.
+avg_good = {}
+avg_bad = {}
+flipped = [[],[],[],[],[],[],[],[],[]]
+for year in years:
+        for stock in years[year][True]:
+                for i in range(0,len(flipped)):
+                        flipped[i].append(stock[i])
+        for n in range (0,len(flipped)):
+                if not year in avg_good:
+                        avg_good[year] = [0,0,0,0,0,0,0,0,0]
+                avg_good[year][n] = avg(flipped[n])
+
+# Code repeated for bad. Refactor this
+for year in years:
+        for stock in years[year][False]:
+                for i in range(0,len(flipped)):
+                        flipped[i].append(stock[i])
+        for n in range (0,len(flipped)):
+                if not year in avg_bad:
+                        avg_bad[year] = [0,0,0,0,0,0,0,0,0]
+                avg_bad[year][n] = avg(flipped[n])
+                        
 #find centroid trend and predict next year's centroids
