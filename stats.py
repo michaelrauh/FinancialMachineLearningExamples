@@ -1,10 +1,17 @@
 """This module is concerned with generating stats from stock data"""
-#crypto slide 20
 
 import math
-from parse import *
-import random
+import cPickle as pickle
+from helper import *
 
+stocks = pickle.load(open("pickles/stocks.p","rb"))
+
+all_points = []
+for stock in stocks:
+    all_points.append(find_coordinates(stock))
+
+for stock in all_points:
+    normalize(stock)
 
 def num_fifty_two(date, yearLows, dates):
     #find number of 52 week lows in 10 day period before date
@@ -134,3 +141,5 @@ for stock in all_points:
             years[year][True] = []
             years[year][False] = []
         years[year][good].append(stock[date])
+
+pickle.dump(years,open("pickles/years.p","wb"))
