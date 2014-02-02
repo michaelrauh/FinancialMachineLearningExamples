@@ -1,6 +1,5 @@
 """Query trained data on new stock"""
-
-from helper import *
+from helper import parse, find_coordinates, normalize, distance
 import cPickle as pickle
 
 next_good = pickle.load(open("pickles/next_good.p","rb"))
