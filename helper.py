@@ -14,6 +14,7 @@ def distance(centroid, guess):
     distance = 0
     for i in range (0,len(guess)):
         distance += (centroid[i]-guess[i])**2
+    return distance
 
 def extrapolate(avg, i):
         # Obviously not a very good function yet
