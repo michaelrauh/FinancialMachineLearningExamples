@@ -1,16 +1,42 @@
-import pickle
-points = pickle.load(open("coordinates.p","rb"))
+"""Take coordinates from stats and cluster them to determine biy/sell split.
+This iteration will use an average location for good/bad as its algorithm.
 
-#Get centroids for each year
-yearPoints={}
-years = []
+"""
+from helper import avg, extrapolate
+import cPickle as pickle
+years = pickle.load(open("pickles/years.p","rb"))
 
-#First we have to separate points by year. This maps years to lists of tuples containing dates and data.
-for point in points:
-	if not point[0:4] in list(yearPoints):
-		yearPoints[point[0:4]] = []
-		years.append(point[0:4])
-	yearPoints[point[0:4]].append((point,points[point]))
-#find centroid trend and predict next year's centroids
+# For each year, find average location of good points, average location of
+# bad points. Look into "zip" to optimize.
+avg_good = {}
+avg_bad = {}
+flipped = [[], [], [], [], [], [], [], [], []]
+for year in years:
+        for stock in years[year][True]:
+                for i in range(0, len(flipped)):
+                        flipped[i].append(stock[i])
+        for n in range(0, len(flipped)):
+                if not year in avg_good:
+                        avg_good[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                avg_good[year][n] = avg(flipped[n])
 
-#pickle centroids out
+# Code repeated for bad. Refactor this
+for year in years:
+        for stock in years[year][False]:
+                for i in range(0, len(flipped)):
+                        flipped[i].append(stock[i])
+        for n in range(0, len(flipped)):
+                if not year in avg_bad:
+                        avg_bad[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                avg_bad[year][n] = avg(flipped[n])
+
+# Find centroid trend and predict next year's centroids
+next_good = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+next_bad = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+for i in range(0, len(flipped)):
+        next_good[i] = extrapolate(avg_good, i)
+        next_bad[i] = extrapolate(avg_bad, i)
+
+pickle.dump(next_good,open("pickles/next_good.p","wb"))
+pickle.dump(next_bad,open("pickles/next_bad.p","wb"))

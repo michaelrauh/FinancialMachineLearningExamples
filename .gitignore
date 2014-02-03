@@ -1,4 +1,8 @@
 data
+<<<<<<< HEAD
+=======
+pickles
+>>>>>>> a2c02e5f347552d4bef3651ac68381c559868c2f
 
 #################
 ## Eclipse
@@ -215,3 +219,8 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+
+#################
+## Vim
+#################
+.*.sw*
