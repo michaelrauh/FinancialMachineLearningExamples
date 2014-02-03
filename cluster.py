@@ -11,24 +11,28 @@ years = pickle.load(open("pickles/years.p","rb"))
 avg_good = {}
 avg_bad = {}
 flipped = [[], [], [], [], [], [], [], [], []]
+
+# Train on all but last valid year
 for year in years:
-        for stock in years[year][True]:
-                for i in range(0, len(flipped)):
-                        flipped[i].append(stock[i])
-        for n in range(0, len(flipped)):
-                if not year in avg_good:
-                        avg_good[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                avg_good[year][n] = avg(flipped[n])
+        if year < years.keys()[-1]:
+                for stock in years[year][True]:
+                        for i in range(0, len(flipped)):
+                                flipped[i].append(stock[i])
+                for n in range(0, len(flipped)):
+                        if not year in avg_good:
+                                avg_good[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        avg_good[year][n] = avg(flipped[n])
 
 # Code repeated for bad. Refactor this
 for year in years:
-        for stock in years[year][False]:
-                for i in range(0, len(flipped)):
-                        flipped[i].append(stock[i])
-        for n in range(0, len(flipped)):
-                if not year in avg_bad:
-                        avg_bad[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-                avg_bad[year][n] = avg(flipped[n])
+        if year < years.keys()[-1]:
+                for stock in years[year][False]:
+                        for i in range(0, len(flipped)):
+                                flipped[i].append(stock[i])
+                for n in range(0, len(flipped)):
+                        if not year in avg_bad:
+                                avg_bad[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                        avg_bad[year][n] = avg(flipped[n])
 
 # Find centroid trend and predict next year's centroids
 next_good = [0, 0, 0, 0, 0, 0, 0, 0, 0]

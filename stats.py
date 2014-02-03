@@ -25,3 +25,4 @@ for stock in all_points:
         years[year][good].append(stock[date])
 
 pickle.dump(years,open("pickles/years.p","wb"))
+pickle.dump(all_points,open("pickles/all_points.p","wb"))
