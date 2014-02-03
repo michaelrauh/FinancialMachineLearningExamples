@@ -33,5 +33,17 @@ for stock in stocks:
                     false_negative += 1
                     
 percent_correct = (true_positive + true_negative)/(false_positive + false_negative + true_positive + true_negative)
-print(percent_correct)
-# good = distance(next_good,question) < distance (next_bad,question)
+f = (2 * true_positive) / ((2 * true_positive) + false_positive + false_negative)
+
+if (false_positive + true_positive == 0):
+    print "Always chooses False"
+elif (false_negative + true_negative == 0):
+    print "Always chooses True"
+else:
+    print "Chooses mixed values!\n"
+    print"Percent correct:", percent_correct
+    print "F1 Score:", f
+    print "\nTrue_positive:", true_positive
+    print "True_negative:", true_negative
+    print "False_positive:", false_positive
+    print "False_negative:", false_negative
