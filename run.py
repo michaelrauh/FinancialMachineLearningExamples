@@ -1,25 +1,37 @@
-"""Query trained data on new stock"""
-from helper import parse, find_coordinates, normalize, distance
+"""Calculate f-score by querying results for last valid year"""
+from __future__ import division
+from helper import distance, good_buy
 import cPickle as pickle
 
 next_good = pickle.load(open("pickles/next_good.p","rb"))
 next_bad = pickle.load(open("pickles/next_bad.p","rb"))
+stocks = pickle.load(open("pickles/all_points.p","rb"))
+years = pickle.load(open("pickles/years.p","rb"))
 
-# Parse
-file = open("input.csv",'r')
-data = file.read()
-test = parse(data)
+prediction = False
+true_positive = 0
+true_negative = 0
+false_positive = 0
+false_negative = 0
 
-# Stats
-test_coordinates = find_coordinates(test)
-normalize(test_coordinates)
-
-print ("echo chosen date")
-for value in list(test_coordinates.keys()):
-    print value
-#choice = raw_input()
-choice = list(test_coordinates.keys())[0]
-question = test_coordinates[choice]
-
-# Predict
-print (distance(next_good,question) < distance (next_bad,question))
+for stock in stocks:
+    for date in stock:
+        year = int(date[0:4])
+        if year == years.keys()[-2]:
+            point = stock[date]
+            actual = good_buy(date,point)
+            prediction = distance(next_good,point) < distance (next_bad,point)
+            if prediction:
+                if prediction == actual:
+                    true_positive += 1
+                else:
+                    false_positive += 1
+            else:
+                if prediction == actual:
+                    true_negative += 1
+                else:
+                    false_negative += 1
+                    
+percent_correct = (true_positive + true_negative)/(false_positive + false_negative + true_positive + true_negative)
+print(percent_correct)
+# good = distance(next_good,question) < distance (next_bad,question)
