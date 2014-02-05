@@ -96,15 +96,14 @@ def good_buy(date, info):
 
 def normalize(stock):
     """Prevent different data scales from skewing data"""
-    flipped = [[],[],[],[],[],[],[],[],[]]
-    for date in stock:
-        for i in range(0,len(flipped)):
-            flipped[i].append(stock[date][i])
+    flipped = zip(*stock.values())
+    maxes = []
+    for i in range(0,len(flipped)):
+            maxes.append(max(flipped[i]))
     for date in stock:
         for i in range(0,len(flipped)):
             if stock[date][i] != 0:
-                # For now we will divide by max to get range from 0 to 1.
-                stock[date][i] /= max(flipped[i])
+                stock[date][i] /= maxes[i]
             else:
                 stock[date][i] = 0
 
