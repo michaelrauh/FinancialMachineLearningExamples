@@ -1,13 +1,11 @@
-"""This script is converts from csv files to python structures"""
-import os
-import cPickle as pickle
 from helper import parse
+import cPickle as pickle
 
-files = os.listdir(os.getcwd() + "\\data")  # All data file names
+f = open('data.csv','r').read()
+f = f.split('FILE')
+
 stocks = []
-for name in files:
-    file = open("data\\" + name, 'r')
-    data = file.read()
-    stocks.append(parse(data))
+for stock in f:
+    stocks.append(parse(stock))
 
 pickle.dump(stocks,open("pickles/stocks.p","wb"))
