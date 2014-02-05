@@ -10,14 +10,12 @@ years = pickle.load(open("pickles/years.p","rb"))
 # bad points. Look into "zip" to optimize.
 avg_good = {}
 avg_bad = {}
-flipped = [[], [], [], [], [], [], [], [], []]
 
 # Train on all but last valid year
 for year in years:
         if year < years.keys()[-1]:
                 for stock in years[year][True]:
-                        for i in range(0, len(flipped)):
-                                flipped[i].append(stock[i])
+                        flipped = zip(*years[year][True])
                 for n in range(0, len(flipped)):
                         if not year in avg_good:
                                 avg_good[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
@@ -27,8 +25,7 @@ for year in years:
 for year in years:
         if year < years.keys()[-1]:
                 for stock in years[year][False]:
-                        for i in range(0, len(flipped)):
-                                flipped[i].append(stock[i])
+                        flipped = zip(*years[year][False])
                 for n in range(0, len(flipped)):
                         if not year in avg_bad:
                                 avg_bad[year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
