@@ -4,10 +4,11 @@ import math
 
 def avg(points):
         """Find average of a list of points"""
-        if sum(points) != 0:
+        try:
                 return sum(points)/len(points)
-        else:
+        except ZeroDivisionError:
                 return 0
+                
 
 def distance(centroid, guess):
     """Compute the square of linear distance in n dimensions"""
