@@ -18,7 +18,7 @@ def distance(centroid, guess):
     return distance
 
 def extrapolate(avg, i):
-        # Obviously not a very good function yet
+        """predict next value based upon history"""
         years = list(avg.keys())
         years.sort()
         diff = avg[years[-1]][i] - avg[years[-2]][i]
@@ -103,10 +103,10 @@ def normalize(stock):
             maxes.append(max(flipped[i]))
     for date in stock:
         for i in range(0,len(flipped)):
-            if stock[date][i] != 0:
-                stock[date][i] /= maxes[i]
-            else:
-                stock[date][i] = 0
+                try:
+                        stock[date][i] /= maxes[i]
+                except ZeroDivisionError:
+                        stock[date][i] = 0
 
 def num_fifty_two(date,yearLows,dates):
     """Find number of 52 week lows in 10 day period before date"""
@@ -135,18 +135,16 @@ def slope_max(dates,date, maximum,point_map):
     """Find slope from maximum to date"""
     rise = point_map[maximum][1] - point_map[date][1]
     run = dates.index(date) - dates.index(maximum)
-    if (rise == 0):
-        slope = 0
-    else:
-        slope = rise/run
-    return slope
+    try:
+            return rise/run
+    except ZeroDivisionError:
+            return 0
 
 def slope_min(dates,date, minimum,point_map):
     """Find slope from minimum to date"""
     rise = point_map[minimum][2] - point_map[date][2]
     run = dates.index(date) - dates.index(minimum)
-    if (rise == 0):
-        slope = 0
-    else:
-        slope = rise/run
-    return slope
+    try:
+            return rise/run
+    except ZeroDivisionError:
+            return 0
