@@ -41,3 +41,4 @@ for i in range(0, len(flipped)):
 
 pickle.dump(next_good,open("pickles/next_good.p","wb"))
 pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
+
