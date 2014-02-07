@@ -19,8 +19,7 @@ def distance(centroid, guess):
 
 def extrapolate(avg, i):
         """predict next value based upon history"""
-        years = list(avg.keys())
-        years.sort()
+        years = avg.keys()
         diff = avg[years[-1]][i] - avg[years[-2]][i]
         return avg[years[-1]][i] + diff
 
