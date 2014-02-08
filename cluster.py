@@ -20,12 +20,12 @@ for year in years:
                                 flipped = zip(*years[year][good])
                         for n in range(0, len(flipped)):
                                 if not year in avgs[good]:
-                                        avgs[good][year] = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+                                        avgs[good][year] = [0 for i in range(len(flipped))]
                                 avgs[good][year][n] = avg(flipped[n])
 
 # Find centroid trend and predict next year's centroids
-next_good = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-next_bad = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+next_good = [0 for i in range(len(flipped))]
+next_bad = [0 for i in range(len(flipped))]
 
 for i in range(0, len(flipped)):
         next_good[i] = extrapolate(avgs[True], i)
