@@ -1,6 +1,12 @@
 """This file contains helper functions to improve readability of core code"""
+from __future__ import division
 import random
 import math
+opn = 0
+high = 1
+low = 2
+close = 3
+volume = 4
 
 def avg(points):
         """Find average of a list of points"""
@@ -30,7 +36,7 @@ def find_coordinates(stock):
     dates = stock[0]
     point_map = stock[1]
     for date in dates:
-        lows.append(point_map[date][2])
+        lows.append(point_map[date][low])
     yearLows = []
     fiftytwoweeks= 5 * 52
 
@@ -58,35 +64,35 @@ def find_coordinates(stock):
         coordinates[date].append(slope_min(dates, date, minimum, point_map))
 
         # Volatility #
-        coordinates[date].append(point_map[date][1] - point_map[date][2])
+        coordinates[date].append(point_map[date][high] - point_map[date][low])
 
         # Volume #
-        coordinates[date].append(point_map[date][4])
+        coordinates[date].append(point_map[date][volume])
 
         # Bull power #
-        coordinates[date].append(point_map[maximum][4])
+        coordinates[date].append(point_map[maximum][volume])
 
         # Bear power #
-        coordinates[date].append(point_map[minimum][4])
+        coordinates[date].append(point_map[minimum][volume])
 
         # Volatility at maximum #
-        coordinates[date].append(point_map[maximum][1] - point_map[maximum][2])
+        coordinates[date].append(point_map[maximum][high] - point_map[maximum][low])
 
         # Volatility at minimum #
-        coordinates[date].append(point_map[minimum][1] - point_map[minimum][2])
+        coordinates[date].append(point_map[minimum][high] - point_map[minimum][low])
     return coordinates
 
 def find_max(date,dates,point_map):
     """Find local max"""
     date_index = dates.index(date)
-    while(point_map[dates[date_index]][1] < point_map[dates[date_index-1]][1]):
+    while(point_map[dates[date_index]][high] < point_map[dates[date_index-1]][high]):
         date_index -= 1
     return dates[date_index]
 
 def find_min(maximum,dates,point_map):
     """find local min"""
     date_index = dates.index(maximum)
-    while(point_map[dates[date_index]][2] > point_map[dates[date_index-1]][2]):
+    while(point_map[dates[date_index]][low] > point_map[dates[date_index-1]][low]):
         date_index -= 1
     return dates[date_index]
 
@@ -132,7 +138,7 @@ def parse (data):
 
 def slope_max(dates,date, maximum,point_map):
     """Find slope from maximum to date"""
-    rise = point_map[maximum][1] - point_map[date][1]
+    rise = point_map[maximum][high] - point_map[date][high]
     run = dates.index(date) - dates.index(maximum)
     try:
             return rise/run
@@ -141,7 +147,7 @@ def slope_max(dates,date, maximum,point_map):
 
 def slope_min(dates,date, minimum,point_map):
     """Find slope from minimum to date"""
-    rise = point_map[minimum][2] - point_map[date][2]
+    rise = point_map[minimum][low] - point_map[date][low]
     run = dates.index(date) - dates.index(minimum)
     try:
             return rise/run
