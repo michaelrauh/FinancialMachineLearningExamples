@@ -11,6 +11,7 @@ years = pickle.load(open("pickles/years.p","rb"))
 avgs = {}
 avgs[True] = {}
 avgs[False] = {}
+flipped = [0 for i in range(10)]
 
 # Train on all but last valid year
 for year in years:
