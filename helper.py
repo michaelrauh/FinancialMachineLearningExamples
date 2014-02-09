@@ -14,6 +14,8 @@ def avg(points):
                 return sum(points)/len(points)
         except ZeroDivisionError:
                 return 0
+        except TypeError:
+                return points
                 
 def distance(centroid, guess):
     """Compute the square of linear distance in n dimensions"""

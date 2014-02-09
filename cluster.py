@@ -18,12 +18,11 @@ for year in years:
         if year < years.keys()[-3]:
                 for good in [True,False]:
                         for stock in years[year][good]:
-                                print len(years[year][good]), "\n\n"
                                 flipped = zip(*years[year][good])
                         for n in range(0, len(flipped)):
                                 if not year in avgs[good]:
                                         avgs[good][year] = [0 for i in range(len(flipped))]
-                                #avgs[good][year][n] = avg(flipped[n])
+                                avgs[good][year][n] = avg(flipped[n])
 
 # Find centroid trend and predict next year's centroids
 next_good = [0 for i in range(len(flipped))]
