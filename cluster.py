@@ -7,7 +7,7 @@ import cPickle as pickle
 years = pickle.load(open("pickles/years.p","rb"))
 
 # For each year, find average location of good points, average location of
-# bad points. Look into "zip" to optimize.
+# bad points.
 avgs = {}
 avgs[True] = {}
 avgs[False] = {}
@@ -34,4 +34,3 @@ for i in range(0, len(flipped)):
 
 pickle.dump(next_good,open("pickles/next_good.p","wb"))
 pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
-

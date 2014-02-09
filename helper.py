@@ -14,6 +14,8 @@ def avg(points):
                 return sum(points)/len(points)
         except ZeroDivisionError:
                 return 0
+        except TypeError:
+                return points
                 
 def distance(centroid, guess):
     """Compute the square of linear distance in n dimensions"""
@@ -97,7 +99,7 @@ def find_min(maximum,dates,point_map):
 
 def good_buy(date, stock):
     """Return true if the stock is a good buy"""
-    interest = 1.08
+    interest = 2
     dates = stock[0]
     stock = stock[1]
     try:
