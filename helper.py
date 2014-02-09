@@ -15,7 +15,6 @@ def avg(points):
         except ZeroDivisionError:
                 return 0
                 
-
 def distance(centroid, guess):
     """Compute the square of linear distance in n dimensions"""
     distance = 0
@@ -105,7 +104,7 @@ def good_buy(date, stock):
             later = dates [dates.index(date) + 52 * 5]
     except IndexError:
             later = dates[-1]
-    good = (stock[later][high] * interest) > stock [date][high]
+    good = (stock[later][high]) > (stock [date][high] * interest)
     return good
 
 def normalize(stock):
