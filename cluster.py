@@ -14,7 +14,7 @@ avgs[False] = {}
 
 # Train on all but last valid year
 for year in years:
-        if year < years.keys()[-1]:
+        if year < years.keys()[-3]:
                 for good in [True,False]:
                         for stock in years[year][good]:
                                 flipped = zip(*years[year][good])
