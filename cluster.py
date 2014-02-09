@@ -7,7 +7,7 @@ import cPickle as pickle
 years = pickle.load(open("pickles/years.p","rb"))
 
 # For each year, find average location of good points, average location of
-# bad points. Look into "zip" to optimize.
+# bad points.
 avgs = {}
 avgs[True] = {}
 avgs[False] = {}
@@ -18,11 +18,12 @@ for year in years:
         if year < years.keys()[-3]:
                 for good in [True,False]:
                         for stock in years[year][good]:
+                                print len(years[year][good]), "\n\n"
                                 flipped = zip(*years[year][good])
                         for n in range(0, len(flipped)):
                                 if not year in avgs[good]:
                                         avgs[good][year] = [0 for i in range(len(flipped))]
-                                avgs[good][year][n] = avg(flipped[n])
+                                #avgs[good][year][n] = avg(flipped[n])
 
 # Find centroid trend and predict next year's centroids
 next_good = [0 for i in range(len(flipped))]
@@ -34,4 +35,3 @@ for i in range(0, len(flipped)):
 
 pickle.dump(next_good,open("pickles/next_good.p","wb"))
 pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
-
