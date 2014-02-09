@@ -16,7 +16,8 @@ for stock in all_points:
 years = {}
 for stock in all_points:
     for date in stock:
-        good = good_buy(date, stock[date])
+        raw_stock = stocks[all_points.index(stock)]
+        good = good_buy(date, raw_stock)
         year = int(date[0:4])
         if not year in years:
             years[year] = {}

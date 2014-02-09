@@ -11,10 +11,11 @@ years = pickle.load(open("pickles/years.p","rb"))
 avgs = {}
 avgs[True] = {}
 avgs[False] = {}
+flipped = [0 for i in range(10)]
 
 # Train on all but last valid year
 for year in years:
-        if year < years.keys()[-1]:
+        if year < years.keys()[-3]:
                 for good in [True,False]:
                         for stock in years[year][good]:
                                 flipped = zip(*years[year][good])

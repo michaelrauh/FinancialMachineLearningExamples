@@ -15,7 +15,6 @@ def avg(points):
         except ZeroDivisionError:
                 return 0
                 
-
 def distance(centroid, guess):
     """Compute the square of linear distance in n dimensions"""
     distance = 0
@@ -96,9 +95,17 @@ def find_min(maximum,dates,point_map):
         date_index -= 1
     return dates[date_index]
 
-def good_buy(date, info):
+def good_buy(date, stock):
     """Return true if the stock is a good buy"""
-    return random.choice([True,False])
+    interest = 1.08
+    dates = stock[0]
+    stock = stock[1]
+    try:
+            later = dates [dates.index(date) + 52 * 5]
+    except IndexError:
+            later = dates[-1]
+    good = (stock[later][high]) > (stock [date][high] * interest)
+    return good
 
 def normalize(stock):
     """Prevent different data scales from skewing data"""
