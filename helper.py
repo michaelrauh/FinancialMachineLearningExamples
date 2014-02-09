@@ -96,9 +96,17 @@ def find_min(maximum,dates,point_map):
         date_index -= 1
     return dates[date_index]
 
-def good_buy(date, info):
+def good_buy(date, stock):
     """Return true if the stock is a good buy"""
-    return random.choice([True,False])
+    interest = 1.08
+    dates = stock[0]
+    stock = stock[1]
+    try:
+            later = dates [dates.index(date) + 52 * 5]
+    except IndexError:
+            later = dates[-1]
+    good = (stock[later][high] * interest) > stock [date][high]
+    return good
 
 def normalize(stock):
     """Prevent different data scales from skewing data"""
