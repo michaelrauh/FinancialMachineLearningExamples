@@ -17,12 +17,15 @@ flipped = [0 for i in range(10)]
 for year in years:
         if year < years.keys()[-3]:
                 for good in [True,False]:
+                        all_flipped = [[] for i in range (len(flipped))]
                         for stock in years[year][good]:
                                 flipped = zip(*years[year][good])
-                        for n in range(0, len(flipped)):
-                                if not year in avgs[good]:
-                                        avgs[good][year] = [0 for i in range(len(flipped))]
-                                avgs[good][year][n] = avg(flipped[n])
+                                for z in range (0,len(flipped)):
+                                        all_flipped[z] += flipped[z]
+                        if not year in avgs[good]:
+                                avgs[good][year] = [0 for i in range(len(flipped))]
+                        for z in range (0,len(flipped)):
+                                avgs[good][year][z] = avg(all_flipped[z])
 
 # Find centroid trend and predict next year's centroids
 next_good = [0 for i in range(len(flipped))]
