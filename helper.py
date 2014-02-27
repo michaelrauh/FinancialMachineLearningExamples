@@ -130,7 +130,7 @@ def num_fifty_two(date,yearLows,dates):
         count += yearLows.count(day)
     return count
 
-def parse (data):
+def Parse (data):
     """Create map from CSV"""
     points = data.replace('\n',',').split(',') # split csv
     #create map from date to point data.
