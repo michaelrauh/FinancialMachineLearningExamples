@@ -1,5 +1,5 @@
-print "parse"
-execfile('parse.py')
+print "Parse"
+execfile('Parse.py')
 del(stocks)
 print "stats"
 execfile('stats.py')
