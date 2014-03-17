@@ -13,6 +13,13 @@ avgs[True] = {}
 avgs[False] = {}
 flipped = [0 for i in range(10)]
 extend = list.extend
+append = list.append
+
+def flatten(l):
+        try:
+                return [item for sublist in l for item in sublist]
+        except:
+                return l
 
 # Train on all but last valid year
 for year in years:
@@ -22,7 +29,9 @@ for year in years:
                         for stock in years[year][good]:
                                 flipped = zip(*years[year][good])
                                 for z in range (0,len(flipped)):
-                                        extend(all_flipped[z],flipped[z])
+                                        append(all_flipped[z],flipped[z])
+                        for x in range(0,len(flipped)):
+                                all_flipped[x] = flatten(flipped[x])
                         if not year in avgs[good]:
                                 avgs[good][year] = [0 for i in range(len(flipped))]
                         for z in range (0,len(flipped)):

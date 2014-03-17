@@ -1,3 +1,5 @@
+import time
+start = time.time()
 print "Parse"
 execfile('Parse.py')
 del(stocks)
@@ -11,3 +13,5 @@ del(next_good)
 del(next_bad)
 print "run"
 execfile('run.py')
+stop = time.time()
+print(stop-start)
