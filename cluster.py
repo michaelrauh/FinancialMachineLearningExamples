@@ -12,6 +12,7 @@ avgs = {}
 avgs[True] = {}
 avgs[False] = {}
 flipped = [0 for i in range(10)]
+extend = list.extend
 
 # Train on all but last valid year
 for year in years:
@@ -21,7 +22,7 @@ for year in years:
                         for stock in years[year][good]:
                                 flipped = zip(*years[year][good])
                                 for z in range (0,len(flipped)):
-                                        all_flipped[z] += flipped[z]
+                                        extend(all_flipped[z],flipped[z])
                         if not year in avgs[good]:
                                 avgs[good][year] = [0 for i in range(len(flipped))]
                         for z in range (0,len(flipped)):
