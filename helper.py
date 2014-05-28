@@ -110,17 +110,18 @@ def good_buy(date, stock):
     return good
 
 def normalize(stock):
-    """Prevent different data scales from skewing data"""
-    flipped = zip(*stock.values())
-    maxes = []
-    for i in range(0,len(flipped)):
-            maxes.append(max(flipped[i]))
+    """Prevent different data scales from skewing data by returning a percentile"""
+    flipped = [[] for i in range(9)]
     for date in stock:
-        for i in range(0,len(flipped)):
-                try:
-                        stock[date][i] /= maxes[i]
-                except ZeroDivisionError:
-                        stock[date][i] = 0
+        for i in range(9):
+            flipped[i].append(stock[date][i])
+    for i in range(len(flipped)):
+        flipped[i] = list(set(flipped[i]))
+    for i in range(len(flipped)):
+        flipped[i].sort()
+    for date in stock:
+        for i in range(9):
+            stock[date][i] = flipped[i].index(stock[date][i])/float(len(flipped[i]))
 
 def num_fifty_two(date,yearLows,dates):
     """Find number of 52 week lows in 10 day period before date"""

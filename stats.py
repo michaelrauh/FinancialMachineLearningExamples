@@ -27,4 +27,3 @@ for stock in all_points:
 
 pickle.dump(years,open("pickles/years.p","wb"))
 pickle.dump(all_points,open("pickles/all_points.p","wb"))
-
