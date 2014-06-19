@@ -2,6 +2,7 @@
 from __future__ import division
 import random
 import math
+import numpy as np
 opn = 0
 high = 1
 low = 2
@@ -27,8 +28,15 @@ def distance(centroid, guess):
 def extrapolate(avg, i, deg):
         """predict next value based upon history"""
         years = avg.keys()
-        diff = avg[years[-1]][i] - avg[years[-2]][i]
-        return avg[years[-1]][i] + diff
+        y = []
+        for year in years:
+                y.append(avg[year][i])
+        x = range(len(y))
+        z = np.polyfit(x,y,deg)
+        p = np.poly1d(z)
+        return p(len(y))
+        #diff = avg[years[-1]][i] - avg[years[-2]][i]
+        #return avg[years[-1]][i] + diff
 
 def find_coordinates(stock):
     """Run technical analysis on a given stock"""
