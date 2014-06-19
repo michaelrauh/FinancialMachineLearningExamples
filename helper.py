@@ -24,7 +24,7 @@ def distance(centroid, guess):
         distance += (centroid[i]-guess[i])**2
     return distance
 
-def extrapolate(avg, i):
+def extrapolate(avg, i, deg):
         """predict next value based upon history"""
         years = avg.keys()
         diff = avg[years[-1]][i] - avg[years[-2]][i]

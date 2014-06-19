@@ -40,10 +40,12 @@ for year in years:
 # Find centroid trend and predict next year's centroids
 next_good = [0 for i in range(len(flipped))]
 next_bad = [0 for i in range(len(flipped))]
+deg_good = [1 for i in range(len(flipped))]
+deg_bad = [1 for i in range(len(flipped))]
 
 for i in range(0, len(flipped)):
-        next_good[i] = extrapolate(avgs[True], i)
-        next_bad[i] = extrapolate(avgs[False], i)
+        next_good[i] = extrapolate(avgs[True], i, deg_good[i])
+        next_bad[i] = extrapolate(avgs[False], i, deg_bad[i])
 
 pickle.dump(next_good,open("pickles/next_good.p","wb"))
 pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
