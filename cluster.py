@@ -55,7 +55,7 @@ for thing in [deg_bad,deg_good]:
                                         for d in range(9):
                                                 print total
                                                 total += 1
-                                                """guy[d] = c
+                                                guy[d] = c
                                                 next_good = [0 for i in range(len(flipped))]
                                                 next_bad = [0 for i in range(len(flipped))]
                                                 print 'back_good:', back_good
@@ -67,4 +67,4 @@ for thing in [deg_bad,deg_good]:
                                                         next_bad[i] = extrapolate(avgs[False], i, deg_bad[i], back_bad[i])
                                                 pickle.dump(next_good,open("pickles/next_good.p","wb"))
                                                 pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
-                                                execfile('run.py')"""
+                                                execfile('run.py')
