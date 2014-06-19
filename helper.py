@@ -25,11 +25,11 @@ def distance(centroid, guess):
         distance += (centroid[i]-guess[i])**2
     return distance
 
-def extrapolate(avg, i, deg):
+def extrapolate(avg, i, deg, back):
         """predict next value based upon history"""
         years = avg.keys()
         y = []
-        for year in years:
+        for year in years[back:]:
                 y.append(avg[year][i])
         x = range(len(y))
         z = np.polyfit(x,y,deg)
