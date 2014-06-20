@@ -43,12 +43,12 @@ for stock in stocks:
 percent_correct = (true_positive + true_negative)/(false_positive + false_negative + true_positive + true_negative)
 f = (2 * true_positive) / ((2 * true_positive) + false_positive + false_negative)
 
-#print"Percent correct:", percent_correct
+print"Percent correct:", percent_correct
 print "F Score:", f
-#print "\nTrue_positive:", true_positive
-#print "True_negative:", true_negative
-#print "False_positive:", false_positive
-#print "False_negative:", false_negative
-#print "\nPercent actually good:", actually_good/(actually_good + actually_bad)
-#print "Chance of true given positive:", true_positive/(true_positive + false_positive)
-#print "Chance of true given negative:", true_negative/(true_negative + false_negative)
+print "\nTrue_positive:", true_positive
+print "True_negative:", true_negative
+print "False_positive:", false_positive
+print "False_negative:", false_negative
+print "\nPercent actually good:", actually_good/(actually_good + actually_bad)
+print "Chance of true given positive:", true_positive/(true_positive + false_positive)
+print "Chance of true given negative:", true_negative/(true_negative + false_negative)
