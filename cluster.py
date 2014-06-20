@@ -1,4 +1,4 @@
-"""Take coordinates from stats and cluster them to determine biy/sell split.
+"""Take coordinates from stats and cluster them to determine buy/sell split.
 This iteration will use an average location for good/bad as its algorithm.
 
 """
@@ -40,16 +40,24 @@ for year in years:
 
 
 #this stuff drives the rest and must be brute forced
-deg_good = [9,9,9,5,1,1,1,5,3]
-deg_bad = [8,2,2,9,0,0,0,2,2]
+deg_good = [0 for i in range(9)]
+deg_bad = [0 for i in range(9)]
 back_good = [0 for i in range(len(flipped))] #max 47 for this data set. 47 looks at only 1 year
 back_bad = [0 for i in range(len(flipped))]
 
-next_good = [0 for i in range(len(flipped))]
-next_bad = [0 for i in range(len(flipped))]
-for i in range(0, len(flipped)):
-        next_good[i] = extrapolate(avgs[True], i, deg_good[i], back_good[i])
-        next_bad[i] = extrapolate(avgs[False], i, deg_bad[i], back_bad[i])
-pickle.dump(next_good,open("pickles/next_good.p","wb"))
-pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
-execfile('run.py')
+for place in range(9):
+        deg_good = [0 for i in range(9)]
+        deg_bad = [0 for i in range(9)]
+        for deg1 in range(10):
+                deg_good[place] = deg1
+                for deg2 in range(10):
+                        deg_bad[place] = deg2
+                        next_good = [0 for i in range(len(flipped))]
+                        next_bad = [0 for i in range(len(flipped))]
+                        for i in range(0, len(flipped)):
+                                next_good[i] = extrapolate(avgs[True], i, deg_good[i], 0)
+                                next_bad[i] = extrapolate(avgs[False], i, deg_bad[i], 0)
+                        pickle.dump(next_good,open("pickles/next_good.p","wb"))
+                        pickle.dump(next_bad,open("pickles/next_bad.p","wb"))
+                        print deg_good, deg_bad
+                        execfile('run.py')
