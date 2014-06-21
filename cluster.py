@@ -39,8 +39,13 @@ for year in years:
 
 
 #this stuff drives the rest and must be brute forced
-deg_good = [2,0,5,5,1,1,1,4,0]
-deg_bad = [9,9,9,2,0,0,0,9,9]
+#one at a time -> much worse than spline
+deg_good = [9,9,9,5,1,1,1,5,3] 
+deg_bad = [8,2,2,9,0,0,0,2,2]
+
+#two at a time -> slightly worse than spline                                
+#deg_good = [2,0,5,5,1,1,1,4,0]
+#deg_bad = [9,9,9,2,0,0,0,9,9]
 back_good = [0 for i in range(len(flipped))] #max 47 for this data set. 47 looks at only 1 year
 back_bad = [0 for i in range(len(flipped))]
 
