@@ -38,7 +38,6 @@ for year in years:
                                 avgs[good][year][z] = avg(all_flipped[z])
 
 
-
 #this stuff drives the rest and must be brute forced
 deg_good = [0 for i in range(9)]
 deg_bad = [0 for i in range(9)]
