@@ -38,7 +38,7 @@ def good_buy(date, stock,goods,bads):
         month = 4*5
         day = 1
         
-        interest = 1
+        interest = 1.08
         stock = point_map
         try:
                 later = dates [dates.index(date) + month]
@@ -60,10 +60,8 @@ bads = []
 years = {}
 i=0
 for stock in all_points:
-    i += 1
-    print i
     for date in stock:
-        if int(date[0:4]) == 2007:#in range(2000,2010): #years from 2000 to 2010
+        if int(date[0:4]) in range(2000,2010): #years from 2000 to 2010
             raw_stock = stocks[all_points.index(stock)]
             good_buy(date, raw_stock, goods, bads)
 

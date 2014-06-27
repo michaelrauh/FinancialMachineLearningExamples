@@ -1,7 +1,7 @@
 from helper import Parse
 import cPickle as pickle
 
-f = open('data.csv','r').read()
+f = open('table.csv','r').read()
 f = f.split('FILE')
 stocks = []
 for stock in f:
