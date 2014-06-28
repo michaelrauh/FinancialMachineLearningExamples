@@ -57,9 +57,12 @@ def find_coordinates(stock):
             # If lowest in last 52 weeks is greater than current
             yearLows.append(dates[i])
             # Then this is a 52 week low (save the date)
+            
 
     coordinates = {}
+    print len(yearLows), 'lows found: '
     for date in yearLows:
+        print date
         maximum = find_max(date,dates,point_map)
         minimum = find_min(maximum,dates,point_map)
         coordinates[date] = []
