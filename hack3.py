@@ -1,4 +1,4 @@
-"""This generates stats from stock data"""
+"""This generates stats from stock data"""zz
 import cPickle as pickle
 from helper import normalize, good_buy, find_max, slope_max, slope_min, find_min,avg, find_coordinates
 
@@ -68,7 +68,7 @@ for stock in all_points:
 goods.sort()
 bads.sort()
 from collections import Counter
-print 'interest = 1, looking at 2007, looking at number of lows in the last month and later is one month later.'
+print 'interest = 1.08, looking at 2000-2010, looking back one month and forward one month'
 print 'good stocks:'
 print 'min:',goods[0]
 print '25%:',goods[(len(goods)/4)]
