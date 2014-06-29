@@ -264,16 +264,25 @@ for date in dates:
 for i in range(1,9):
     del(indicators[i][query[i]])
 
-closests = []
-print 'indicator','date','recent','closest','% difference','projected value'
+l = [[] for i in range(9)]
 for i in range(1,9):
-    l = indicators[i].keys()
-    x = query[i]
-    closest = find_closest(l,x)
-    closests.append(closest)
-    date = indicators[i][closest]
-    print i,date , round(x,3), str(round(closest,3)).rjust(10), str(round((abs(closest - x)/float(x)),3) * 100).rjust(10), str(round(future_value(date,stock),3)).rjust(10)
+    l[i] = indicators[i].keys()
+
+lengths = []
+for i in range(len(l)):
+    lengths.append(len(l[i]))
+lengths.pop(0)
+print 'indicator','date','recent','closest','% difference','projected value'
+for j in range(min(lengths)):
+    print '\n', j
+    for i in range(1,9):
+        x = query[i]
+        closest = find_closest(l[i],x)
+        l[i].remove(closest)
+        date = indicators[i][closest]
+        print i,date , round(x,3), str(round(closest,3)).rjust(10), str(round((abs(closest - x)/float(x)),3) * 100).rjust(10), str(round(future_value(date,stock),3)).rjust(10)
 
 
 
-    
+
+        
