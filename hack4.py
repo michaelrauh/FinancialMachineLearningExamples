@@ -262,8 +262,11 @@ for date in dates:
         indicators[i][stocks[date][i]] = date
         
 #get rid of the actual query date
-for i in range(1,9):
-    del(indicators[i][query[i]])
+try:
+    for i in range(1,9):
+        del(indicators[i][query[i]])
+except:
+    pass
 
 l = [[] for i in range(9)]
 for i in range(1,9):
