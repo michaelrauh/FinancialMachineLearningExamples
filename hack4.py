@@ -246,7 +246,8 @@ try:
         day = day[1]
     recent = day + '-' + months[int(mn)] + '-' + yr
     print 'Most recent low:',recent
-    print 'Indicators:',tech[recent]
+    print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
+    print tech[recent]
 except IndexError:
     print 'No recent lows found. Should have bought it a long time ago.'
     sys.exit()
