@@ -33,10 +33,10 @@ def slope_min(dates,date, minimum,point_map):
     except ZeroDivisionError:
             return 0
 
-def num_fifty_two(date,yearLows,dates):
-    """Find number of 52 week lows in a month long period before date"""
+def num_fifty_two(date,yearLows,dates,period):
+    """Find number of 52 week lows in a period before date"""
     count = 0
-    last_ten = dates[dates.index(date)-20:dates.index(date)]
+    last_ten = dates[dates.index(date)-period:dates.index(date)]
     for day in last_ten:
         count += yearLows.count(day)
     return count
@@ -98,7 +98,7 @@ def avg(points):
         except TypeError:
                 return points
 
-def find_coordinates(stock,verbose = True):
+def find_coordinates(stock,period,verbose = True):
     """Run technical analysis on a given stock"""
     # Make list of lows
     lows = []
@@ -129,7 +129,7 @@ def find_coordinates(stock,verbose = True):
         minimum = find_min(maximum,dates,point_map)
         coordinates[date] = []
         # Number of 52 week lows in last month period #
-        coordinates[date].append(num_fifty_two(date, yearLows, dates))
+        coordinates[date].append(num_fifty_two(date, yearLows, dates,period))
 
         # Slope from local max #
         coordinates[date].append(slope_max(dates, date, maximum, point_map))
@@ -156,15 +156,14 @@ def find_coordinates(stock,verbose = True):
         coordinates[date].append(point_map[minimum][high] - point_map[minimum][low])
     return coordinates
 
-def future_value(date, stock):
+def future_value(date, stock,time):
     """Return true if the stock is a good buy"""
-    month = 20
-    interest = 1.08
     dates = stock[0]
     stock = stock[1]
     try:
-            later = dates [dates.index(date) + month]
+            later = dates [dates.index(date) + time]
     except IndexError:
+            print 'Warning: Looking past end of data. Using last date.'
             later = dates[-1]
     value = ((stock[later][close]) - stock[date][close])/stock[later][close]
     return value
@@ -173,21 +172,25 @@ def future_value(date, stock):
 symbol = raw_input('enter symbol: ')
 start = str(int(raw_input('enter training start year: ')) - 1) # go back one extra year for low detection. This extra year isn't in results.
 end = raw_input('enter training end year: ')
+interest = float(raw_input('enter expected return(ex. .08): '))
+period = int(raw_input('Enter how far back to look for lows in days: '))
+time = int(raw_input('Enter time to hold stock in days: '))
 
-#start = '2000'
-#end = '2014'
-#for symbol in ['bbby','coh','cag','dri','disca','ebay','jec','l','pvh','spls','ibm','wmt','ca','c','rost','urbn']:
-url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
-print symbol, str(int(start) + 1), end
-f = urllib2.urlopen(url).read()
+try:
+    url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
+    print symbol, str(int(start) + 1), end
+    f = urllib2.urlopen(url).read()
+except:
+    print "input a valid symbol"
+    sys.exit()
 stock = Parse(f)
 
-all_points = find_coordinates(stock,True)
-low_count = [[] for i in range(20)]
-interest = .08
+all_points = find_coordinates(stock,period,True)
+low_count = [[] for i in range(period)]
+#interest = .08
 
 for date in all_points:
-    low_count[all_points[date][0]].append(future_value(date,stock))
+    low_count[all_points[date][0]].append(future_value(date,stock,time))
 
 total = 0
 for count in low_count:
@@ -225,7 +228,7 @@ end = '2014'
 url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
 f = urllib2.urlopen(url).read()
 focus = Parse(f)
-tech = find_coordinates(focus,False)
+tech = find_coordinates(focus,period,False)
 try:
     temp = tech.keys()
     for i in range(len(temp)):
@@ -288,7 +291,7 @@ for j in range(min(lengths)):
             error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(10)
         except:
             error = float("inf")
-        print i,date , round(x,3), str(round(closest,3)).rjust(10),error , str(round(future_value(date,stock),3)).rjust(10)
+        print i,date , round(x,3), str(round(closest,3)).rjust(10),error , str(round(future_value(date,stock,time),3)).rjust(10)
 
 
 
