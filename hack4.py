@@ -280,7 +280,11 @@ for j in range(min(lengths)):
         closest = find_closest(l[i],x)
         l[i].remove(closest)
         date = indicators[i][closest]
-        print i,date , round(x,3), str(round(closest,3)).rjust(10), str(round((abs(closest - x)/float(x)),3) * 100).rjust(10), str(round(future_value(date,stock),3)).rjust(10)
+        try:
+            error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(10)
+        except:
+            error = float("inf")
+        print i,date , round(x,3), str(round(closest,3)).rjust(10),error , str(round(future_value(date,stock),3)).rjust(10)
 
 
 
