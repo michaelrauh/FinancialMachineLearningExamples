@@ -51,14 +51,23 @@ def find_min(maximum,dates,point_map):
 def Parse (data):
     """Create map from CSV"""
     points = data.replace('\n',',').split(',') # split csv
+    points.pop()
+    points = points[6:]
+    dates = points[::6]
+    opens = points[1::6]
+    highs=points[2::6]
+    lows=points[3::6]
+    closes=points[4::6]
+    volumes=points[5::6]
+    
     #create map from date to point data.
     point_map = {}
-    dates = []
-    for i in range (7,len(points)-7,7):
-        point_map[points[i]] = (float(points[i+1]),float(points[i+2]),
-                                float(points[i+3]),float(points[i+4]),
-                                float(points[i+5]),float(points[i+6]))
-        dates.append(points[i])
+    for i in range(len(dates)):
+        #print opens[i],highs[i],lows[i],closes[i],volumes[i]
+        try:
+            point_map[dates[i]] = (float(opens[i]),float(highs[i]),float(lows[i]),float(closes[i]),float(volumes[i])) 
+        except:
+            point_map[dates[i]] = (float(opens[i-1]),float(highs[i-1]),float(lows[i-1]),float(closes[i-1]),float(volumes[i-1]))
     dates.reverse() #Dates earliest to latest
     stock = (dates,point_map)
     return stock
@@ -145,10 +154,8 @@ def future_value(date, stock):
 symbol = raw_input('enter symbol: ')
 start = str(int(raw_input('enter training start year: ')) - 1) # go back one extra year for low detection. This extra year isn't in results.
 end = raw_input('enter training end year: ')
-url = 'http://ichart.finance.yahoo.com/table.csv?d=12&e=31&f=' + end + '&g=d&a=1&b=1&c=' + start + '&ignore=.csv&s=' + symbol
 
-
-#http://www.google.com/finance/historical?q=MSFT&histperiod=daily&startdate=Jan+1%2C+2010&enddate=May+28%2C+2010&output=csv
+url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
 
 f = urllib2.urlopen(url).read()
 stock = Parse(f)
