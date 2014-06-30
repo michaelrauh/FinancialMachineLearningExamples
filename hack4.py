@@ -257,22 +257,17 @@ except IndexError:
 
 if simple:
     sys.exit()
+    
 #set up data for finding closest
 dates = all_points.keys()
 stocks = all_points
 query = tech[recent]
 indicators = [{} for i in range(9)]
 for date in dates:
-    for i in range(9):
-        indicators[i][stocks[date][i]] = date
-        
-#get rid of the actual query date
-try:
-    for i in range(1,9):
-        del(indicators[i][query[i]])
-except:
-    pass
-
+    if date != recent:
+        for i in range(9):
+            indicators[i][stocks[date][i]] = date
+    
 l = [[] for i in range(9)]
 for i in range(1,9):
     l[i] = indicators[i].keys()
@@ -290,10 +285,10 @@ for j in range(min(lengths)):
         l[i].remove(closest)
         date = indicators[i][closest]
         try:
-            error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(10)
+            error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
         except:
             error = float("inf")
-        print i,date , round(x,3), str(round(closest,3)).rjust(10),error , str(round(future_value(date,stock,time),3)).rjust(20)
+        print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
 
 
 
