@@ -175,6 +175,7 @@ end = raw_input('enter training end year: ')
 interest = float(raw_input('enter expected return(ex. .08): '))
 period = int(raw_input('Enter how far back to look for lows in days: '))
 time = int(raw_input('Enter time to hold stock in days: '))
+simple = bool(raw_input('Enter nonempty string for simple mode'))
 
 try:
     url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
@@ -185,9 +186,8 @@ except:
     sys.exit()
 stock = Parse(f)
 
-all_points = find_coordinates(stock,period,True)
+all_points = find_coordinates(stock,period,not simple)
 low_count = [[] for i in range(period)]
-#interest = .08
 
 for date in all_points:
     low_count[all_points[date][0]].append(future_value(date,stock,time))
@@ -255,6 +255,8 @@ except IndexError:
     print 'No recent lows found. Should have bought it a long time ago.'
     sys.exit()
 
+if simple:
+    sys.exit()
 #set up data for finding closest
 dates = all_points.keys()
 stocks = all_points
@@ -291,7 +293,7 @@ for j in range(min(lengths)):
             error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(10)
         except:
             error = float("inf")
-        print i,date , round(x,3), str(round(closest,3)).rjust(10),error , str(round(future_value(date,stock,time),3)).rjust(10)
+        print i,date , round(x,3), str(round(closest,3)).rjust(10),error , str(round(future_value(date,stock,time),3)).rjust(20)
 
 
 
