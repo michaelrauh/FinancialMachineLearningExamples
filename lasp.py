@@ -276,8 +276,9 @@ lengths = []
 for i in range(len(l)):
     lengths.append(len(l[i]))
 lengths.pop(0)
+runs = min([min(lengths),5])
 print 'indicator','date','recent','closest','% difference','projected value'
-for j in range(min(lengths)):
+for j in range(runs):
     print '\n', j
     for i in range(1,9):
         x = query[i]
@@ -288,6 +289,9 @@ for j in range(min(lengths)):
             error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
         except:
             error = float("inf")
+        if i in [4,5,6]:
+            x /=100000
+            closest /= 100000
         print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
 
 
