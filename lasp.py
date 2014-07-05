@@ -301,7 +301,33 @@ for j in range(runs):
             pass
         print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
 
+""" Now we want to look at the dates with the same number of past lows and do a similar analysis on them.
+Why did the good ones do well while the bad ones did badly? Does the new one look more like the good or the bad?"""
+same_num_lows = []
+for date in dates:
+    if date != recent:
+        if stocks[date][0] == query[0]:
+            same_num_lows.append((date,stocks[date]))
+print '\n Days with the same number of lows as the current lows:'
 
+for day in same_num_lows:
+    print '\n'
+    for i in range (1,9):
+        x =query[i]
+        closest = day[1][i]
+        date = day[0]
+        try:
+            error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
+        except:
+            error = float("inf")
+        try:
+            if i in [4,5,6]:
+                x /=100000
+                closest /= 100000
+        except:
+            pass
+        print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
 
+        
 
         
