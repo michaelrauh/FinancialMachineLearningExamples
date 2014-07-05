@@ -308,7 +308,7 @@ for date in dates:
     if date != recent:
         if stocks[date][0] == query[0]:
             same_num_lows.append((date,stocks[date]))
-print '\n Days with the same number of lows as the current lows:'
+print '\nDays with the same number of lows as the current lows:'
 
 for day in same_num_lows:
     print '\n'
