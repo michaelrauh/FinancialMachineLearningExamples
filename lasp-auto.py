@@ -55,43 +55,21 @@ def find_min(maximum,dates,point_map):
         date_index -= 1
     return dates[date_index]
 
-
 def Parse (data):
     """Create map from CSV"""
     points = data.replace('\n',',').split(',') # split csv
-    points.pop()
-    points = points[6:]
-    dates = points[::6]
-    opens = points[1::6]
-    highs=points[2::6]
-    lows=points[3::6]
-    closes=points[4::6]
-    volumes=points[5::6]
-    banned = []
-    
-    for thing in [dates,opens,highs,lows,closes,volumes]:
-        for i in range(len(thing)):
-            if thing[i] == '-':
-                if dates[i] not in banned:
-                    banned.append(dates[i])
-    for bad in banned:
-        dates.remove(bad)
     #create map from date to point data.
     point_map = {}
-    for i in range(len(dates)):
+    dates = []
+    for i in range (6,len(points)-6,6):
         try:
-            if dates[i] not in banned:
-                point_map[dates[i]] = (float(opens[i]),float(highs[i]),float(lows[i]),float(closes[i]),float(volumes[i])) 
+            point_map[points[i]] = (float(points[i+1]),float(points[i+2]),float(points[i+3]),float(points[i+4]),float(points[i+5]))
+            dates.append(points[i])
         except:
-            try:
-                point_map[dates[i]] = (float(opens[i-1]),float(highs[i-1]),float(lows[i-1]),float(closes[i-1]),float(volumes[i-1]))
-            except:
-                print 'bad data detected'
-                point_map[dates[i]] = (float(opens[0]),float(highs[0]),float(lows[0]),float(closes[0]),float(volumes[0]))
+            print points[i],'ignored' #This may result in out of bounds as there'll be fewer dates to look back to when finding lows. It may also be a low in terms of slightly more than 52 weeks. May miss lows. Very unlikely.
     dates.reverse() #Dates earliest to latest
     stock = (dates,point_map)
     return stock
-
 
 def avg(points):
         """Find average of a list of points"""
