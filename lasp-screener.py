@@ -164,80 +164,82 @@ time = 20
 simple = True
 
 for symbol in symbols:
-    #print '\n\n'
     try:
-        url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
-        print symbol, str(int(start) + 1), end
-        f = urllib2.urlopen(url).read()
-    except:
-        print "input a valid symbol"
-        sys.exit()
-    stock = Parse(f)
-
-    all_points = find_coordinates(stock,period,not simple)
-    low_count = [[] for i in range(period)]
-
-    for date in all_points:
-        low_count[all_points[date][0]].append(future_value(date,stock,time))
-
-    total = 0
-    for count in low_count:
-        total += len(count)
-
-    #print '|count|','instances |','occurrence|','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
-    i =0
-    for count in low_count:
         try:
-            likelihood = float(len(count))/total
-            goods = 0
-            makes = 0
-            count.sort()
-            average = avg(count)
-            q0 = count[0]
-            q1 = count[len(count)/4]
-            q2 = count[len(count)/2]
-            q3 = count [len(count)/4 * 3]
-            q4 = count[-1]
-            for item in count:
-                if item > 0:
-                    makes += 1
-            make = float(makes)/len(count)
-            for item in count:
-                if item > interest:
-                    goods += 1
-            good = float(goods)/len(count)
-            #print str(round(i, 3)).rjust(0),str(round(len(count),3)).rjust(10),str(round(likelihood,3)).rjust(10),str(round(average, 3)).rjust(10),str(round(q0, 3)).rjust(10),str(round(q1, 3)).rjust(10),str(round(q2, 3)).rjust(10),str(round(q3,3)).rjust(10),str(round(q4,3)).rjust(10),str(round(make,3)).rjust(10),str(round(good,3)).rjust(10)
-            i+=1
+            url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
+            print symbol
+            f = urllib2.urlopen(url).read()
         except:
-            pass
+            print "input a valid symbol"
+            sys.exit()
+        stock = Parse(f)
 
-    start2 = '2013'
-    end2 = '2014'
-    url2 = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start2 + '&enddate=Dec+31%2C+' + end2 + '&output=csv'
-    f = urllib2.urlopen(url2).read()
-    focus = Parse(f)
-    tech = find_coordinates(focus,period,False)
-    try:
-        temp = tech.keys()
-        for i in range(len(temp)):
-            temp[i] = temp[i].split('-')
-        months_numbers = ['00','01','02','03','04','05','06','07','08','09','10','11']
-        months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-        x = []
-        for date in temp:
-            if len(date[0]) == 1:
-                date[0] = '0' + date[0]
-            x.append(date[2] + months_numbers[months.index(date[1])] + date[0])
-        x.sort()
-        top = x[-1]
-        yr = top[:2]
-        mn = top[2:4]
-        day = top[4:]
-        if day[0] == '0':
-            day = day[1]
-        recent = day + '-' + months[int(mn)] + '-' + yr
-        print 'Most recent low:',recent
-        #print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
-        #print tech[recent]
-    except IndexError:
-        print 'No recent lows found. Should have bought it a long time ago.'
+        all_points = find_coordinates(stock,period,not simple)
+        low_count = [[] for i in range(period)]
+
+        for date in all_points:
+            low_count[all_points[date][0]].append(future_value(date,stock,time))
+
+        total = 0
+        for count in low_count:
+            total += len(count)
+
+        #print '|count|','instances |','occurrence|','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
+        i =0
+        for count in low_count:
+            try:
+                likelihood = float(len(count))/total
+                goods = 0
+                makes = 0
+                count.sort()
+                average = avg(count)
+                q0 = count[0]
+                q1 = count[len(count)/4]
+                q2 = count[len(count)/2]
+                q3 = count [len(count)/4 * 3]
+                q4 = count[-1]
+                for item in count:
+                    if item > 0:
+                        makes += 1
+                make = float(makes)/len(count)
+                for item in count:
+                    if item > interest:
+                        goods += 1
+                good = float(goods)/len(count)
+                #print str(round(i, 3)).rjust(0),str(round(len(count),3)).rjust(10),str(round(likelihood,3)).rjust(10),str(round(average, 3)).rjust(10),str(round(q0, 3)).rjust(10),str(round(q1, 3)).rjust(10),str(round(q2, 3)).rjust(10),str(round(q3,3)).rjust(10),str(round(q4,3)).rjust(10),str(round(make,3)).rjust(10),str(round(good,3)).rjust(10)
+                i+=1
+            except:
+                pass
+
+        start2 = '2013'
+        end2 = '2014'
+        url2 = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start2 + '&enddate=Dec+31%2C+' + end2 + '&output=csv'
+        f = urllib2.urlopen(url2).read()
+        focus = Parse(f)
+        tech = find_coordinates(focus,period,False)
+        try:
+            temp = tech.keys()
+            for i in range(len(temp)):
+                temp[i] = temp[i].split('-')
+            months_numbers = ['00','01','02','03','04','05','06','07','08','09','10','11']
+            months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+            x = []
+            for date in temp:
+                if len(date[0]) == 1:
+                    date[0] = '0' + date[0]
+                x.append(date[2] + months_numbers[months.index(date[1])] + date[0])
+            x.sort()
+            top = x[-1]
+            yr = top[:2]
+            mn = top[2:4]
+            day = top[4:]
+            if day[0] == '0':
+                day = day[1]
+            recent = day + '-' + months[int(mn)] + '-' + yr
+            print 'Most recent low:',recent
+            #print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
+            #print tech[recent]
+        except IndexError:
+            print 'No recent lows found. Should have bought it a long time ago.'
+    except:
+        pass
