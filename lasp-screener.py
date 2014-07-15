@@ -8,6 +8,8 @@ high = 1
 low = 2
 close = 3
 volume = 4
+symbol_list = ''
+today = raw_input('put in todays date in dd-Mon-yy: ')
 
 def find_closest(l,x):
     diffs = []
@@ -167,11 +169,10 @@ for symbol in symbols:
     try:
         try:
             url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
-            print symbol
+            #print symbol
             f = urllib2.urlopen(url).read()
         except:
-            print "input a valid symbol"
-            sys.exit()
+            pass
         stock = Parse(f)
 
         all_points = find_coordinates(stock,period,not simple)
@@ -236,10 +237,15 @@ for symbol in symbols:
             if day[0] == '0':
                 day = day[1]
             recent = day + '-' + months[int(mn)] + '-' + yr
-            print 'Most recent low:',recent
-            #print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
-            #print tech[recent]
+            #print 'Most recent low:',recent
+            if recent == today:
+                symbol_list += (symbol + ',')
         except IndexError:
-            print 'No recent lows found. Should have bought it a long time ago.'
+            pass
+            #print 'No recent lows found. Should have bought it a long time ago.'
     except:
         pass
+x = open('symbols.txt','w')
+x.write(symbol_list[:-1])
+x.close()
+print 'done'

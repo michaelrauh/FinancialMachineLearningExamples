@@ -159,6 +159,13 @@ period = int(raw_input('Enter how far back to look for lows in days: '))
 time = int(raw_input('Enter time to hold stock in days: '))
 simple = bool(raw_input('Enter nonempty string for simple mode'))
 
+##start = '2000'
+##end = '2013'
+##interest = .08
+##period = 20
+##time = 20
+##simple = False
+
 try:
     url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
     print symbol, str(int(start) + 1), end
