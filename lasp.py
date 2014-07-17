@@ -8,6 +8,7 @@ high = 1
 low = 2
 close = 3
 volume = 4
+continues = True
 
 def find_closest(l,x):
     diffs = []
@@ -150,189 +151,195 @@ def future_value(date, stock,time):
     value = ((stock[later][close]) - stock[date][close])/stock[later][close]
     return value
 
-
-symbol = raw_input('enter symbol: ')
 start = str(int(raw_input('enter training start year: ')) - 1) # go back one extra year for low detection. This extra year isn't in results.
 end = raw_input('enter training end year: ')
 interest = float(raw_input('enter expected return(ex. .08): '))
 period = int(raw_input('Enter how far back to look for lows in days: '))
 time = int(raw_input('Enter time to hold stock in days: '))
 simple = bool(raw_input('Enter nonempty string for simple mode'))
+very_simple = bool(raw_input('Enter nonempty string for screener mode'))
 
-##start = '2000'
-##end = '2013'
-##interest = .08
-##period = 20
-##time = 20
-##simple = False
+symbol = 'dummy'
+while symbol != '':
+    symbol = raw_input('enter symbol: ')
 
-try:
-    url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
-    print symbol, str(int(start) + 1), end
-    f = urllib2.urlopen(url).read()
-except:
-    print "input a valid symbol"
-    sys.exit()
-stock = Parse(f)
+    try:
+        url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
+        print symbol, str(int(start) + 1), end
+        f = urllib2.urlopen(url).read()
+    except:
+        print "input a valid symbol"
+        continues = False
+    if continues:
+        stock = Parse(f)
 
-all_points = find_coordinates(stock,period,not simple)
-low_count = [[] for i in range(period)]
+        all_points = find_coordinates(stock,period,not simple and not very_simple)
+        low_count = [[] for i in range(period)]
 
-for date in all_points:
-    low_count[all_points[date][0]].append(future_value(date,stock,time))
+        for date in all_points:
+            low_count[all_points[date][0]].append(future_value(date,stock,time))
 
-total = 0
-for count in low_count:
-    total += len(count)
+        total = 0
+        for count in low_count:
+            total += len(count)
 
-low_count = [count for count in low_count if len(count) != 0]
-lenses = [len(count) for count in low_count]
-def sum_prior(l,index):
-    return sum(l[0:index+1])
-lenses2 = []
+        low_count = [count for count in low_count if len(count) != 0]
+        lenses = [len(count) for count in low_count]
+        def sum_prior(l,index):
+            return sum(l[0:index+1])
+        lenses2 = []
 
-for i in range(len(lenses)):
-    lenses2.append(sum(lenses))
-    lenses.pop(0)
+        for i in range(len(lenses)):
+            lenses2.append(sum(lenses))
+            lenses.pop(0)
 
+        if not very_simple:
+            print '|count|','instances |','occurrence|','%bottom |','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
+        i =0
+        for count in low_count:
+            likelihood = lenses2[i]#float(len(count))/total
+            goods = 0
+            makes = 0
+            count.sort()
+            average = avg(count)
+            q0 = count[0]
+            q1 = count[len(count)/4]
+            q2 = count[len(count)/2]
+            q3 = count [len(count)/4 * 3]
+            q4 = count[-1]
+            for item in count:
+                if item > 0:
+                    makes += 1
+            make = float(makes)/len(count)
+            for item in count:
+                if item > interest:
+                    goods += 1
+            good = float(goods)/len(count)
+            one = str(round(i, 3)).rjust(0)
+            two = str(round(len(count),3)).rjust(10)
+            three = str(round(likelihood,3)).rjust(10)
+            four = str(round((len(count)/float(likelihood)),3)).rjust(10)
+            five = str(round(average, 3)).rjust(10)
+            six = str(round(q0, 3)).rjust(10)
+            seven = str(round(q1, 3)).rjust(10)
+            eight = str(round(q2, 3)).rjust(10)
+            nine = str(round(q3,3)).rjust(10)
+            ten = str(round(q4,3)).rjust(10)
+            eleven = str(round(make,3)).rjust(10)
+            twelve = str(round(good,3)).rjust(10)
+            if not very_simple:
+                print one,two,three,four,five,six,seven,eight,nine,ten,eleven,twelve
+            i+=1
 
-print '|count|','instances |','occurrence|','%bottom |','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
-i =0
-for count in low_count:
-    likelihood = lenses2[i]#float(len(count))/total
-    goods = 0
-    makes = 0
-    count.sort()
-    average = avg(count)
-    q0 = count[0]
-    q1 = count[len(count)/4]
-    q2 = count[len(count)/2]
-    q3 = count [len(count)/4 * 3]
-    q4 = count[-1]
-    for item in count:
-        if item > 0:
-            makes += 1
-    make = float(makes)/len(count)
-    for item in count:
-        if item > interest:
-            goods += 1
-    good = float(goods)/len(count)
-    one = str(round(i, 3)).rjust(0)
-    two = str(round(len(count),3)).rjust(10)
-    three = str(round(likelihood,3)).rjust(10)
-    four = str(round((len(count)/float(likelihood)),3)).rjust(10)
-    five = str(round(average, 3)).rjust(10)
-    six = str(round(q0, 3)).rjust(10)
-    seven = str(round(q1, 3)).rjust(10)
-    eight = str(round(q2, 3)).rjust(10)
-    nine = str(round(q3,3)).rjust(10)
-    ten = str(round(q4,3)).rjust(10)
-    eleven = str(round(make,3)).rjust(10)
-    twelve = str(round(good,3)).rjust(10)
-    print one,two,three,four,five,six,seven,eight,nine,ten,eleven,twelve
-    i+=1
-
-start = '2013'
-end = '2014'
-url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
-f = urllib2.urlopen(url).read()
-focus = Parse(f)
-tech = find_coordinates(focus,period,False)
-try:
-    temp = tech.keys()
-    for i in range(len(temp)):
-        temp[i] = temp[i].split('-')
-    months_numbers = ['00','01','02','03','04','05','06','07','08','09','10','11']
-    months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
-    x = []
-    for date in temp:
-        if len(date[0]) == 1:
-            date[0] = '0' + date[0]
-        x.append(date[2] + months_numbers[months.index(date[1])] + date[0])
-    x.sort()
-    top = x[-1]
-    yr = top[:2]
-    mn = top[2:4]
-    day = top[4:]
-    if day[0] == '0':
-        day = day[1]
-    recent = day + '-' + months[int(mn)] + '-' + yr
-    print 'Most recent low:',recent
-    print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
-    print tech[recent]
-except IndexError:
-    print 'No recent lows found. Should have bought it a long time ago.'
-    sys.exit()
-
-if simple:
-    sys.exit()
-    
-#set up data for finding closest
-dates = all_points.keys()
-stocks = all_points
-query = tech[recent]
-indicators = [{} for i in range(9)]
-for date in dates:
-    if date != recent:
-        for i in range(9):
-            indicators[i][stocks[date][i]] = date
-    
-l = [[] for i in range(9)]
-for i in range(1,9):
-    l[i] = indicators[i].keys()
-
-lengths = []
-for i in range(len(l)):
-    lengths.append(len(l[i]))
-lengths.pop(0)
-runs = min([min(lengths),5])
-print 'indicator','date','recent','closest','% difference','projected value'
-for j in range(runs):
-    print '\n', j
-    for i in range(1,9):
-        x = query[i]
-        closest = find_closest(l[i],x)
-        l[i].remove(closest)
-        date = indicators[i][closest]
+        start2 = '2013'
+        end2 = '2014'
+        url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start2 + '&enddate=Dec+31%2C+' + end2 + '&output=csv'
+        f = urllib2.urlopen(url).read()
+        focus = Parse(f)
+        tech = find_coordinates(focus,period,False)
         try:
-            error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
-        except:
-            error = float("inf")
-        try:
-            if i in [4,5,6]:
-                x /=100000
-                closest /= 100000
-        except:
-            pass
-        print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
+            temp = tech.keys()
+            for i in range(len(temp)):
+                temp[i] = temp[i].split('-')
+            months_numbers = ['00','01','02','03','04','05','06','07','08','09','10','11']
+            months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+            x = []
+            for date in temp:
+                if len(date[0]) == 1:
+                    date[0] = '0' + date[0]
+                x.append(date[2] + months_numbers[months.index(date[1])] + date[0])
+            x.sort()
+            top = x[-1]
+            yr = top[:2]
+            mn = top[2:4]
+            day = top[4:]
+            if day[0] == '0':
+                day = day[1]
+            recent = day + '-' + months[int(mn)] + '-' + yr
+            print 'Most recent low:',recent
+            print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
+            if not very_simple:
+                print tech[recent]
+        except IndexError:
+            print 'No recent lows found. Should have bought it a long time ago.'
+            continues = False
 
-""" Now we want to look at the dates with the same number of past lows and do a similar analysis on them.
-Why did the good ones do well while the bad ones did badly? Does the new one look more like the good or the bad?"""
-same_num_lows = []
-for date in dates:
-    if date != recent:
-        if stocks[date][0] == query[0]:
-            same_num_lows.append((date,stocks[date]))
-print '\nDays with the same number of lows as the current lows:'
+        if simple:
+            continues = False
 
-for day in same_num_lows:
-    print '\n'
-    for i in range (1,9):
-        x =query[i]
-        closest = day[1][i]
-        date = day[0]
-        try:
-            error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
-        except:
-            error = float("inf")
-        try:
-            if i in [4,5,6]:
-                x /=100000
-                closest /= 100000
-        except:
-            pass
-        print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
+    if continues:   
+        #set up data for finding closest
+        dates = all_points.keys()
+        stocks = all_points
+        query = tech[recent]
+        indicators = [{} for i in range(9)]
+        for date in dates:
+            if date != recent:
+                for i in range(9):
+                    indicators[i][stocks[date][i]] = date
+            
+        l = [[] for i in range(9)]
+        for i in range(1,9):
+            l[i] = indicators[i].keys()
 
-        
+        lengths = []
+        for i in range(len(l)):
+            lengths.append(len(l[i]))
+        lengths.pop(0)
+        runs = min([min(lengths),5])
+        if not very_simple:
+            print 'indicator','date','recent','closest','% difference','projected value'
+        for j in range(runs):
+            print '\n', j
+            for i in range(1,9):
+                x = query[i]
+                closest = find_closest(l[i],x)
+                l[i].remove(closest)
+                date = indicators[i][closest]
+                try:
+                    error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
+                except:
+                    error = float("inf")
+                try:
+                    if i in [4,5,6]:
+                        x /=100000
+                        closest /= 100000
+                except:
+                    pass
+                if not very_simple:
+                    print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
 
-        
+        """ Now we want to look at the dates with the same number of past lows and do a similar analysis on them.
+        Why did the good ones do well while the bad ones did badly? Does the new one look more like the good or the bad?"""
+        same_num_lows = []
+        for date in dates:
+            if date != recent:
+                if stocks[date][0] == query[0]:
+                    same_num_lows.append((date,stocks[date]))
+        if not very_simple:
+            print '\nDays with the same number of lows as the current lows:'
+
+        for day in same_num_lows:
+            print '\n'
+            for i in range (1,9):
+                x =query[i]
+                closest = day[1][i]
+                date = day[0]
+                try:
+                    error = str(round((abs(closest - x)/float(x)),3) * 100).rjust(15)
+                except:
+                    error = float("inf")
+                try:
+                    if i in [4,5,6]:
+                        x /=100000
+                        closest /= 100000
+                except:
+                    pass
+                if not very_simple:
+                    print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
+    continues = True
+
+                
+
+                
+
