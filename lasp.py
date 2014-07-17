@@ -139,25 +139,33 @@ def find_coordinates(stock,period,verbose = True):
         coordinates[date].append(point_map[minimum][high] - point_map[minimum][low])
     return coordinates
 
-def future_value(date, stock,time):
+def future_value(date, stock,time,very_simple):
     """Return true if the stock is a good buy"""
     dates = stock[0]
     stock = stock[1]
     try:
             later = dates [dates.index(date) + time]
     except IndexError:
+        if not very_simple:
             print 'Warning: Looking past end of data. Using last date.'
-            later = dates[-1]
+        later = dates[-1]
     value = ((stock[later][close]) - stock[date][close])/stock[later][close]
     return value
 
-start = str(int(raw_input('enter training start year: ')) - 1) # go back one extra year for low detection. This extra year isn't in results.
-end = raw_input('enter training end year: ')
-interest = float(raw_input('enter expected return(ex. .08): '))
-period = int(raw_input('Enter how far back to look for lows in days: '))
-time = int(raw_input('Enter time to hold stock in days: '))
-simple = bool(raw_input('Enter nonempty string for simple mode'))
-very_simple = bool(raw_input('Enter nonempty string for screener mode'))
+mistake = True
+while mistake:
+    try:
+        start = str(int(raw_input('enter training start year: ')) - 1) # go back one extra year for low detection. This extra year isn't in results.
+        end = raw_input('enter training end year: ')
+        interest = float(raw_input('enter expected return(ex. .08): '))
+        period = int(raw_input('Enter how far back to look for lows in days: '))
+        time = int(raw_input('Enter time to hold stock in days: '))
+        simple = bool(raw_input('Enter nonempty string for simple mode: '))
+        very_simple = bool(raw_input('Enter nonempty string for screener mode: '))
+        mistake = False
+    except:
+        print 'try again.\n'
+    
 
 symbol = 'dummy'
 while symbol != '':
@@ -177,7 +185,7 @@ while symbol != '':
         low_count = [[] for i in range(period)]
 
         for date in all_points:
-            low_count[all_points[date][0]].append(future_value(date,stock,time))
+            low_count[all_points[date][0]].append(future_value(date,stock,time,very_simple))
 
         total = 0
         for count in low_count:
@@ -257,7 +265,8 @@ while symbol != '':
                 day = day[1]
             recent = day + '-' + months[int(mn)] + '-' + yr
             print 'Most recent low:',recent
-            print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
+            if not very_simple:
+                print '# lows, slope from local max, slope from local min, volatility, volume, bull power, bear power, volatility at max, volatility at min'
             if not very_simple:
                 print tech[recent]
         except IndexError:
@@ -290,7 +299,8 @@ while symbol != '':
         if not very_simple:
             print 'indicator','date','recent','closest','% difference','projected value'
         for j in range(runs):
-            print '\n', j
+            if not very_simple:
+                print '\n', j
             for i in range(1,9):
                 x = query[i]
                 closest = find_closest(l[i],x)
@@ -307,7 +317,7 @@ while symbol != '':
                 except:
                     pass
                 if not very_simple:
-                    print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
+                    print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time,very_simple),3)).rjust(20)
 
         """ Now we want to look at the dates with the same number of past lows and do a similar analysis on them.
         Why did the good ones do well while the bad ones did badly? Does the new one look more like the good or the bad?"""
@@ -320,7 +330,8 @@ while symbol != '':
             print '\nDays with the same number of lows as the current lows:'
 
         for day in same_num_lows:
-            print '\n'
+            if not very_simple:
+                print '\n'
             for i in range (1,9):
                 x =query[i]
                 closest = day[1][i]
@@ -336,7 +347,7 @@ while symbol != '':
                 except:
                     pass
                 if not very_simple:
-                    print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time),3)).rjust(20)
+                    print i,date , round(x,3), str(round(closest,3)).rjust(15),error , str(round(future_value(date,stock,time,very_simple),3)).rjust(20)
     continues = True
 
                 
