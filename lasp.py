@@ -196,32 +196,41 @@ for i in range(len(lenses)):
     lenses.pop(0)
 
 
-print '|count|','instances |','occurrence|','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
+print '|count|','instances |','occurrence|','%bottom |','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
 i =0
 for count in low_count:
-    try:
-        likelihood = lenses2[i]#float(len(count))/total
-        goods = 0
-        makes = 0
-        count.sort()
-        average = avg(count)
-        q0 = count[0]
-        q1 = count[len(count)/4]
-        q2 = count[len(count)/2]
-        q3 = count [len(count)/4 * 3]
-        q4 = count[-1]
-        for item in count:
-            if item > 0:
-                makes += 1
-        make = float(makes)/len(count)
-        for item in count:
-            if item > interest:
-                goods += 1
-        good = float(goods)/len(count)
-        print str(round(i, 3)).rjust(0),str(round(len(count),3)).rjust(10),str(round(likelihood,3)).rjust(10),str(round(average, 3)).rjust(10),str(round(q0, 3)).rjust(10),str(round(q1, 3)).rjust(10),str(round(q2, 3)).rjust(10),str(round(q3,3)).rjust(10),str(round(q4,3)).rjust(10),str(round(make,3)).rjust(10),str(round(good,3)).rjust(10)
-        i+=1
-    except:
-        pass
+    likelihood = lenses2[i]#float(len(count))/total
+    goods = 0
+    makes = 0
+    count.sort()
+    average = avg(count)
+    q0 = count[0]
+    q1 = count[len(count)/4]
+    q2 = count[len(count)/2]
+    q3 = count [len(count)/4 * 3]
+    q4 = count[-1]
+    for item in count:
+        if item > 0:
+            makes += 1
+    make = float(makes)/len(count)
+    for item in count:
+        if item > interest:
+            goods += 1
+    good = float(goods)/len(count)
+    one = str(round(i, 3)).rjust(0)
+    two = str(round(len(count),3)).rjust(10)
+    three = str(round(likelihood,3)).rjust(10)
+    four = str(round((len(count)/float(likelihood)),3)).rjust(10)
+    five = str(round(average, 3)).rjust(10)
+    six = str(round(q0, 3)).rjust(10)
+    seven = str(round(q1, 3)).rjust(10)
+    eight = str(round(q2, 3)).rjust(10)
+    nine = str(round(q3,3)).rjust(10)
+    ten = str(round(q4,3)).rjust(10)
+    eleven = str(round(make,3)).rjust(10)
+    twelve = str(round(good,3)).rjust(10)
+    print one,two,three,four,five,six,seven,eight,nine,ten,eleven,twelve
+    i+=1
 
 start = '2013'
 end = '2014'
