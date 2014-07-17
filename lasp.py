@@ -185,11 +185,22 @@ total = 0
 for count in low_count:
     total += len(count)
 
+low_count = [count for count in low_count if len(count) != 0]
+lenses = [len(count) for count in low_count]
+def sum_prior(l,index):
+    return sum(l[0:index+1])
+lenses2 = []
+
+for i in range(len(lenses)):
+    lenses2.append(sum(lenses))
+    lenses.pop(0)
+
+
 print '|count|','instances |','occurrence|','mean |','   0%   |','    25%   |','   50%   |','   75%   |','   100%   |','percent safe |', 'percent good|'
 i =0
 for count in low_count:
     try:
-        likelihood = float(len(count))/total
+        likelihood = lenses2[i]#float(len(count))/total
         goods = 0
         makes = 0
         count.sort()
