@@ -56,7 +56,7 @@ def find_min(maximum,dates,point_map):
         date_index -= 1
     return dates[date_index]
 
-def Parse (data):
+def Parse (data, very_simple):
     """Create map from CSV"""
     points = data.replace('\n',',').split(',') # split csv
     #create map from date to point data.
@@ -67,7 +67,8 @@ def Parse (data):
             point_map[points[i]] = (float(points[i+1]),float(points[i+2]),float(points[i+3]),float(points[i+4]),float(points[i+5]))
             dates.append(points[i])
         except:
-            print points[i],'ignored' #This may result in out of bounds as there'll be fewer dates to look back to when finding lows. It may also be a low in terms of slightly more than 52 weeks. May miss lows. Very unlikely.
+            if not very_simple:
+                print points[i],'ignored' #This may result in out of bounds as there'll be fewer dates to look back to when finding lows. It may also be a low in terms of slightly more than 52 weeks. May miss lows. Very unlikely.
     dates.reverse() #Dates earliest to latest
     stock = (dates,point_map)
     return stock
@@ -169,17 +170,33 @@ while mistake:
 
 symbol = 'dummy'
 while symbol != '':
-    symbol = raw_input('enter symbol: ')
+    symbol = raw_input('enter symbol or type change to change parameters: ')
+
+    if symbol == 'change':
+        mistake = True
+        while mistake:
+            try:
+                start = str(int(raw_input('enter training start year: ')) - 1) # go back one extra year for low detection. This extra year isn't in results.
+                end = raw_input('enter training end year: ')
+                interest = float(raw_input('enter expected return(ex. .08): '))
+                period = int(raw_input('Enter how far back to look for lows in days: '))
+                time = int(raw_input('Enter time to hold stock in days: '))
+                simple = bool(raw_input('Enter nonempty string for simple mode: '))
+                very_simple = bool(raw_input('Enter nonempty string for screener mode: '))
+                symbol = raw_input('enter symbol or type change to change parameters: ')
+                mistake = False
+            except:
+                print 'try again.\n'
+    
 
     try:
         url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start + '&enddate=Dec+31%2C+' + end + '&output=csv'
         print symbol, str(int(start) + 1), end
         f = urllib2.urlopen(url).read()
     except:
-        print "input a valid symbol"
         continues = False
     if continues:
-        stock = Parse(f)
+        stock = Parse(f,very_simple)
 
         all_points = find_coordinates(stock,period,not simple and not very_simple)
         low_count = [[] for i in range(period)]
@@ -243,7 +260,7 @@ while symbol != '':
         end2 = '2014'
         url = 'http://www.google.com/finance/historical?q=' + symbol + '&histperiod=daily&startdate=Jan+1%2C+'+ start2 + '&enddate=Dec+31%2C+' + end2 + '&output=csv'
         f = urllib2.urlopen(url).read()
-        focus = Parse(f)
+        focus = Parse(f,very_simple)
         tech = find_coordinates(focus,period,False)
         try:
             temp = tech.keys()
