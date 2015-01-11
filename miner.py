@@ -227,33 +227,6 @@ for key in keys:
 too_low, q0_to_q1, q1_to_q2, q2_to_q3, q3_to_q4, too_high = 0,0,0,0,0,0
 how_low = 0
 how_high = 0
-for i in range(len(symbols)):
-        try:
-                for num in all_returns[i]:
-                        if num < leasts[i]:
-                                too_low +=1
-                                how_low -= leasts[i] - num
-                        elif num < q1s[i]:
-                                q0_to_q1 += 1
-                        elif num < medians[i]:
-                                q1_to_q2 += 1
-                        elif num < q3s[i]:
-                                q2_to_q3 += 1
-                        elif num < mosts[i]:
-                                q3_to_q4 += 1
-                        elif num > mosts[i]:
-                                if mosts[i] != float("-inf"):
-                                        too_high += 1
-                                        how_high += num - mosts[i]
-        except:
-                pass
-
-total = sum([too_low, q0_to_q1, q1_to_q2, q2_to_q3, q3_to_q4, too_high])
-print(too_low/total, q0_to_q1/total, q1_to_q2/total, q2_to_q3/total, q3_to_q4/total, too_high/total)
-
-too_low, q0_to_q1, q1_to_q2, q2_to_q3, q3_to_q4, too_high = 0,0,0,0,0,0
-how_low = 0
-how_high = 0
 mean = 0
 for i in range(len(symbols)):
         try:
@@ -279,6 +252,3 @@ for i in range(len(symbols)):
 
 total = sum([too_low, q0_to_q1, q1_to_q2, q2_to_q3, q3_to_q4, too_high])
 print(too_low/total + q0_to_q1/total, q1_to_q2/total, q2_to_q3/total, q3_to_q4/total + too_high/total)
-print(how_low/too_low)
-print (how_high/too_high)
-print (mean/total)
