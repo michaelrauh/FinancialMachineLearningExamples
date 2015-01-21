@@ -147,20 +147,6 @@ def get_same_run_highs(current):
                 return None
         
 all_same_highs = [get_same_highs(i) for i in range(len(train_stocks))]
-##
-##def get_returns(stock, same_highs, look_back):
-##        CLOSE = 3
-##        dates, stock = stock
-##        returns = []
-##        for i in range(len(same_highs)):
-##                later_value = stock[same_highs[i]][CLOSE]
-##                try:
-##                        earlier_date = dates[dates.index(same_highs[i]) - look_back]
-##                except:
-##                        earlier_date = dates[-1]
-##                earlier_value = stock[earlier_date][CLOSE]
-##                returns.append(((later_value - earlier_value)/earlier_value) * 100)
-##        return returns
 
 def get_returns(stock, same_highs, look_forward):
         CLOSE = 3
@@ -247,3 +233,18 @@ for n in range(len(symbols)):
                 pass
 total = sum([too_low, q0_to_q1, q1_to_q2, q2_to_q3, q3_to_q4, too_high])
 print(too_low/total + q0_to_q1/total, q1_to_q2/total, q2_to_q3/total, q3_to_q4/total + too_high/total)
+
+
+for z in range(len(current_highs)):
+	if current_highs[z] == None:
+		current_highs[z] = -1
+
+#for each current high number
+for high_number in range(max(current_highs)):
+	count = 0
+	total = 0
+	for item in range(len(all_run_returns)):
+		if current_highs[item] == high_number:
+			count += len(all_run_returns[item])
+			total += sum(all_run_returns[item])
+	print(high_number, count, count/total)
