@@ -8,6 +8,7 @@ def scrape(symbol, ipo):
         """Get Data from Google Finance"""
         if ipo == 'n/a':
             ipo = '1972' #oldest stock in the table
+        symbol.replace('^','-') # Test this
         
         try:
             PRESENT = '2014'
@@ -19,7 +20,6 @@ def scrape(symbol, ipo):
         except:
             points = []
         return points
-
 
 stocks = {}
 for filename in ('nyse.csv','nasdaq.csv'):
@@ -35,9 +35,11 @@ for filename in ('nyse.csv','nasdaq.csv'):
         stock.sector = x[11]
         stock.industry = x[13]
         stock.data = scrape(stock.symbol,stock.ipo)
-        stocks[stock.symbol] = stock
-        print(len(stocks), stock.symbol, len(stock.data), stock.ipo)
-
-out = open('raw_stocks.txt','wb')
-pickle.dump(stocks,out)
-out.close()
+        if len(stock.data) > 0:
+            stocks[stock.symbol] = stock
+            print(len(stocks), stock.symbol, len(stock.data), stock.ipo)
+            if len(stocks) > 500:
+                out = open('pickles/' + stock.symbol + '_raw_stocks.txt','wb')
+                pickle.dump(stocks,out)
+                out.close()
+                stocks = {}
