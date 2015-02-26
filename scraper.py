@@ -1,5 +1,8 @@
 import urllib.request
 import pickle
+import subprocess
+
+subprocess.Popen(["caffeinate", "-t", "21600"]) #Prevent sleep for 6 hours
 
 class Stock:
     pass
@@ -8,7 +11,6 @@ def scrape(symbol, ipo):
         """Get Data from Google Finance"""
         if ipo == 'n/a':
             ipo = '1972' #oldest stock in the table
-        symbol.replace('^','-') # Test this
         
         try:
             PRESENT = '2014'
@@ -21,7 +23,7 @@ def scrape(symbol, ipo):
             points = []
         return points
 
-stocks = {}
+stocks = []
 for filename in ('nyse.csv','nasdaq.csv'):
     f = open(filename).read()
     f = f.split('\n')
@@ -29,17 +31,16 @@ for filename in ('nyse.csv','nasdaq.csv'):
     for row in f:
         x = row.split('"')
         stock = Stock()
-        stock.symbol = x[1]
+        stock.symbol = x[1].replace('^','-') 
         stock.cap = x[7]
         stock.ipo = x[9]
         stock.sector = x[11]
         stock.industry = x[13]
         stock.data = scrape(stock.symbol,stock.ipo)
         if len(stock.data) > 0:
-            stocks[stock.symbol] = stock
-            print(len(stocks), stock.symbol, len(stock.data), stock.ipo)
-            if len(stocks) > 500:
-                out = open('pickles/' + stock.symbol + '_raw_stocks.txt','wb')
-                pickle.dump(stocks,out)
-                out.close()
-                stocks = {}
+            stocks.append(stock)
+            print(len(stocks), stock.symbol, len(stock.data))
+out = open('raw_stocks.txt','wb')
+pickle.dump(stocks,out)
+out.close()
+print("done")
