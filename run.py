@@ -1,5 +1,9 @@
 import pickle
 import sys
+import yaml
+
+"""Load all keys from yaml. Run all keys or ask the user for a key. Then
+run cluster merge"""
 
 preferences = []
 

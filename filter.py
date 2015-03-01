@@ -1,15 +1,66 @@
 import pickle
 
-f = open('raw_stocks.txt','rb')
+class Stock:
+    pass
+
+f = open('data/raw_stocks.txt','rb')
 stocks = pickle.load(f)
+
+def get_all_dates(stocks):
+    max_len = 0
+    for stock in stocks:
+        if len(stock.data) > max_len:
+            max_len = len(stock.data)
+            all_dates = list(reversed(stock.data[0:-1:6]))
+    return all_dates
+
+all_dates = get_all_dates(stocks)
 
 all_clusters = []
 
 def find_highs(stock):
-    """find all 52 week highs for a stock"""
+    """find all 52 week highs for a stock if there is enough data"""
+    """TODO: check value of FTW"""
+    high_dates = []
+    try:
+        FTW = 5 * 52
+        dates = list(reversed(stock[0:-1:6]))
+        dates.pop()
+        highs = list(reversed(stock[2:-1:6]))
+        highs.pop()
+        for i in range(FTW,len(highs)):
+            if max(highs[i-FTW:i-1]) < highs[i]:
+                high_dates.append(dates[i])
+    except:
+        pass
+
+    return high_dates
+
+def elapsed_time(beginning, end, dates=all_dates):
+    return dates.index(end) - dates.index(beginning)
 
 def find_groups(highs, threshold):
-    """given a stock, find groups that agglomerate at a given threshold"""
+    """given highs, find groups that agglomerate at a given threshold"""
+
+    if len(highs) == 0:
+        return []
+    elif len(highs) == 1:
+        return [highs]
+    
+    groups = []
+    current_high = highs.pop()
+    group = [current_high]
+
+    while len(highs) > 0:
+        next_high = highs.pop()
+        if elapsed_time(current_high, next_high) <= threshold:
+            group.append(next_high)
+        else:
+            groups.append(group)
+            group = [next_high]
+        current_high = next_high
+        
+    return groups
 
 class Cluster:
     def __init__(self, group, stock):
@@ -41,15 +92,17 @@ class Cluster:
         self.sectors += cluster.sectors
         self.industries += cluster.industries
     def graph(self):
-    """graph deltas between buckets"""
+        """graph deltas between buckets"""
+        pass
     def __str__(self):
-    """print all cluster data"""
-        
-for stock in stocks:
-    groups = find_groups(stock, threshold)
-    for group in groups:
-        cluster = Cluster(group, stock)
-        all_clusters.append(cluster)
-        
-out = open(str(threshold) + '_size_clusters.txt', 'wb')
-pickle.dump(all_clusters, out)
+        """print all cluster data"""
+        pass
+    
+##for stock in stocks:
+##    groups = find_groups(stock, threshold)
+##    for group in groups:
+##        cluster = Cluster(group, stock)
+##        all_clusters.append(cluster)
+##        
+##out = open(str(threshold) + '_size_clusters.txt', 'wb')
+##pickle.dump(all_clusters, out)
