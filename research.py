@@ -65,9 +65,26 @@ def get_high_number(highs, threshold, dates = all_dates):
         pass
     return count
 
-def get_all_high_numbers(threshold):
+def get_all_high_numbers(threshold): #13 looks good
     numbers = []
     for stock in stocks:
         highs = find_highs(stock)
         numbers.append(get_high_number(highs, threshold))
     return sum(numbers)/len(numbers)
+
+x = {}
+for stock in stocks:
+        highs = find_highs(stock)
+        symbol = symbols[stocks.index(stock)]
+        high_number = get_high_number(highs, 13)
+        try:
+                x[high_number].append(symbol)
+        except:
+                x[high_number] = [symbol]
+
+for high_number in x:
+        for sym in x[high_number]:
+                print(high_number, sym)
+
+for high_number in x:
+        print(high_number, len(x[high_number]))
