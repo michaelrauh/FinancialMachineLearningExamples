@@ -20,10 +20,9 @@ all_clusters = []
 
 def find_highs(stock):
     """find all 52 week highs for a stock if there is enough data"""
-    """TODO: check value of FTW"""
     high_dates = []
     try:
-        FTW = 5 * 52
+        FTW = 253 # fifty two weeks, with holidays
         dates = list(reversed(stock[0:-1:6]))
         dates.pop()
         highs = list(reversed(stock[2:-1:6]))
