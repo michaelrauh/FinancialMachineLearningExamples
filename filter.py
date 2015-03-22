@@ -1,4 +1,5 @@
 import pickle
+threshold = 15
 
 class Stock:
     pass
@@ -38,6 +39,35 @@ def find_highs(stock):
 def elapsed_time(beginning, end, dates=all_dates):
     return dates.index(end) - dates.index(beginning)
 
+#clean up mostly repeated function
+def find_earliest(group):
+    if len(group) == 1:
+        return group[0]
+    elif len(group) == 0:
+        return None
+
+    current = group.pop()
+
+    while len(group) > 0:
+        next_date = group.pop()
+        if elapsed_time(current, next_date) < 0:
+            current = next_date
+    return current
+
+def find_latest(group):
+    if len(group) == 1:
+        return group[0]
+    elif len(group) == 0:
+        return None
+
+    current = group.pop()
+
+    while len(group) > 0:
+        next_date = group.pop()
+        if elapsed_time(current, next_date) > 0:
+            current = next_date
+    return current
+
 def find_groups(highs, threshold):
     """given highs, find groups that agglomerate at a given threshold"""
 
@@ -61,6 +91,13 @@ def find_groups(highs, threshold):
         
     return groups
 
+def find_delta_plus(group, stock, beginning):
+    # copied from find_highs. This is not how the trade would go. Buy at next open.
+    dates = list(reversed(stock.data[0:-1:6]))
+    highs = list(reversed(stock.data[2:-1:6]))
+    begin_price = highs[dates.index(beginning)]
+    
+    
 class Cluster:
     def __init__(self, group, stock):
         """make a cluster with default data"""
@@ -97,11 +134,11 @@ class Cluster:
         """print all cluster data"""
         pass
     
-##for stock in stocks:
-##    groups = find_groups(stock, threshold)
-##    for group in groups:
-##        cluster = Cluster(group, stock)
-##        all_clusters.append(cluster)
-##        
-##out = open(str(threshold) + '_size_clusters.txt', 'wb')
-##pickle.dump(all_clusters, out)
+for stock in stocks:
+    groups = find_groups(stock, threshold)
+    for group in groups:
+        cluster = Cluster(group, stock)
+        all_clusters.append(cluster)
+        
+out = open(str(threshold) + '_size_clusters.txt', 'wb')
+pickle.dump(all_clusters, out)
