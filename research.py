@@ -1,29 +1,13 @@
 import urllib.request
-from pylab import *
+import pylab as plt
+import datetime
 import subprocess
+import pickle
+import os
 
 subprocess.Popen(["caffeinate", "-t", "300"])
-
-def make(threshold):
-        x = {}
-        for stock in stocks:
-                highs = find_highs(stock)
-                symbol = symbols[stocks.index(stock)]
-                high_number = get_high_number(highs, threshold)
-                try:
-                        x[high_number].append(symbol)
-                except:
-                        x[high_number] = [symbol]
-        del(x[-1])
-        data = []
-        for thing in x:
-                data.append(len(x[thing]))
-        boxplot(data,0,'rs',0)
-        show()
-
 f = urllib.request.urlopen("http://www.barchart.com/stocks/high.php?_dtp1=0").read().decode("utf-8")
 symbols = f[f.find("symbols") + len("symbols\" value=\""):f.find("/>", f.find("symbols"))-2].split(',')
-#symbols = symbols[:5]
 
 def scrape(symbol):
         try:
@@ -108,15 +92,50 @@ def find_counts(threshold):
                         x[high_number] = [symbol]
         return x
 
+#################MAKE GRAPHS###############
 buckets = find_counts (15)
-x = []
-y = []
-for high_number in buckets:
-        x.append(high_number)
-        y.append(len(buckets[high_number]))
-        print(high_number, len(buckets[high_number]))
+del(buckets[-1])
+y = [len(buckets[high_number]) for high_number in buckets]
+x = range(len(y))
 
-#fig = figure()
-bar(x, y)
-#show()
-savefig("example.pdf")
+deltas = []
+for i in range(len(y) -1):
+        deltas.append((y[i + 1] - y[i])/y[i])
+        
+plt.subplot(221)
+plt.title("number for t = 15")
+plt.bar(x, y)
+plt.subplot(222)
+plt.title("% change in number for t = 15")
+plt.bar(range(len(deltas)), deltas)
+
+buckets_one = find_counts (1)
+del(buckets_one[-1])
+y = [len(buckets_one[high_number]) for high_number in buckets_one]
+x = range(len(y))
+
+deltas = []
+for i in range(len(y) -1):
+        deltas.append((y[i + 1] - y[i])/y[i])
+
+plt.subplot(223)
+plt.title("number for t = 1")
+plt.bar(x, y)
+plt.subplot(224)
+plt.title("% change in number for t = 1")
+plt.bar(range(len(deltas)), deltas)
+
+date = str(datetime.date.today())
+try:
+        os.mkdir(date)
+except:
+        pass
+
+#########################WRITE#####################
+f = open(date + '/counts.txt', 'w')
+f.write("15:\n")
+f.write(str(buckets))
+f.write("1:\n")
+f.write(str(buckets_one))
+plt.savefig(date + '/figures.pdf', bbox_inches='tight')
+f.close()
