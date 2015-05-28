@@ -1,3 +1,4 @@
+#import helper
 import urllib.request
 import pylab as plt
 import datetime
@@ -5,9 +6,15 @@ import subprocess
 import pickle
 import os
 
+#Only pull stock data if it is not pickled away in buckets
+#Factor functions out to helpers
+# Make the main function runnable on any day in the past
+
 subprocess.Popen(["caffeinate", "-t", "300"])
 f = urllib.request.urlopen("http://www.barchart.com/stocks/high.php?_dtp1=0").read().decode("utf-8")
-symbols = f[f.find("symbols") + len("symbols\" value=\""):f.find("/>", f.find("symbols"))-2].split(',')
+symbols = f[f.find("symbols") + len("symbols\" value=\""):f.find("/>", f.find("symbols"))-2].split(',') 
+
+#symbols = symbols[:5]
 
 def scrape(symbol):
         try:
@@ -22,19 +29,15 @@ def scrape(symbol):
                 points = []
         return points
 
-def get_all_dates(stocks):
-    max_len = 0
-    for stock in stocks:
-        if len(stock) > max_len:
-            max_len = len(stock)
-            all_dates = list(reversed(stock[0:-1:6]))
-    return all_dates
-
 stocks = []
 for symbol in symbols:
     print (symbol, symbols.index(symbol), len(symbols))
     stocks.append(scrape(symbol))
-all_dates = get_all_dates(stocks)
+max_len = 0
+for stock in stocks:
+        if len(stock) > max_len:
+                max_len = len(stock)
+                all_dates = list(reversed(stock[0:-1:6]))
 
 def find_highs(stock):
     """find all 52 week highs for a stock if there is enough data"""
@@ -53,7 +56,7 @@ def find_highs(stock):
 
     return high_dates
 
-def elapsed_time(beginning, end, dates=all_dates):
+def elapsed_time(beginning, end, dates=all_dates): #apparently this doesn't necessarily contain all dates. It may fail.
     return dates.index(end) - dates.index(beginning)
 
 def get_high_number(highs, threshold, dates = all_dates):
@@ -93,8 +96,20 @@ def find_counts(threshold):
         return x
 
 #################MAKE GRAPHS###############
+
+date = str(datetime.date.today())
+
+try:
+        os.mkdir(date)
+except:
+        pass
+
+plt.figure(1)
 buckets = find_counts (15)
-del(buckets[-1])
+try:
+        del(buckets[-1])
+except:
+        pass
 y = [len(buckets[high_number]) for high_number in buckets]
 x = range(len(y))
 
@@ -110,7 +125,10 @@ plt.title("% change in number for t = 15")
 plt.bar(range(len(deltas)), deltas)
 
 buckets_one = find_counts (1)
-del(buckets_one[-1])
+try:
+        del(buckets_one[-1])
+except:
+        pass
 y = [len(buckets_one[high_number]) for high_number in buckets_one]
 x = range(len(y))
 
@@ -125,17 +143,16 @@ plt.subplot(224)
 plt.title("% change in number for t = 1")
 plt.bar(range(len(deltas)), deltas)
 
-date = str(datetime.date.today())
-try:
-        os.mkdir(date)
-except:
-        pass
-
-#########################WRITE#####################
 f = open(date + '/counts.txt', 'w')
 f.write("15:\n")
 f.write(str(buckets))
 f.write("1:\n")
 f.write(str(buckets_one))
 plt.savefig(date + '/figures.pdf', bbox_inches='tight')
+#plt.show()
 f.close()
+
+#plt.figure(2)
+#plt.subplot(221)
+
+#Separate by cap, sector
