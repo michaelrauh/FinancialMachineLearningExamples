@@ -1,4 +1,4 @@
-import urllib.request
+import urllib2
 
 
 def scrape(symbol, ipo):
@@ -11,7 +11,7 @@ def scrape(symbol, ipo):
             url = 'http://www.google.com/finance/historical?q=' + symbol + \
                   '&histperiod=daily&startdate=Jan+1%2C+'+ ipo + \
                   '&enddate=Dec+31%2C+' + PRESENT + '&output=csv'
-            f = urllib.request.urlopen(url).read().decode("utf-8")
+            f = urllib2.urlopen(url).read()
             points = f.replace('\n', ',').split(',')
         except:
             points = []

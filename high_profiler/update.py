@@ -1,10 +1,10 @@
 """Update will go by symbol, only pulling necessary symbols to build graphs"""
 
 import graph
+import helper
 
-
-symbol_map = get_symbol_map()  # Ties symbols to stock objects. In pickle file.
-symbols = get_symbols()  # Gets today's symbols
+symbols = helper.get_todays_symbols()  # Gets today's symbols
+symbol_map = helper.get_symbol_map()  # Ties symbols to stock objects.
 
 current_symbols = submap(symbol_map, symbols)  # Todays stock map
 current_highs = [find_high(x) for x in current_symbols]
