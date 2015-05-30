@@ -1,3 +1,5 @@
+"""Update will go by symbol, only pulling necessary symbols to build graphs"""
+
 import graph
 
 
