@@ -1,7 +1,8 @@
+import bar
+
+
 class Graph():
-    horizon = 0
-    type = "diff"
-    sector = "tech"
-    bars = [] #list of bar objects
-    def __init__(self, stock, date):
-        pass
+    def __init__(self, sector, symbol):
+        self.sector = sector
+        self.symbols = [symbol]
+        self.bars = [bar.Bar(symbol)]

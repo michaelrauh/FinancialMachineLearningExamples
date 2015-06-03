@@ -7,7 +7,7 @@ def scrape(symbol, ipo):
             ipo = '1972'
 
         try:
-            PRESENT = '2014'
+            PRESENT = '2015'
             url = 'http://www.google.com/finance/historical?q=' + symbol + \
                   '&histperiod=daily&startdate=Jan+1%2C+'+ ipo + \
                   '&enddate=Dec+31%2C+' + PRESENT + '&output=csv'
@@ -16,3 +16,7 @@ def scrape(symbol, ipo):
         except:
             points = []
         return points
+
+
+def find_highs(data):
+    pass

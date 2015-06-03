@@ -8,11 +8,8 @@ def get_todays_symbols():
     symbols = f[f.find("symbols") + len("symbols\" value=\""):f.find("/>", f.find("symbols"))-2].split(',')
     return symbols
 
-x = get_todays_symbols()
 
-print (x)
-
-def get_symbol_map():
+def get_todays_stocks(symbols):
     stocks = []
     for filename in ('data/nyse.csv', 'data/nasdaq.csv'):
         f = open(filename).read()
@@ -20,34 +17,14 @@ def get_symbol_map():
         f.pop(0)
         for row in f:
             x = row.split('"')
-            stock = Stock()
-            stock.symbol = x[1].replace('^', '-')
-            ipo = x[9]
-            stock.sector = x[11]
-            print(len(stocks), stock.symbol, len(stock.data))
+            symbol = x[1].replace('^', '-')
+            if symbol in symbols:
+                stock = Stock()
+                stock.symbol = symbol
+                ipo = x[9]
+                stock.sector = x[11]
+                stock.data = util.scrape(stock.symbol, ipo)
+                stock.highs = util.find_highs(stock.data)
+                if len(stock.data) > 0:
+                    stocks.append(stock)
     return stocks
-
-
-def get_stocks():
-    stocks = []
-    for filename in ('data/nyse.csv', 'data/nasdaq.csv'):
-        f = open(filename).read()
-        f = f.split('\n')
-        f.pop(0)
-        for row in f:
-            x = row.split('"')
-            stock = Stock()
-            stock.symbol = x[1].replace('^', '-')
-            cap = x[7]
-            ipo = x[9]
-            stock.sector = x[11]
-            industry = x[13]
-            stock.data = util.scrape(stock.symbol, ipo)
-            if len(stock.data) > 0:
-                stocks.append(stock)
-            print(len(stocks), stock.symbol, len(stock.data))
-    return stocks
-
-
-def get_date():
-    return 'mmddyyyy'
