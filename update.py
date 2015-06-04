@@ -1,10 +1,7 @@
 import graph
-import helper
+import stock
 
-symbols = helper.get_todays_symbols()
-symbol_map = helper.get_todays_stocks(symbols)
-
-current_highs = [find_high(x) for x in current_symbols]
+stocks = stock.get_todays_stocks()
 
 graphs = dict()
 graphs["all"] = graph.init()
