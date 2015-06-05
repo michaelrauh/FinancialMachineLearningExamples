@@ -3,8 +3,6 @@ import stock
 
 stocks = stock.get_todays_stocks()
 
-for stock in stocks:
-    print stock
 # graphs = dict()
 # graphs["all"] = graph.init()
 # for sector in sectors:
