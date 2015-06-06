@@ -17,12 +17,14 @@ fig = plotcode()
 
 
 def make_graph(fig, x, y):
+    label = Tk.Label(text="Graph Name!")
+    label.grid(row=x, column=y)
     canvas = FigureCanvasTkAgg(fig, master=root)
-    canvas.get_tk_widget().grid(row=x, column=y)
+    canvas.get_tk_widget().grid(row=x+1, column=y)
 
-for x in range(5):
-    for y in range(5):
+
+for x in range(0,6,2):
+    for y in range(0,6,2):
         make_graph(fig, x, y)
-
 
 root.mainloop()
