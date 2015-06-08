@@ -29,6 +29,6 @@ def show(graphs):
     root = Tk.Tk()
     x = 0
     for graph in graphs.values():
-        make_graph(root, graph, x % 10, x/10)
+        make_graph(root, graph, x % 4, x/4)
         x += 2
     root.mainloop()
