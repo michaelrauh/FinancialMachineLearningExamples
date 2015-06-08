@@ -4,6 +4,11 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
+def show(graph):
+    """print each graph"""
+    for bar in graph.bars:
+        print bar.size()
+
 def plotcode():
     x = np.linspace(0, 2*np.pi)
     fig = Figure(figsize=(3, 3))
@@ -22,9 +27,9 @@ def make_graph(fig, x, y):
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.get_tk_widget().grid(row=x+1, column=y)
 
-
-for x in range(0,6,2):
-    for y in range(0,6,2):
-        make_graph(fig, x, y)
-
-root.mainloop()
+#
+# for x in range(0,6,2):
+#     for y in range(0,6,2):
+#         make_graph(fig, x, y)
+#
+# root.mainloop()
