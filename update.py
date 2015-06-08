@@ -13,5 +13,4 @@ for current_stock in stocks:
     graphs[current_stock.sector].add(current_stock.symbol, current_stock.high_number)
     graphs["all"].add(current_stock.symbol, current_stock.high_number)
 
-for graph in graphs.values():
-    gui.show(graph)
+gui.show(graphs)

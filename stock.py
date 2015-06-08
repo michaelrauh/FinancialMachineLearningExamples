@@ -5,7 +5,7 @@ import parser
 def get_todays_stocks():
     stocks = list()
     stock_data = parser.parse_static_info()
-    symbols = scraper.get_todays_symbols()[:5] # TODO: Remove this cap of five symbols
+    symbols = scraper.get_todays_symbols() # TODO: Remove this cap of five symbols
 
     for symbol in symbols:
         print len(symbols), symbols.index(symbol), symbol

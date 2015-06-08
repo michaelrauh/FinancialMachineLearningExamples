@@ -3,33 +3,32 @@ import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-
-def show(graph):
-    """print each graph"""
-    for bar in graph.bars:
-        print bar
-
-def plotcode():
-    x = np.linspace(0, 2*np.pi)
+def plot(graph):
     fig = Figure(figsize=(3, 3))
     ax = fig.add_subplot(111)
-    ax.plot(x, x**2)
+
+    y = list()
+    for bar in graph.bars.values():
+        y.append(bar.size())
+
+    x = range(len(y))
+    ax.bar(x, y)
 
     return fig
 
-root = Tk.Tk()
-fig = plotcode()
 
-
-def make_graph(fig, x, y):
-    label = Tk.Label(text="Graph Name!")
+def make_graph(root, graph, x, y):
+    fig = plot(graph)
+    label = Tk.Label(text=graph.sector)
     label.grid(row=x, column=y)
     canvas = FigureCanvasTkAgg(fig, master=root)
     canvas.get_tk_widget().grid(row=x+1, column=y)
 
-#
-# for x in range(0,6,2):
-#     for y in range(0,6,2):
-#         make_graph(fig, x, y)
-#
-# root.mainloop()
+
+def show(graphs):
+    root = Tk.Tk()
+    x = 0
+    for graph in graphs.values():
+        make_graph(root, graph, x % 10, x/10)
+        x += 2
+    root.mainloop()
