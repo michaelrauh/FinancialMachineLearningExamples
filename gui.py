@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 def show(graph):
     """print each graph"""
     for bar in graph.bars:
-        print bar.size()
+        print bar
 
 def plotcode():
     x = np.linspace(0, 2*np.pi)
