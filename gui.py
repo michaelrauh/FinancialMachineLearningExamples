@@ -6,15 +6,14 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 def plot(graph):
     fig = Figure(figsize=(3, 3))
     ax = fig.add_subplot(111)
-
+    ax.set_autoscaley_on(False)
+    ax.set_ylim([0, 30])
+    ax.set_xlim([0, 30])
     y = list()
     for bar in graph.bars.values():
         y.append(bar.size())
 
     # TODO: Make this smarter. Perhaps pick the largest graph's max
-    y = y[:20]
-    while len(y) < 20:
-        y.append(0)
     x = range(len(y))
     ax.bar(x, y)
 
