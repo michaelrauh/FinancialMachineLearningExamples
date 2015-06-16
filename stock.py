@@ -2,11 +2,9 @@ import scraper
 import parser
 
 
-def get_todays_stocks():
+def populate_stocks(symbols):
     stocks = list()
     stock_data = parser.parse_static_info()
-    symbols = scraper.get_todays_symbols()
-
     for symbol in symbols:
         print len(symbols), symbols.index(symbol), symbol
         try:
@@ -15,7 +13,19 @@ def get_todays_stocks():
             stocks.append(stock)
         except:
             print "skipped ", symbol
+    return stocks
 
+
+def get_todays_stocks():
+    symbols = scraper.get_todays_symbols()
+    stocks = populate_stocks(symbols)
+    return stocks
+
+
+def get_all_stocks():
+    stock_data = parser.parse_static_info()
+    symbols = stock_data.keys()
+    stocks = populate_stocks(symbols)
     return stocks
 
 
@@ -23,7 +33,7 @@ def find_highs(data):
     high_dates = list()
     try:
         FTW = 253 # fifty two weeks, with holidays
-        dates = list(reversed(data[0:-1:6])) # TODO: Move to parser
+        dates = list(reversed(data[0:-1:6])) # TODO: Move to separate field within stock class
         dates.pop()
         highs = list(reversed(data[2:-1:6]))
         highs.pop()
