@@ -5,7 +5,6 @@ import graph
 stocks = stock.get_all_stocks()
 
 # TODO : Build graphs and save them
-# TODO: Integrate update to save new graphs into same structure
 
 # graphs = dict()
 # graphs["all"] = graph.Graph("all")
