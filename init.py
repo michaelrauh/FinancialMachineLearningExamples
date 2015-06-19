@@ -1,23 +1,21 @@
 import stock
 import graph
+import cPickle as pickle
 # import hasher
 
 stocks = stock.get_all_stocks()
+graphs = dict()
 
-# TODO : Build graphs and save them
+for current_stock in stocks:
+    for date in current_stock.highs:
+        if date not in graphs:
+            graphs[date] = []
+            graphs[date]["all"] = graph.Graph("all")
+        if current_stock.sector not in graphs[date]:
+            graphs[date][current_stock.sector] = graph.Graph(current_stock.sector)
+        current_high_number = current_stock.all_high_numbers.pop()
+        graphs[date][current_stock.sector].add(current_stock.symbol, current_high_number)
+        graphs[date]["all"].add(current_stock.symbol, current_high_number)
 
-# graphs = dict()
-# graphs["all"] = graph.Graph("all")
-#
-# for symbol in symbols:
-#             data = scraper.get_data(symbol, stock_data[symbol][0])
-#             dates = stock.find_highs(data)
-#             for date in dates:
-#                 number = stock.get_high_number(date)
-#                 graphs[date][stock_data[symbol][1]].add(symbol, number)
-
-# hashes = dict()
-# for graph in graphs:
-#     hashes[hasher.hash(graph)] = graph
-#
-# pickle.dump(hashes)
+f = open("data/pickles/all_stocks.p", 'wb')
+pickle.dump(graphs, f)

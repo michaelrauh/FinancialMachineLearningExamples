@@ -59,6 +59,7 @@ class Stock:
         self.highs = find_highs(self.data)
         self.all_dates = list(reversed(self.data[0:-1:6]))
         self.high_number = self.current_high_number()
+        self.all_high_numbers = self.get_all_high_numbers()
 
     def __str__(self):
         return str((self.symbol, self.ipo, self.sector))
@@ -66,8 +67,8 @@ class Stock:
     def current_high_number(self):
         count = 0
         threshold = 15
-        highs = self.highs
-        all_dates = self.all_dates
+        highs = list(self.highs)
+        all_dates = list(self.all_dates)
 
         if len(highs) == 0:
                 return -1
@@ -81,3 +82,12 @@ class Stock:
                 last_high = highs.pop()
                 count += 1
         return count
+
+# TODO: Test this method to be sure the list isn't coming out backward and that it isn't being consumed backwardIni
+
+    def get_all_high_numbers(self):
+        all_highs = list()
+        while len(self.highs) > 0:
+            all_highs.append(self.current_high_number())
+            self.highs.pop()
+        return all_highs
