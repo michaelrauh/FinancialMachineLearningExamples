@@ -29,23 +29,6 @@ def get_all_stocks():
     return stocks
 
 
-def find_highs(data):
-    high_dates = list()
-    try:
-        FTW = 253 # fifty two weeks, with holidays
-        dates = list(reversed(data[0:-1:6])) # TODO: Move to separate field within stock class
-        dates.pop()
-        highs = list(reversed(data[2:-1:6]))
-        highs.pop()
-        for i in range(FTW, len(highs)):
-            if max(highs[i-FTW:i-1]) < highs[i]:
-                high_dates.append(dates[i])
-    except:
-        pass
-
-    return high_dates
-
-
 def elapsed_time(beginning, end, dates):
     return dates.index(end) - dates.index(beginning)
 
@@ -56,13 +39,31 @@ class Stock:
         self.sector = sector
         self.symbol = symbol
         self.data = scraper.get_data(symbol, ipo)
-        self.highs = find_highs(self.data)
-        self.all_dates = list(reversed(self.data[0:-1:6]))
+        self.all_dates = parser.get_dates(self.data)
+        self.day_maximums = parser.get_maximums(self.data)
+        self.highs = self.find_highs(self.data)
         self.high_number = self.current_high_number()
         self.all_high_numbers = self.get_all_high_numbers()
+        self.today = self.all_dates[-1]
 
     def __str__(self):
         return str((self.symbol, self.ipo, self.sector))
+
+    def find_highs(self):
+        high_dates = list()
+        try:
+            FTW = 253 # fifty two weeks, with holidays
+            dates = self.all_dates
+            dates.pop()
+            highs = self.day_maximums
+            highs.pop()
+            for i in range(FTW, len(highs)):
+                if max(highs[i-FTW:i-1]) < highs[i]:
+                    high_dates.append(dates[i])
+        except:
+            pass
+
+        return high_dates
 
     def current_high_number(self):
         count = 0
@@ -83,7 +84,7 @@ class Stock:
                 count += 1
         return count
 
-# TODO: Test this method to be sure the list isn't coming out backward and that it isn't being consumed backwardIni
+# TODO: Test this method to be sure the list isn't coming out backward and that it isn't being consumed backward
 
     def get_all_high_numbers(self):
         all_highs = list()

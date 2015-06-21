@@ -12,3 +12,11 @@ def parse_static_info():
                 stock_map[symbol] = ipo, sector
 
     return stock_map
+
+
+def get_maximums(data):
+    return list(reversed(data[2:-1:6]))
+
+
+def get_dates(data):
+    return list(reversed(data[0:-1:6]))

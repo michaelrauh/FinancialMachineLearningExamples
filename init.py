@@ -9,7 +9,7 @@ graphs = dict()
 for current_stock in stocks:
     for date in current_stock.highs:
         if date not in graphs:
-            graphs[date] = []
+            graphs[date] = dict()
             graphs[date]["all"] = graph.Graph("all")
         if current_stock.sector not in graphs[date]:
             graphs[date][current_stock.sector] = graph.Graph(current_stock.sector)
