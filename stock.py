@@ -41,7 +41,7 @@ class Stock:
         self.data = scraper.get_data(symbol, ipo)
         self.all_dates = parser.get_dates(self.data)
         self.day_maximums = parser.get_maximums(self.data)
-        self.highs = self.find_highs(self.data)
+        self.highs = self.find_highs()
         self.high_number = self.current_high_number()
         self.all_high_numbers = self.get_all_high_numbers()
         self.today = self.all_dates[-1]

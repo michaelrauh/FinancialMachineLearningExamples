@@ -22,9 +22,8 @@ def get_data(symbol, ipo):
 
         try:
             present = str(datetime.date.today().year)
-            url = 'http://www.google.com/finance/historical?q=' + symbol + \
-                  '&histperiod=daily&startdate=Jan+1%2C+' + ipo + \
-                  '&enddate=Dec+31%2C+' + present + '&output=csv'
+            url = 'http://ichart.finance.yahoo.com/table.csv?s=' + symbol + \
+                  '&d=12&e=31&f=' + present + '&g=d&a=1&b=00&c=' + ipo + '&ignore=.csv'
             f = urllib2.urlopen(url).read()
             points = f.replace('\n', ',').split(',')
         except:
