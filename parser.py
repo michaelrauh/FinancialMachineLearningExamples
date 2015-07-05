@@ -21,3 +21,7 @@ def get_maximums(data):
 
 def get_dates(data):
     return list(reversed(data[0::7]))
+
+
+def get_closes(data):
+    return list(reversed(data[4::7]))

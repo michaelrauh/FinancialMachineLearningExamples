@@ -44,6 +44,7 @@ class Stock:
         self.highs = self.find_highs()
         self.high_number = self.current_high_number()
         self.all_high_numbers = self.get_all_high_numbers()
+        self.all_closes = parser.get_closes(self.data)
         self.today = self.all_dates[-1]
 
     def __str__(self):
