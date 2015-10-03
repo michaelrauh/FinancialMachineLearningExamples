@@ -88,7 +88,7 @@ def test(x, train_corr, run_corr):
     top_train = train_corr[:x]
     top_run = run_corr[:x]
     ans = len(set(top_run).intersection(set(top_train)))
-    print ans
+    print x * 1.0/ans
 
 
 def get_results(train_corr, run_corr):
@@ -108,4 +108,6 @@ def get_results(train_corr, run_corr):
     #dump thing
     print thing
 
-test(train_corr, run_corr)
+for i in range(0,1000,100):
+    print i
+    test(i, train_corr, run_corr)
