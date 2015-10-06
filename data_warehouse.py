@@ -17,7 +17,7 @@ def hash_arguments(symbol, start_date, end_date):
 def fetch(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
     path = hash_arguments(symbol, start_date, end_date)
     if not os.path.exists(path):
-        data = scraper.scrape(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today())
+        data = scraper.scrape(symbol, start_date, end_date)
         pickle.dump(data, open(path, 'wb'))
     else:
         data = pickle.load(open(path, 'rb'))
