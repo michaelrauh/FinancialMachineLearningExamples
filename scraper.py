@@ -13,5 +13,8 @@ def scrape(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.
     url = 'http://ichart.finance.yahoo.com/table.csv?s=' + symbol + '&d=' + end_month + '&e=' + end_day + '&f=' + \
           end_year + '&g=d&a=' + start_month + '&b=' + start_day + '&c=' + start_year + '&ignore=.csv'
 
-    with urllib.request.urlopen(url) as f:
-        return f.read().decode('utf-8')
+    try:
+        with urllib.request.urlopen(url) as f:
+            return f.read().decode('utf-8')
+    except urllib.error.URLError:
+        return None
