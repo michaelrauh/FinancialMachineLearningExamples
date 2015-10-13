@@ -8,6 +8,7 @@ class Stock:
     def __init__(self, symbol, cap, ipo, sector, industry, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
         data = data_warehouse.fetch(symbol, start_date, end_date)
         if data is not None:
+            self.symbol = symbol
             self.data = data
             self.price_map = util.parse(self.data)
             self.cap = cap
