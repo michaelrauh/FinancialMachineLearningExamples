@@ -22,8 +22,8 @@ def fetch(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.t
         pickle.dump(data, open(path, 'wb'))
     else:
         data = pickle.load(open(path, 'rb'))
-        rows = data.split('\n')
-        rows.pop()
-        rows.pop(0)
-        data = ','.join(rows).split(',')
+    rows = data.split('\n')
+    rows.pop()
+    rows.pop(0)
+    data = ','.join(rows).split(',')
     return data
