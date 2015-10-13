@@ -13,7 +13,7 @@ class Market:
         ipo = data.ipo(symbol)
         sector = data.sector(symbol)
         industry = data.industry(symbol)
-        self.stocks[symbol] = stock.Stock(symbol, cap, ipo, sector, industry, start_date, end_date)
+        self.stocks[(symbol, start_date, end_date)] = stock.Stock(symbol, cap, ipo, sector, industry, start_date, end_date)
 
     def load_all(self, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
         for symbol in self.symbols:
@@ -28,9 +28,11 @@ class Market:
 
     def get_top_x(self, x, start_date, end_date, era_start=datetime.date(1950, 1, 1), era_end=datetime.date.today()):
         self.load_all(start_date=era_start, end_date=era_end)
-        print(self.stocks.values())
         for stock in self.stocks.values():
             stock.start_date = start_date
             stock.end_date = end_date
         top_stocks = sorted(list(self.stocks.values()), key=lambda stock : stock.performance_key(), reverse=True)
         return top_stocks[:x]
+
+market = Market()
+market.get_top_x(3, datetime.date(2015, 10, 8), datetime.date.today())
