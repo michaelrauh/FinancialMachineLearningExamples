@@ -45,4 +45,10 @@ class Stock:
         self.end_date = end_date
 
     def performance_key(self):
-        return self.performance(self.start_date, self.end_date)
+        if self.data is not None:
+            return self.performance(self.start_date, self.end_date)
+        else:
+            return -1
+
+    def __repr__(self):
+        return self.symbol
