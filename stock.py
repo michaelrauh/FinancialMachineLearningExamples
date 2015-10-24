@@ -36,9 +36,12 @@ class Stock:
         return int(self.price_map[date][4])
 
     def performance(self, start_date, end_date):
-        start = self.get_open_price(start_date)
-        end = self.get_open_price(end_date)
-        return (end-start)/start
+        try:
+            start = self.get_open_price(start_date)
+            end = self.get_open_price(end_date)
+            return (end-start)/start
+        except KeyError:
+            return 0
 
     def set_start_end(self, start_date, end_date):
         self.start_date = start_date
@@ -52,3 +55,6 @@ class Stock:
 
     def __repr__(self):
         return self.symbol
+
+    def all_dates(self):
+        return set(self.price_map.keys())
