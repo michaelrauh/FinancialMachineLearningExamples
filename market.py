@@ -42,3 +42,19 @@ class Market:
         for stock in self.stocks:
             all_dates = all_dates.union(stock.all_dates())
         return all_dates
+
+    def find_keys_by_stock(self, stock):
+        possible_keys = []
+        for key in list(self.stocks.keys()):
+            if key[0] == stock.symbol:
+                possible_keys.append(key)
+        return possible_keys
+
+    def get_price(self, stock, date):
+        open_price = None
+        possible_stocks = self.find_keys_by_stock(stock)
+        for possible_stock in possible_stocks:
+            if possible_stock[1] < date < possible_stock[2]:
+                open_price = self.stocks[possible_stock].get_open_price(date)
+                return open_price
+        return open_price
