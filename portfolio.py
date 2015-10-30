@@ -16,3 +16,6 @@ class Portfolio:
 
     def sell(self, symbol):
         self.register[symbol] = 0
+
+    def symbols(self):
+        return list(self.register.keys())
