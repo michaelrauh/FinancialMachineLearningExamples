@@ -1,5 +1,5 @@
 import data_warehouse
-import util
+import parser
 
 
 class Stock:
@@ -9,7 +9,7 @@ class Stock:
         if data is not None:
             self.symbol = symbol
             self.data = data
-            self.price_map = util.parse(self.data)
+            self.price_map = parser.parse(self.data)
             self.cap = cap
             self.ipo = ipo
             self.sector = sector
