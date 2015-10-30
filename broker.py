@@ -9,15 +9,13 @@ class Broker:
 
     def sell(self, stocks, account, portfolio, date):
         market = m.Market()
-        total_value = 0
         for stock in stocks:
             p = market.get_price(stock, date)
             q = portfolio.quantity(stock.symbol)
             value = p * q
             value -= self.fees
-            total_value += value
-        account.credit(total_value, date)
-        portfolio.sell(stock.symbol)
+            portfolio.sell(stock.symbol)
+            account.credit(value, date)
 
     def buy_even_weight(self, stocks, account, portfolio, date):
         market = m.Market()
@@ -28,5 +26,6 @@ class Broker:
         for stock in stocks:
             price = market.get_price(stock, date)
             quantity = math.floor(budget/price)
-            account.debit((price * quantity) - self.fees)
+            purchase_price = (price * quantity) - self.fees
+            account.debit(purchase_price, date)
             portfolio.buy(stock.symbol, quantity)
