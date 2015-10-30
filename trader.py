@@ -15,7 +15,7 @@ class Trader:
         self.broker = b.Broker()
 
     def top_x(self, x, start_date, end_date):
-        for day in c.daterange(start_date, end_date):
+        for day in c.date_range(start_date, end_date):
             if self.market.open_on(day):
                 year_ago = day - datetime.timedelta(days=365)
                 top_today = self.market.get_top_x(x, year_ago, day)

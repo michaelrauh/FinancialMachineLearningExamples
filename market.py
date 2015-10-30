@@ -1,6 +1,5 @@
 import stock
 import static_data as data
-import datetime
 
 
 class Market:
@@ -19,13 +18,8 @@ class Market:
         return stock.Stock(symbol, cap, ipo, sector, industry, start_date, end_date)
 
     def load_all(self, start_date, end_date):
-        start_dates = [start_date for i in range(len(self.symbols))]
-        end_dates = [end_date for i in range(len(self.symbols))]
-        desired_keys = set(zip(self.symbols, start_dates, end_dates))
-        current_keys = set(self.stocks.keys())
-        missing_keys = desired_keys.difference(current_keys)
-        for key in missing_keys:
-            self.stocks[key] = self.create_stock(*key)
+        for symbol in self.symbols:
+            self.stocks[symbol] = self.create_stock(symbol, start_date, end_date)
 
     def get_top_x(self, x, start_date, end_date):
         for stock in self.stocks.values():
@@ -39,22 +33,9 @@ class Market:
 
     def get_all_dates(self):
         all_dates = set()
-        for stock in self.stocks:
+        for stock in self.stocks.values():
             all_dates = all_dates.union(stock.all_dates())
         return all_dates
 
-    def find_keys_by_stock(self, stock):
-        possible_keys = []
-        for key in list(self.stocks.keys()):
-            if key[0] == stock.symbol:
-                possible_keys.append(key)
-        return possible_keys
-
-    def get_price(self, stock, date):
-        open_price = None
-        possible_stocks = self.find_keys_by_stock(stock)
-        for possible_stock in possible_stocks:
-            if possible_stock[1] < date < possible_stock[2]:
-                open_price = self.stocks[possible_stock].get_open_price(date)
-                return open_price
-        return open_price
+    def get_price(self, symbol, date):
+        return self.stocks[symbol].get_open_price(date)

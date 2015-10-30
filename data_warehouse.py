@@ -1,5 +1,4 @@
 import scraper
-import datetime
 import pickle
 import os
 

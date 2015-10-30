@@ -1,5 +1,4 @@
 import urllib.request
-import datetime
 
 
 def scrape(symbol, start_date, end_date):
