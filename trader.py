@@ -8,7 +8,7 @@ import calendar as c
 
 def top_x(x, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
     market = m.Market()
-    account = a.Account()
+    account = a.Account(10000)
     portfolio = p.Portfolio()
     broker = b.Broker()
     for day in c.daterange(start_date, end_date):
