@@ -5,7 +5,7 @@ import util
 
 class Stock:
 
-    def __init__(self, symbol, cap, ipo, sector, industry, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
+    def __init__(self, symbol, cap, ipo, sector, industry, start_date, end_date):
         data = data_warehouse.fetch(symbol, start_date, end_date)
         if data is not None:
             self.symbol = symbol

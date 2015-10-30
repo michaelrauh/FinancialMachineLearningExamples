@@ -4,21 +4,21 @@ import datetime
 
 
 class Market:
-    def __init__(self):
+    def __init__(self, start_date, end_date):
         self.symbols = data.symbols()
         self.stocks = {}
-        self.load_all(start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today())
+        self.load_all(start_date, end_date)
         self.all_dates = self.get_all_dates()
 
     @staticmethod
-    def create_stock(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
+    def create_stock(symbol, start_date, end_date):
         cap = data.cap(symbol)
         ipo = data.ipo(symbol)
         sector = data.sector(symbol)
         industry = data.industry(symbol)
         return stock.Stock(symbol, cap, ipo, sector, industry, start_date, end_date)
 
-    def load_all(self, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
+    def load_all(self, start_date, end_date):
         start_dates = [start_date for i in range(len(self.symbols))]
         end_dates = [end_date for i in range(len(self.symbols))]
         desired_keys = set(zip(self.symbols, start_dates, end_dates))

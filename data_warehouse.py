@@ -14,7 +14,7 @@ def hash_arguments(symbol, start_date, end_date):
     return 'data/' + symbol + end_year + end_month + end_day + start_year + start_month + start_day + '.p'
 
 
-def fetch(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
+def fetch(symbol, start_date, end_date):
     print("fetching " + symbol)
     path = hash_arguments(symbol, start_date, end_date)
     if not os.path.exists(path):

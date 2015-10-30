@@ -8,13 +8,13 @@ import calendar as c
 
 class Trader:
 
-    def __init__(self, starting_money):
-        self.market = m.Market()
+    def __init__(self, starting_money, start_date, end_date):
+        self.market = m.Market(start_date, end_date)
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
         self.broker = b.Broker()
 
-    def top_x(self, x, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
+    def top_x(self, x, start_date, end_date):
         for day in c.daterange(start_date, end_date):
             if self.market.open_on(day):
                 year_ago = day - datetime.timedelta(days=365)

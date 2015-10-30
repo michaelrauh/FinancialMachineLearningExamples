@@ -2,7 +2,7 @@ import urllib.request
 import datetime
 
 
-def scrape(symbol, start_date=datetime.date(1950, 1, 1), end_date=datetime.date.today()):
+def scrape(symbol, start_date, end_date):
     end_year = str(end_date.year)
     end_month = str(end_date.month - 1)
     end_day = str(end_date.day)
