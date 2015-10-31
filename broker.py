@@ -27,7 +27,8 @@ class Broker:
             for stock in stocks:
                 price = self.market.get_price(stock, date)
                 quantity = math.floor(budget/price)
-                purchase_price = (price * quantity) - self.fees
-                account.debit(purchase_price, date)
-                portfolio.buy(stock, quantity)
-                print("buying", quantity, "shares of", list(stocks)[0], "at", purchase_price, "on", date)
+                if quantity > 0:
+                    purchase_price = (price * quantity) - self.fees
+                    account.debit(purchase_price, date)
+                    portfolio.buy(stock, quantity)
+                    print("buying", quantity, "shares of", list(stocks)[0], "at", purchase_price, "on", date)
