@@ -4,7 +4,7 @@ for filename in ('static_data_files/nyse.csv', 'static_data_files/nasdaq.csv'):
     f = open(filename).read()
     f = f.split('\n')
     f.pop(0)
-    for row in f[:5]:
+    for row in f:
         x = row.split('"')
         symbol = x[1].replace('/', '').replace('^', '').lower()
         cap = x[7]
