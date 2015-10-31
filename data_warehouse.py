@@ -14,7 +14,6 @@ def hash_arguments(symbol, start_date, end_date):
 
 
 def fetch(symbol, start_date, end_date):
-    print("fetching " + symbol)
     path = hash_arguments(symbol, start_date, end_date)
     if not os.path.exists(path):
         data = scraper.scrape(symbol, start_date, end_date)
@@ -26,6 +25,4 @@ def fetch(symbol, start_date, end_date):
         rows.pop()
         rows.pop(0)
         data = ','.join(rows).split(',')
-    else:
-        print(symbol + " is garbage")
     return data

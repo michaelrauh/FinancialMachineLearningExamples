@@ -18,14 +18,18 @@ class Market:
         return stock.Stock(symbol, cap, ipo, sector, industry, start_date, end_date)
 
     def load_all(self, start_date, end_date):
+        print("loading...")
         for symbol in self.symbols:
             self.stocks[symbol] = self.create_stock(symbol, start_date, end_date)
+        print("done loading")
 
     def get_top_x(self, x, start_date, end_date):
         for stock in self.stocks.values():
             stock.start_date = start_date
             stock.end_date = end_date
         top_stocks = sorted(list(self.stocks.values()), key=lambda stock : stock.performance_key(), reverse=True)
+        if top_stocks[0].performance_key() == 0:
+            top_stocks = []
         return top_stocks[:x]
 
     def open_on(self, date):

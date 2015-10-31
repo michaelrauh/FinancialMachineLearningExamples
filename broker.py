@@ -16,8 +16,11 @@ class Broker:
             value -= self.fees
             portfolio.sell(stock)
             account.credit(value, date)
+            print("selling", q, "shares of", stocks[0], "at", p, "on", date)
 
     def buy_even_weight(self, stocks, account, portfolio, date):
+        if len(stocks) > 0:
+            print("buying", stocks, date, account.balance)
         balance = account.balance
         desired_number = len(stocks)
         if desired_number > 0:
@@ -29,3 +32,4 @@ class Broker:
                 purchase_price = (price * quantity) - self.fees
                 account.debit(purchase_price, date)
                 portfolio.buy(stock, quantity)
+                print("buting", quantity, "shares of", stocks[0], "at", purchase_price, "on", date)
