@@ -39,4 +39,7 @@ class Market:
         return all_dates
 
     def get_price(self, symbol, date):
-        return self.stocks[symbol].get_open_price(date)
+        try:
+            return self.stocks[symbol].get_open_price(date)
+        except KeyError:
+            return 99999999

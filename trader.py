@@ -11,7 +11,7 @@ class Trader:
         self.market = m.Market(start_date, end_date)
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
-        self.broker = b.Broker()
+        self.broker = b.Broker(start_date, end_date)
 
     @staticmethod
     def date_range(start_date, end_date):
@@ -19,10 +19,11 @@ class Trader:
 
     def top_x(self, x, start_date, end_date):
         for day in self.date_range(start_date, end_date):
+            day = day.date()
             if self.market.open_on(day):
                 year_ago = day - datetime.timedelta(days=365)
                 top_today = self.market.get_top_x(x, year_ago, day)
-                current_stocks = set(self.portfolio.symbols)
+                current_stocks = set(self.portfolio.symbols())
                 desired_stocks = set([stock.symbol for stock in top_today])
                 missing_stocks = desired_stocks.difference(current_stocks)
                 extra_stocks = current_stocks.difference(desired_stocks)
