@@ -1,5 +1,6 @@
 import stock
 import static_data as data
+import datetime
 
 
 class Market:
@@ -46,4 +47,6 @@ class Market:
         try:
             return self.stocks[symbol].get_open_price(date)
         except KeyError:
-            return 99999999
+            print("warning, interpolating price")
+            tomorrow = date + datetime.timedelta(1)
+            return self.get_price(symbol, tomorrow)
