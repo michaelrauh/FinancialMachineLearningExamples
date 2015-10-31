@@ -5,6 +5,7 @@ import broker as b
 import account as a
 from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
 
+
 class Trader:
 
     def __init__(self, starting_money, start_date, end_date):
