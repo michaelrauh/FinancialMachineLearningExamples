@@ -3,8 +3,7 @@ import market as m
 import portfolio as p
 import broker as b
 import account as a
-import calendar as c
-
+from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
 
 class Trader:
 
@@ -14,8 +13,12 @@ class Trader:
         self.portfolio = p.Portfolio()
         self.broker = b.Broker()
 
+    @staticmethod
+    def date_range(start_date, end_date):
+        return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
+
     def top_x(self, x, start_date, end_date):
-        for day in c.date_range(start_date, end_date):
+        for day in self.date_range(start_date, end_date):
             if self.market.open_on(day):
                 year_ago = day - datetime.timedelta(days=365)
                 top_today = self.market.get_top_x(x, year_ago, day)

@@ -15,7 +15,7 @@ for filename in ('static_data_files/nyse.csv', 'static_data_files/nasdaq.csv'):
 
 
 def symbols():
-    return list(_symbol_map_.keys())
+    return list(_symbol_map_.keys())[:5]
 
 
 def cap(symbol):
