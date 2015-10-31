@@ -34,7 +34,8 @@ class Market:
     def get_all_dates(self):
         all_dates = set()
         for stock in self.stocks.values():
-            all_dates = all_dates.union(stock.all_dates())
+            if stock.data is not None:
+                all_dates = all_dates.union(stock.all_dates())
         return all_dates
 
     def get_price(self, symbol, date):
