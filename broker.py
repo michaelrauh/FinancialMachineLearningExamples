@@ -4,11 +4,9 @@ import math
 
 class Broker:
 
-    def __init__(self, start_date, end_date):
+    def __init__(self, market):
         self.fees = 9
-        self.start_date = start_date
-        self.end_date = end_date
-        self.market = m.Market(start_date, end_date)
+        self.market = market
 
     def sell(self, stocks, account, portfolio, date):
         for stock in stocks:

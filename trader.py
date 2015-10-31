@@ -12,7 +12,7 @@ class Trader:
         self.market = m.Market(start_date, end_date)
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
-        self.broker = b.Broker(start_date, end_date)
+        self.broker = b.Broker(self.market)
 
     @staticmethod
     def date_range(start_date, end_date):
