@@ -41,6 +41,8 @@ class Stock:
             return (end-start)/start
         except KeyError:
             return 0
+        except ZeroDivisionError:
+            return 0
 
     def set_start_end(self, start_date, end_date):
         self.start_date = start_date
