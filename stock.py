@@ -10,7 +10,7 @@ def date_range(start_date, end_date):
 
 class Stock:
 
-    def __init__(self, symbol, cap, ipo, sector, industry, start_date, end_date):
+    def __init__(self, symbol, cap, ipo, sector, industry, start_date, end_date, validate):
         data = data_warehouse.fetch(symbol, start_date, end_date)
         if data is not None:
             self.symbol = symbol
@@ -22,7 +22,7 @@ class Stock:
             self.industry = industry
             self.start_date = start_date
             self.end_date = end_date
-            if not self.valid(start_date, end_date):
+            if validate and not self.valid(start_date, end_date):
                 self.data = None
         else:
             self.data = None

@@ -14,9 +14,9 @@ def hash_arguments(symbol, start_date, end_date):
 
 
 def fetch(symbol, start_date, end_date):
-    print("fetching", symbol)
     path = hash_arguments(symbol, start_date, end_date)
     if not os.path.exists(path):
+        print("fetching", symbol, "from internet. Slow.")
         data = scraper.scrape(symbol, start_date, end_date)
         pickle.dump(data, open(path, 'wb'))
     else:
