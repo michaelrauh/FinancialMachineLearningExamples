@@ -1,5 +1,11 @@
 import data_warehouse
 import parser
+from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
+import datetime
+
+
+def date_range(start_date, end_date):
+    return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
 
 
 class Stock:
@@ -16,8 +22,29 @@ class Stock:
             self.industry = industry
             self.start_date = start_date
             self.end_date = end_date
+            if not self.valid(start_date, end_date):
+                self.data = None
         else:
             self.data = None
+
+    def valid(self, start_date, end_date):
+        failures = 0
+        started = False
+        for day in date_range(start_date, end_date):
+            date = day.date()
+            if not started:
+                if date in self.all_dates():
+                    started = True
+            else:
+                if date in self.all_dates():
+                    failures = 0
+                else:
+                    failures += 1
+            if failures > 4:
+                print("invalid data")
+                return False
+        print("valid data")
+        return True
 
     def get_open_price(self, date):
         return float(self.price_map[date][0])

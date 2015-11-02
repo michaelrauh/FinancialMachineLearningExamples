@@ -14,6 +14,7 @@ def hash_arguments(symbol, start_date, end_date):
 
 
 def fetch(symbol, start_date, end_date):
+    print("fetching", symbol)
     path = hash_arguments(symbol, start_date, end_date)
     if not os.path.exists(path):
         data = scraper.scrape(symbol, start_date, end_date)
