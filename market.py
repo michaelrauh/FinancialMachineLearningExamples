@@ -49,7 +49,7 @@ class Market:
             blacklist = []
             for symbol in self.symbols:
                 self.stocks[symbol] = self.create_stock(symbol, start_date, end_date, True)
-                if self.stocks[symbol] is None:
+                if self.stocks[symbol].data is None:
                     blacklist.append(symbol)
             self.write_to_blacklist(self.path(start_date, end_date), blacklist)
         else:
