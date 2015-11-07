@@ -23,7 +23,7 @@ class Broker:
         desired_number = len(stocks)
         if desired_number > 0:
             budget = balance/desired_number
-            budget -= (self.fees * desired_number)
+            budget -= (self.fees * desired_number * 2)
             for stock in stocks:
                 price = self.market.get_price(stock, date)
                 quantity = math.floor(budget/price)

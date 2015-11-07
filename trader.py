@@ -19,7 +19,7 @@ class Trader:
         return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
 
     def top_x(self, x, start_date, end_date):
-        for day in self.date_range(start_date, end_date):
+        for day in self.date_range(start_date, end_date - datetime.timedelta(30)):
             day = day.date()
             if self.market.open_on(day):
                 year_ago = day - datetime.timedelta(days=365)

@@ -80,6 +80,6 @@ class Market:
         try:
             return self.stocks[symbol].get_open_price(date)
         except KeyError:
-            print("warning, interpolating price", symbol)
             tomorrow = date + datetime.timedelta(1)
+            print("warning, interpolating price for", symbol, "from", date, "to", tomorrow)
             return self.get_price(symbol, tomorrow)
