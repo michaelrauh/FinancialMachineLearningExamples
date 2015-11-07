@@ -48,7 +48,7 @@ class Stock:
                     failures = 0
                 else:
                     failures += 1
-            if failures > 4:
+            if failures > 10:
                 print("Invalid data found. Blacklisting", self.symbol)
                 return False
         return True

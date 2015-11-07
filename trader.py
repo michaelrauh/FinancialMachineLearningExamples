@@ -9,10 +9,15 @@ from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
 class Trader:
 
     def __init__(self, starting_money, start_date, end_date):
+        self.starting_money = starting_money
         self.market = m.Market(start_date, end_date)
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
         self.broker = b.Broker(self.market)
+
+    def reset(self):
+        self.account = a.Account(self.starting_money)
+        self.portfolio = p.Portfolio()
 
     @staticmethod
     def date_range(start_date, end_date):
