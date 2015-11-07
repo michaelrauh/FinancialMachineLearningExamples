@@ -62,8 +62,7 @@ class Market:
             stock.start_date = start_date
             stock.end_date = end_date
         top_stocks = sorted(list(self.stocks.values()), key=lambda stock : stock.performance_key(), reverse=True)
-        if top_stocks[0].performance_key() == 0:
-            top_stocks = []
+        top_stocks = [s for s in top_stocks if s.performance_key() > 0]
         return top_stocks[:x]
 
     def open_on(self, date):
