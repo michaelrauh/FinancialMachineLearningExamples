@@ -16,6 +16,7 @@ class Stock:
             self.symbol = symbol
             self.data = data
             self.price_map = parser.parse(self.data)
+            self.clean()
             self.cap = cap
             self.ipo = ipo
             self.sector = sector
@@ -26,6 +27,13 @@ class Stock:
                 self.data = None
         else:
             self.data = None
+
+    def clean(self):
+        for date in list(self.price_map.keys()):
+            if date in self.price_map:
+                data = self.price_map[date]
+                if data[0] == data[1] == data[2] == data[3]:
+                    del(self.price_map[date])
 
     def valid(self, start_date, end_date):
         failures = 0
@@ -41,9 +49,8 @@ class Stock:
                 else:
                     failures += 1
             if failures > 4:
-                print("invalid data")
+                print("Invalid data found. Blacklisting", self.symbol)
                 return False
-        print("valid data")
         return True
 
     def get_open_price(self, date):
