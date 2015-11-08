@@ -9,4 +9,4 @@ trader = t.Trader(1000000, START, END)
 for x in range(1, 500):
     trader.reset()
     trader.top_x(x, START, END)
-    print("final balance when x = ", x, "is", trader.balance())
+    print("Multiplier when x =", x, "is", (trader.balance() - 1000000)/1000000)
