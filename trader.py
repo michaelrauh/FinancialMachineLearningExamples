@@ -35,6 +35,7 @@ class Trader:
                 extra_stocks = current_stocks.difference(desired_stocks)
                 self.broker.sell(extra_stocks, self.account, self.portfolio, day)
                 self.broker.buy_even_weight(missing_stocks, self.account, self.portfolio, day)
+        self.broker.sell(self.portfolio.symbols(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
 
     def balance(self):
         return self.account.balance
