@@ -48,7 +48,7 @@ class Stock:
                     failures = 0
                 else:
                     failures += 1
-            if failures > 10:
+            if failures > 3:
                 print("Invalid data found. Blacklisting", self.symbol)
                 return False
         return True
@@ -76,7 +76,9 @@ class Stock:
         return (end-start)/start
 
     def get_price(self, date, depth=0):
-        if depth > 20:
+        if self.ipo is not None and date.year < self.ipo:
+            return None
+        if depth > 7:
             return None
         try:
             return self.get_open_price(date)
