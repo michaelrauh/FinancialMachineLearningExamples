@@ -69,24 +69,27 @@ class Stock:
         return int(self.price_map[date][4])
 
     def performance(self, start_date, end_date):
+        start = self.get_price(start_date)
+        end = self.get_price(end_date)
+        if start is None or end is None:
+            return 0
+        return (end-start)/start
+
+    def get_price(self, date, depth=0):
+        if depth > 20:
+            return None
         try:
-            start = self.get_open_price(start_date)
-            end = self.get_open_price(end_date)
-            return (end-start)/start
+            return self.get_open_price(date)
         except KeyError:
-            return 0
-        except ZeroDivisionError:
-            return 0
+            tomorrow = date + datetime.timedelta(1)
+            return self.get_price(tomorrow, depth + 1)
 
     def set_start_end(self, start_date, end_date):
         self.start_date = start_date
         self.end_date = end_date
 
     def performance_key(self):
-        if self.data is not None:
-            return self.performance(self.start_date, self.end_date)
-        else:
-            return -1
+        return self.performance(self.start_date, self.end_date)
 
     def __repr__(self):
         return self.symbol

@@ -1,6 +1,5 @@
 import stock
 import static_data as data
-import datetime
 import blacklist as bl
 
 
@@ -55,9 +54,4 @@ class Market:
         return all_dates
 
     def get_price(self, symbol, date):
-        try:
-            return self.stocks[symbol].get_open_price(date)
-        except KeyError:
-            tomorrow = date + datetime.timedelta(1)
-            #print("warning, interpolating price for", symbol, "from", date, "to", tomorrow)
-            return self.get_price(symbol, tomorrow)
+        return self.stocks[symbol].get_price(date)
