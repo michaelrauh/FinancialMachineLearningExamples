@@ -14,7 +14,7 @@ class Broker:
             value = p * q
             value -= self.fees
             portfolio.sell(stock)
-            account.credit(value, date)
+            account.credit(value)
             print("selling", q, "shares of", stock, "at", value, "on", date, "that's", p, "per share")
 
     def buy_even_weight(self, stocks, account, portfolio, date):
@@ -28,6 +28,6 @@ class Broker:
                 quantity = math.floor(budget/price)
                 if quantity > 0:
                     purchase_price = (price * quantity) - self.fees
-                    account.debit(purchase_price, date)
+                    account.debit(purchase_price)
                     portfolio.buy(stock, quantity)
                     print("buying", quantity, "shares of", stock, "at", purchase_price, "on", date, "that's", price, "per share")
