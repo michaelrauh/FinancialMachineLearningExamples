@@ -23,12 +23,12 @@ class Trader:
     def date_range(start_date, end_date):
         return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
 
-    def top_x(self, x, start_date, end_date):
+    def top_x(self, x, start_date, end_date, horizon):
         for day in self.date_range(start_date, end_date - datetime.timedelta(30)):
             day = day.date()
             if self.market.open_on(day):
-                year_ago = day - datetime.timedelta(days=365)
-                top_today = self.market.get_top_x(x, year_ago, day)
+                time_ago = day - datetime.timedelta(days=horizon)
+                top_today = self.market.get_top_x(x, time_ago, day)
                 current_stocks = set(self.portfolio.symbols())
                 desired_stocks = set([stock.symbol for stock in top_today])
                 missing_stocks = desired_stocks.difference(current_stocks)
