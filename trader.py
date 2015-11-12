@@ -23,7 +23,7 @@ class Trader:
     def date_range(start_date, end_date):
         return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
 
-    def top_x(self, x, start_date, end_date, horizon):
+    def top_x(self, x, start_date, end_date, horizon, balances):
         for day in self.date_range(start_date, end_date - datetime.timedelta(30)):
             day = day.date()
             if self.market.open_on(day):
@@ -34,8 +34,17 @@ class Trader:
                 missing_stocks = desired_stocks.difference(current_stocks)
                 extra_stocks = current_stocks.difference(desired_stocks)
                 self.broker.sell(extra_stocks, self.account, self.portfolio, day)
+                balances.append(self.net_worth(day))
                 self.broker.buy_even_weight(missing_stocks, self.account, self.portfolio, day)
         self.broker.sell(self.portfolio.symbols(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
 
     def balance(self):
         return self.account.balance
+
+    def net_worth(self, today):
+        worth = 0
+        for symbol in self.portfolio.symbols():
+            q = self.portfolio.quantity(symbol)
+            price = self.market.get_price(symbol, today)
+            worth += q * price
+        return worth + self.account.balance
