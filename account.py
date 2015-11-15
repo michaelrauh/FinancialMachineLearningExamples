@@ -4,10 +4,7 @@ class Account:
         self.balance = balance
 
     def credit(self, value):
-        try:
-            self.balance += value
-        except KeyError:
-            self.balance = value
+        self.balance += value
 
     def debit(self, value):
         self.balance -= value
