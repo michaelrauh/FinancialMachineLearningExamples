@@ -8,4 +8,4 @@ Own stocks while they are in the top X percent yearly performance
 Buy stocks with high pearson coefficients against trending time-shifted stocks
 
 # HighProfiler
-Buy stocks that correlate with historical outperformers in the same 52 week high saturation category
+Buy stocks that correlate with historical out-performers in the same 52 week high saturation category

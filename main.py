@@ -10,7 +10,7 @@ END_SIM = d.date(2015, 10, 30)
 
 trader = t.Trader(1000000, START_ERA, END_ERA)
 
-for x in [55]:
+for x in [1]:
     for horizon in [55]:
         balances = []
         trader.reset()
@@ -20,6 +20,7 @@ for x in [55]:
         plt.xlabel("number of days after Jan. 1, 2005")
         plt.ylabel("Portfolio value (USD)")
         os.makedirs('output', exist_ok=True)
-        plt.savefig('output/' + str(START_SIM) + "_" + str(END_SIM) + "_" + str(x) + "_" + str(horizon) + '.png', bbox_inches='tight')
+        plt.savefig('output/' + str(START_SIM) + "_" + str(END_SIM) + "_" + str(x) + "_" + str(horizon) + '.png',
+                    bbox_inches='tight')
         plt.gcf().clear()
         print("x=", x, "horizon=", horizon, "balance=", (trader.balance()))
