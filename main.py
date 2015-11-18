@@ -10,8 +10,8 @@ END_SIM = d.date(2015, 10, 30)
 
 trader = t.Trader(1000000, START_ERA, END_ERA)
 
-for x in [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]:
-    for horizon in [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610]:
+for x in [55]:
+    for horizon in [55]:
         balances = []
         trader.reset()
         trader.top_x(x, START_SIM, END_SIM, horizon, balances)

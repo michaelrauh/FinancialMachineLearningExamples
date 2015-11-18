@@ -36,10 +36,10 @@ class Market:
                     self.stocks[symbol] = self.create_stock(symbol, start_date, end_date, False)
 
     def get_top_x(self, x, start_date, end_date):
-        for stock in self.stocks.values():
-            stock.start_date = start_date
-            stock.end_date = end_date
-        top_stocks = sorted(list(self.stocks.values()), key=lambda stock : stock.performance_key(), reverse=True)
+        for stock_data in self.stocks.values():
+            stock_data.start_date = start_date
+            stock_data.end_date = end_date
+        top_stocks = sorted(list(self.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
         top_stocks = [s for s in top_stocks if s.performance_key() > 0]
         return top_stocks[:x]
 
@@ -48,9 +48,9 @@ class Market:
 
     def get_all_dates(self):
         all_dates = set()
-        for stock in self.stocks.values():
-            if stock.data is not None:
-                all_dates = all_dates.union(stock.all_dates())
+        for s in self.stocks.values():
+            if s.data is not None:
+                all_dates = all_dates.union(s.all_dates())
         return all_dates
 
     def get_price(self, symbol, date):

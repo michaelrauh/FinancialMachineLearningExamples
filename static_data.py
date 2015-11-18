@@ -18,35 +18,35 @@ def symbols():
     return list(_symbol_map_.keys())
 
 
-def cap(symbol):
-    cap = _symbol_map_[symbol][0]
-    if cap == 'n/a':
+def cap(stock_symbol):
+    size = _symbol_map_[stock_symbol][0]
+    if size == 'n/a':
         return None
-    if cap[-1] == 'B':
-        mult = 1000000000
+    if size[-1] == 'B':
+        multiplier = 1000000000
     else:
-        mult = 1000000
-    return int((float(cap[1:-1]) * mult))
+        multiplier = 1000000
+    return int((float(size[1:-1]) * multiplier))
 
 
-def ipo(symbol):
-    ans = _symbol_map_[symbol][1]
+def ipo(stock_symbol):
+    ans = _symbol_map_[stock_symbol][1]
     if ans == 'n/a':
         return None
     else:
         return int(ans)
 
 
-def sector(symbol):
-    ans = _symbol_map_[symbol][2]
+def sector(stock_symbol):
+    ans = _symbol_map_[stock_symbol][2]
     if ans == 'n/a':
         return None
     else:
         return ans
 
 
-def industry(symbol):
-    ans = _symbol_map_[symbol][3]
+def industry(stock_symbol):
+    ans = _symbol_map_[stock_symbol][3]
     if ans == 'n/a':
         return None
     else:
