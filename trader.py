@@ -28,23 +28,22 @@ class Trader:
             day = day.date()
             if self.market.open_on(day):
                 time_ago = day - datetime.timedelta(days=horizon)
-                top_today = self.market.get_top_x(x, time_ago, day)
-                current_stocks = set(self.portfolio.symbols())
-                desired_stocks = set([stock.symbol for stock in top_today])
+                desired_stocks = set(self.market.get_top_x(x, time_ago, day))
+                current_stocks = set(self.portfolio.stocks())
                 missing_stocks = desired_stocks.difference(current_stocks)
                 extra_stocks = current_stocks.difference(desired_stocks)
                 self.broker.sell(extra_stocks, self.account, self.portfolio, day)
                 balances.append(self.net_worth(day))
                 self.broker.buy_even_weight(missing_stocks, self.account, self.portfolio, day)
-        self.broker.sell(self.portfolio.symbols(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
+        self.broker.sell(self.portfolio.stocks(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
 
     def balance(self):
         return self.account.balance
 
     def net_worth(self, today):
         worth = 0
-        for symbol in self.portfolio.symbols():
-            q = self.portfolio.quantity(symbol)
-            price = self.market.get_price(symbol, today)
+        for stock in self.portfolio.stocks():
+            q = self.portfolio.quantity(stock)
+            price = stock.get_price(today)
             worth += q * price
         return worth + self.account.balance

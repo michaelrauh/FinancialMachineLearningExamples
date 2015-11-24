@@ -52,6 +52,3 @@ class Market:
             if s.data is not None:
                 all_dates = all_dates.union(s.all_dates())
         return all_dates
-
-    def get_price(self, symbol, date):
-        return self.stocks[symbol].get_price(date)

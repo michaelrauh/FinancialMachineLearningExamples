@@ -2,20 +2,20 @@ class Portfolio:
     def __init__(self):
         self.register = {}
 
-    def quantity(self, symbol):
+    def quantity(self, stock):
         try:
-            return self.register[symbol]
+            return self.register[stock]
         except KeyError:
             return 0
 
-    def buy(self, symbol, quantity):
+    def buy(self, stock, quantity):
         try:
-            self.register[symbol] += quantity
+            self.register[stock] += quantity
         except KeyError:
-            self.register[symbol] = quantity
+            self.register[stock] = quantity
 
-    def sell(self, symbol):
-        del(self.register[symbol])
+    def sell(self, stock):
+        del(self.register[stock])
 
-    def symbols(self):
+    def stocks(self):
         return list(self.register.keys())
