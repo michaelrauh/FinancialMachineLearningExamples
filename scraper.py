@@ -1,4 +1,5 @@
 import urllib.request
+import urllib.error
 
 
 def scrape(symbol, start_date, end_date):
