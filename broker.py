@@ -9,7 +9,7 @@ class Broker:
 
     def sell(self, stocks, account, portfolio, date):
         for stock in stocks:
-            p = stock.get_price(date)
+            p = stock.get_open_price(date)
             q = portfolio.quantity(stock)
             value = p * q
             value -= self.fees
@@ -24,7 +24,7 @@ class Broker:
             budget = balance/desired_number
             budget -= (self.fees * desired_number * 2)
             for stock in stocks:
-                p = stock.get_price(date)
+                p = stock.get_open_price(date)
                 q = math.floor(budget/p)
                 if q > 0:
                     purchase_price = (p * q) - self.fees

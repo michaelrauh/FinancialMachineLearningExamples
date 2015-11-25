@@ -54,37 +54,37 @@ class Stock:
         return True
 
     def get_open_price(self, date):
-        return float(self.price_map[date][0])
+        return self.__fetch_data__(date, parser.DataOrder.opens)
 
     def get_high_price(self, date):
-        return float(self.price_map[date][1])
+        return self.__fetch_data__(date, parser.DataOrder.highs)
 
     def get_low_price(self, date):
-        return float(self.price_map[date][2])
+        return self.__fetch_data__(date, parser.DataOrder.lows)
 
     def get_close_price(self, date):
-        return float(self.price_map[date][3])
+        return self.__fetch_data__(date, parser.DataOrder.closes)
 
     def get_volume(self, date):
-        return int(self.price_map[date][4])
+        return self.__fetch_data__(date, parser.DataOrder.volumes)
 
     def performance(self, start_date, end_date):
-        start = self.get_price(start_date)
-        end = self.get_price(end_date)
+        start = self.get_open_price(start_date)
+        end = self.get_open_price(end_date)
         if start is None or end is None:
             return 0
         return (end-start)/start
 
-    def get_price(self, date, depth=0):
+    def __fetch_data__(self, date, member, depth=0):
         if self.ipo is not None and date.year < self.ipo:
             return None
         if depth > 7:
             return None
         try:
-            return self.get_open_price(date)
+            return float(self.price_map[date][member.value])
         except KeyError:
             tomorrow = date + datetime.timedelta(1)
-            return self.get_price(tomorrow, depth + 1)
+            return self.__fetch_data__(tomorrow, member, depth + 1)
 
     def set_start_end(self, start_date, end_date):
         self.start_date = start_date

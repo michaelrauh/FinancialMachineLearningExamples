@@ -1,5 +1,6 @@
 import time
 import datetime
+from enum import Enum
 
 
 def get_column(index, data):
@@ -27,3 +28,11 @@ def parse(data):
     for i in range(len(dates)):
         price_map[dates[i]] = (opens[i], highs[i], lows[i], closes[i], volumes[i])
     return price_map
+
+
+class DataOrder(Enum):
+    opens = 0
+    highs = 1
+    lows = 2
+    closes = 3
+    volumes = 4

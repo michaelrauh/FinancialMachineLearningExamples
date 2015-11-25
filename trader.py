@@ -44,6 +44,6 @@ class Trader:
         worth = 0
         for stock in self.portfolio.stocks():
             q = self.portfolio.quantity(stock)
-            price = stock.get_price(today)
+            price = stock.get_open_price(today)
             worth += q * price
         return worth + self.account.balance

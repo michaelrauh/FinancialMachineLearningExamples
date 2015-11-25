@@ -37,8 +37,7 @@ class Market:
 
     def get_top_x(self, x, start_date, end_date):
         for stock_data in self.stocks.values():
-            stock_data.start_date = start_date
-            stock_data.end_date = end_date
+            stock_data.set_start_end(start_date, end_date)
         top_stocks = sorted(list(self.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
         top_stocks = [s for s in top_stocks if s.performance_key() > 0]
         return top_stocks[:x]
