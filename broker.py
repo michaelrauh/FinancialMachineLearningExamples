@@ -20,6 +20,7 @@ class Broker:
             print("selling", q, "shares of", stock, "at", value, "on", date, "that's", p, "per share")
 
     def buy_even_weight(self, stocks, account, portfolio, date):
+        stocks = set([stock for stock in stocks if not stock.blacklisted(date)])
         balance = account.balance
         desired_number = len(stocks)
         if desired_number > 0:
@@ -35,16 +36,18 @@ class Broker:
                     print("buying", q, "shares of", stock, "at", purchase_price, "on", date, "that's", p,
                           "per share")
 
-    def sell_stop_loss(self, portfolio, account, stock, price, date):
+    def sell_stop_loss(self, portfolio, account, stock, price, date, blacklist_duration):
         q = portfolio.quantity(stock)
         p = price
         value = p * q
         value -= self.fees
         portfolio.sell(stock)
         account.credit(value)
+        stock.blacklist(date, blacklist_duration)
         print("selling on stop loss", q, "shares of", stock, "at", value, "on", date, "that's", p, "per share")
 
-    def buy_stop_loss(self, portfolio, account, stocks, date, loss):
+    def buy_stop_loss(self, portfolio, account, stocks, date, loss, blacklist_duration):
+        stocks = set([stock for stock in stocks if not stock.blacklisted(date)])
         balance = account.balance
         desired_number = len(stocks)
         if desired_number > 0:
@@ -55,7 +58,7 @@ class Broker:
                 q = math.floor(budget/p)
                 if q > 0:
                     purchase_price = (p * q) + self.fees
-                    stop_loss = self.ef.stop_loss(portfolio, account, stock, p, loss)
+                    stop_loss = self.ef.stop_loss(portfolio, account, stock, p, loss, blacklist_duration)
                     account.debit(purchase_price)
                     portfolio.buy_with_trigger(stock, q, stop_loss)
                     print("buying with stop loss", q, "shares of", stock, "at", purchase_price, "on", date, "that's", p,

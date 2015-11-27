@@ -23,6 +23,7 @@ class Stock:
             self.industry = industry
             self.start_date = start_date
             self.end_date = end_date
+            self.blacklist_date = datetime.date(1900, 1, 1)
             if validate and not self.valid(start_date, end_date):
                 self.data = None
         else:
@@ -98,3 +99,9 @@ class Stock:
 
     def all_dates(self):
         return set(self.price_map.keys())
+
+    def blacklist(self, date, duration):
+        self.blacklist_date = date + datetime.timedelta(duration)
+
+    def blacklisted(self, date):
+        return date < self.blacklist_date
