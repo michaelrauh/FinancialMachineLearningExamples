@@ -69,9 +69,24 @@ class Stock:
     def get_volume(self, date):
         return self.__fetch_data__(date, parser.DataOrder.volumes)
 
+    def get_open_price_backward(self, date):
+        return self.__fetch_backward__(date, parser.DataOrder.opens)
+
+    def get_high_price_backward(self, date):
+        return self.__fetch_backward__(date, parser.DataOrder.highs)
+
+    def get_low_price_backward(self, date):
+        return self.__fetch_backward__(date, parser.DataOrder.lows)
+
+    def get_close_price_backward(self, date):
+        return self.__fetch_backward__(date, parser.DataOrder.closes)
+
+    def get_volume_backward(self, date):
+        return self.__fetch_backward__(date, parser.DataOrder.volumes)
+
     def performance(self, start_date, end_date):
-        start = self.get_open_price(start_date)
-        end = self.get_open_price(end_date)
+        start = self.get_low_price_backward(start_date)
+        end = self.get_high_price_backward(end_date - datetime.timedelta(1))
         if start is None or end is None:
             return 0
         return (end-start)/start
@@ -86,6 +101,17 @@ class Stock:
         except KeyError:
             tomorrow = date + datetime.timedelta(1)
             return self.__fetch_data__(tomorrow, member, depth + 1)
+
+    def __fetch_backward__(self, date, member, depth=0):
+        if self.ipo is not None and date.year < self.ipo:
+            return None
+        if depth > 7:
+            return None
+        try:
+            return float(self.price_map[date][member.value])
+        except KeyError:
+            yesterday = date - datetime.timedelta(1)
+            return self.__fetch_data__(yesterday, member, depth + 1)
 
     def set_start_end(self, start_date, end_date):
         self.start_date = start_date
