@@ -18,6 +18,8 @@ class Trader:
     def reset(self):
         self.account = a.Account(self.starting_money)
         self.portfolio = p.Portfolio()
+        for stock in self.market.stocks.values():
+            stock.blacklist_date = datetime.date(1900, 1, 1)
 
     @staticmethod
     def date_range(start_date, end_date):

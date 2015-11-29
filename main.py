@@ -15,6 +15,7 @@ for x in [1, 2, 3, 5, 8, 13, 21, 34, 55]:
             for blacklist_duration in [0, 30, 60, 90, 365, 3650]:
                 balances = []
                 trader.reset()
+                balances = list()
                 trader.top_x(x, START_SIM, END_SIM, horizon, balances, loss, blacklist_duration)
                 g.graph(balances, trader.balance(), horizon, x, START_SIM, END_SIM, loss, blacklist_duration)
                 print("x=", x, "horizon=", horizon, "balance=", (trader.balance()))
