@@ -37,6 +37,8 @@ class Trader:
                 extra_stocks = current_stocks.difference(desired_stocks)
                 self.broker.sell(extra_stocks, self.account, self.portfolio, day)
                 balances.append(self.net_worth(day))
+                if self.net_worth(day) < self.starting_money/100:
+                    return 0
                 self.broker.buy_stop_loss(self.portfolio, self.account, missing_stocks, day, loss, blacklist_duration)
         self.broker.sell(self.portfolio.stocks(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
 
