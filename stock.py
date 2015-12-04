@@ -1,4 +1,4 @@
-import data_warehouse
+import data_cache
 import parser
 from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
 import datetime
@@ -11,7 +11,7 @@ def date_range(start_date, end_date):
 class Stock:
 
     def __init__(self, symbol, cap, ipo, sector, industry, start_date, end_date, validate):
-        data = data_warehouse.fetch(symbol, start_date, end_date)
+        data = data_cache.fetch(symbol, start_date, end_date)
         if data is not None:
             self.symbol = symbol
             self.data = data
