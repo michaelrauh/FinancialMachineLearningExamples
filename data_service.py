@@ -7,10 +7,6 @@ from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
 class DataService:
 
     @staticmethod
-    def all_dates(self):
-        return set(self.price_map.keys())
-
-    @staticmethod
     def date_range(start_date, end_date):
         return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
 
@@ -23,7 +19,6 @@ class DataService:
                     del(dirty[date])
         return dirty
 
-    @staticmethod
     def valid(self, data):
         failures = 0
         started = False
@@ -38,7 +33,6 @@ class DataService:
                 else:
                     failures += 1
             if failures > 3:
-                print("Invalid data found. Blacklisting", self.symbol)
                 return False
         return True
 
