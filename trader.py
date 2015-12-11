@@ -7,7 +7,6 @@ from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
 
 
 class Trader:
-
     def __init__(self, starting_money, start_date, end_date):
         self.starting_money = starting_money
         self.market = m.Market(start_date, end_date)
@@ -37,7 +36,7 @@ class Trader:
                 extra_stocks = current_stocks.difference(desired_stocks)
                 self.broker.sell(extra_stocks, self.account, self.portfolio, day)
                 balances.append(self.net_worth(day))
-                if self.net_worth(day) < self.starting_money/100:
+                if self.net_worth(day) < self.starting_money / 100:
                     return 0
                 self.broker.buy_stop_loss(self.portfolio, self.account, missing_stocks, day, loss, blacklist_duration)
         self.broker.sell(self.portfolio.stocks(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
@@ -52,3 +51,10 @@ class Trader:
             price = stock.get_open_price(today)
             worth += q * price
         return worth + self.account.balance
+
+    def get_top_x(self, x, start_date, end_date):
+        for stock_data in self.stocks.values():
+            stock_data.set_start_end(start_date, end_date)
+        top_stocks = sorted(list(self.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
+        top_stocks = [s for s in top_stocks if s.performance_key() > 0]
+        return top_stocks[:x]

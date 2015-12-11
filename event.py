@@ -3,6 +3,6 @@ class Event:
         self.trigger = trigger
         self.action = action
 
-    def fire_if_applicable(self, date):
-        if self.trigger(date):
-            self.action(date)
+    def fire_if_applicable(self):
+        if self.trigger():
+            self.action()

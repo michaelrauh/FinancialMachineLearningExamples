@@ -31,8 +31,7 @@ def parse(data):
 
 
 class DataOrder(Enum):
-    opens = 0
-    highs = 1
-    lows = 2
-    closes = 3
-    volumes = 4
+    open = 0
+    low = 1
+    high = 2
+    close = 3

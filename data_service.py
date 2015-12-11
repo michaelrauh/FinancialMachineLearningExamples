@@ -2,9 +2,20 @@ import data_cache
 import static_data
 import parser
 from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
+import os
+import pickle
 
 
 class DataService:
+    @staticmethod
+    def __hash_arguments__(start_date, end_date):
+        end_year = str(end_date.year)
+        end_month = str(end_date.month - 1)
+        end_day = str(end_date.day)
+        start_year = str(start_date.year)
+        start_month = str(start_date.month - 1)
+        start_day = str(start_date.day)
+        return 'data/' + 'whole_market' + end_year + end_month + end_day + start_year + start_month + start_day + '.p'
 
     @staticmethod
     def date_range(start_date, end_date):
@@ -46,6 +57,7 @@ class DataService:
         self.data_map = {}
         self.start_date = start_date
         self.end_date = end_date
+        self.load()
 
     def fill_in(self, clean):
         final = dict()
@@ -62,11 +74,19 @@ class DataService:
         return final
 
     def load(self):
-        for symbol in static_data.symbols():
-            raw = data_cache.fetch(symbol, self.start_date, self.end_date)
-            if raw is not None:
-                dirty = parser.parse(raw)
-                clean = self.clean(dirty)
-                if self.valid(clean):
-                    final = self.fill_in(clean)
-                    self.data_map[symbol] = final
+        path = self.__hash_arguments__(self.start_date, self.end_date)
+        if not os.path.exists(path):
+            for symbol in static_data.symbols():
+                raw = data_cache.fetch(symbol, self.start_date, self.end_date)
+                if raw is not None:
+                    dirty = parser.parse(raw)
+                    clean = self.clean(dirty)
+                    if self.valid(clean):
+                        final = self.fill_in(clean)
+                        self.data_map[symbol] = final
+            pickle.dump(self.data_map, open(path, 'wb'))
+        else:
+            self.data_map = pickle.load(open(path, 'rb'))
+
+    def symbols(self):
+        return list(self.data_map.keys())

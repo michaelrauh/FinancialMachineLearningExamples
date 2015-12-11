@@ -10,79 +10,52 @@ def date_range(start_date, end_date):
 
 class Stock:
 
-    def __init__(self, symbol, cap, ipo, sector, industry, start_date, end_date, validate):
-        data = data_cache.fetch(symbol, start_date, end_date)
-        if data is not None:
-            self.symbol = symbol
-            self.data = data
-            self.price_map = parser.parse(self.data)
-            self.clean()
-            self.cap = cap
-            self.ipo = ipo
-            self.sector = sector
-            self.industry = industry
-            self.start_date = start_date
-            self.end_date = end_date
-            self.blacklist_date = datetime.date(1900, 1, 1)
-            if validate and not self.valid(start_date, end_date):
-                self.data = None
-        else:
-            self.data = None
+    def __init__(self, symbol, cap, ipo, sector, industry, start_date, end_date):
+        self.symbol = symbol
+        self.cap = cap
+        self.ipo = ipo
+        self.sector = sector
+        self.industry = industry
+        self.start_date = start_date
+        self.end_date = end_date
+        self.blacklist_date = datetime.date(1900, 1, 1)
+        self.price_history = []
 
-    def clean(self):
-        for date in list(self.price_map.keys()):
-            if date in self.price_map:
-                data = self.price_map[date]
-                if data[0] == data[1] == data[2] == data[3]:
-                    del(self.price_map[date])
+    def push_price(self, tick):
+        self.price_history.push(tick)
 
-    def valid(self, start_date, end_date):
-        failures = 0
-        started = False
-        for day in date_range(start_date, end_date):
-            date = day.date()
-            if not started:
-                if date in self.all_dates():
-                    started = True
-            else:
-                if date in self.all_dates():
-                    failures = 0
-                else:
-                    failures += 1
-            if failures > 3:
-                print("Invalid data found. Blacklisting", self.symbol)
-                return False
-        return True
+    def current_price(self):
+        return self.price_history[0]
 
     def get_open_price(self, date):
-        return self.__fetch_data__(date, parser.DataOrder.opens)
+        return self.__fetch_data__(date, parser.DataOrder.open)
 
     def get_high_price(self, date):
-        return self.__fetch_data__(date, parser.DataOrder.highs)
+        return self.__fetch_data__(date, parser.DataOrder.high)
 
     def get_low_price(self, date):
-        return self.__fetch_data__(date, parser.DataOrder.lows)
+        return self.__fetch_data__(date, parser.DataOrder.low)
 
     def get_close_price(self, date):
-        return self.__fetch_data__(date, parser.DataOrder.closes)
+        return self.__fetch_data__(date, parser.DataOrder.close)
 
     def get_volume(self, date):
-        return self.__fetch_data__(date, parser.DataOrder.volumes)
+        return self.__fetch_data__(date, parser.DataOrder.volume)
 
     def get_open_price_backward(self, date):
-        return self.__fetch_backward__(date, parser.DataOrder.opens)
+        return self.__fetch_backward__(date, parser.DataOrder.open)
 
     def get_high_price_backward(self, date):
-        return self.__fetch_backward__(date, parser.DataOrder.highs)
+        return self.__fetch_backward__(date, parser.DataOrder.high)
 
     def get_low_price_backward(self, date):
-        return self.__fetch_backward__(date, parser.DataOrder.lows)
+        return self.__fetch_backward__(date, parser.DataOrder.low)
 
     def get_close_price_backward(self, date):
-        return self.__fetch_backward__(date, parser.DataOrder.closes)
+        return self.__fetch_backward__(date, parser.DataOrder.close)
 
     def get_volume_backward(self, date):
-        return self.__fetch_backward__(date, parser.DataOrder.volumes)
+        return self.__fetch_backward__(date, parser.DataOrder.volume)
 
     def performance(self, start_date, end_date):
         start = self.get_low_price_backward(start_date)

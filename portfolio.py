@@ -20,9 +20,6 @@ class Portfolio:
         self.events[stock] = event
 
     def sell(self, stock):
-        # print(stock)
-        # print(self.register)
-        # print(self.events)
         del(self.register[stock])
         del(self.events[stock])
 
