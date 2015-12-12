@@ -29,10 +29,11 @@ class Trader:
             missing_stocks = desired_stocks.difference(current_stocks)
             extra_stocks = current_stocks.difference(desired_stocks)
             for stock in extra_stocks:
-                self.broker.sell(stock, self.account, self.portfolio, today)
+                self.broker.sell(stock, self.account, self.portfolio)
             budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
             for stock in missing_stocks:
-                self.broker.buy_stop_loss(budget, self.portfolio, self.account, stock, loss, blacklist_duration)
+                if not stock.blacklisted(today):
+                    self.broker.buy_stop_loss(budget, self.portfolio, self.account, stock, loss, blacklist_duration)
 
     def sort_by_performance(self, start_date):
         for stock in self.market.stocks.values():

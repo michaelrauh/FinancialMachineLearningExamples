@@ -9,57 +9,32 @@ class Broker:
         self.market = market
         self.ef = e.EventFactory(self)
 
-    def sell(self, stocks, account, portfolio, date):
-        for stock in stocks:
-            p = stock.get_open_price(date)
-            q = portfolio.quantity(stock)
-            value = p * q
-            value -= self.fees
-            portfolio.sell(stock)
-            account.credit(value)
-            print("selling", q, "shares of", stock, "at", value, "on", date, "that's", p, "per share")
-
-    def buy_even_weight(self, stocks, account, portfolio, date):
-        stocks = set([stock for stock in stocks if not stock.blacklisted(date)])
-        balance = account.balance
-        desired_number = len(stocks)
-        if desired_number > 0:
-            budget = balance/desired_number
-            budget -= (self.fees * desired_number * 2)
-            for stock in stocks:
-                p = stock.get_open_price(date)
-                q = math.floor(budget/p)
-                if q > 0:
-                    purchase_price = (p * q) + self.fees
-                    account.debit(purchase_price)
-                    portfolio.buy(stock, q)
-                    print("buying", q, "shares of", stock, "at", purchase_price, "on", date, "that's", p,
-                          "per share")
-
-    def sell_stop_loss(self, portfolio, account, stock, price, date, blacklist_duration):
-        q = portfolio.quantity(stock)
-        p = price
-        value = p * q
+    def sell(self, stock, account, portfolio, price=None):
+        if price is not None:
+            price = stock.current_price
+        quantity = portfolio.quantity(stock)
+        value = price * quantity
         value -= self.fees
         portfolio.sell(stock)
         account.credit(value)
-        stock.blacklist(date, blacklist_duration)
-        print("selling on stop loss", q, "shares of", stock, "at", value, "on", date, "that's", p, "per share")
+        print("selling", quantity, "shares of", stock, "at", value, "that's", price, "per share")
 
-    def buy_stop_loss(self, portfolio, account, stocks, date, loss, blacklist_duration):
-        stocks = set([stock for stock in stocks if not stock.blacklisted(date)])
-        balance = account.balance
-        desired_number = len(stocks)
-        if desired_number > 0:
-            budget = balance/desired_number
-            budget -= (self.fees * desired_number * 2)
-            for stock in stocks:
-                p = stock.get_open_price(date)
-                q = math.floor(budget/p)
-                if q > 0:
-                    purchase_price = (p * q) + self.fees
-                    stop_loss = self.ef.stop_loss(portfolio, account, stock, p, loss, blacklist_duration)
-                    account.debit(purchase_price)
-                    portfolio.buy_with_trigger(stock, q, stop_loss)
-                    print("buying with stop loss", q, "shares of", stock, "at", purchase_price, "on", date, "that's", p,
-                          "per share with stop at", loss)
+    def buy(self, budget, stock, account, portfolio, trigger=None):
+        if trigger is not None:
+            self.market.register_event(trigger)
+        price = stock.current_price
+        quantity = math.floor(budget/price)
+        if quantity > 0:
+            purchase_price = (price * quantity) + self.fees
+            account.debit(purchase_price)
+            portfolio.buy(stock, quantity)
+            print("buying", quantity, "shares of", stock, "at", purchase_price, "that's", price,
+                  "per share")
+
+    def sell_stop_loss(self, portfolio, account, stock, price, date, blacklist_duration):
+        self.sell(stock, account, portfolio, price)
+        stock.blacklist(date, blacklist_duration)
+
+    def buy_stop_loss(self, budget, portfolio, account, stock, loss, blacklist_duration):
+        stop_loss = self.ef.stop_loss(portfolio, account, stock, loss, blacklist_duration)
+        self.buy(budget, stock, account, portfolio, stop_loss)
