@@ -5,7 +5,6 @@ import datetime
 
 
 class Market:
-
     def __init__(self, start_date, end_date):
         data_service = d.DataService(start_date, end_date)
         self.price_map = data_service.data_map
@@ -16,10 +15,9 @@ class Market:
         self.time = DataOrder.open
         self.events = {}
 
-    def try_all_events(self):
-        iter_events = dict(self.events)
-        for event in iter_events.values():
-            event.fire_if_applicable()
+    def load_all_stocks(self):
+        for symbol in self.symbols:
+            self.stocks[symbol] = stock.Stock(symbol)
 
     def tick(self):
         for stock in self.price_map.values():
@@ -32,6 +30,13 @@ class Market:
         else:
             self.time += 1
 
-    def load_all_stocks(self):
-        for symbol in self.symbols:
-            self.stocks[symbol] = stock.Stock(symbol)
+    def register_event(self, stock, trigger):
+        self.events[stock] = trigger
+
+    def delete_event(self, stock):
+        del (self.events[stock])
+
+    def try_all_events(self):
+        iter_events = dict(self.events)
+        for event in iter_events.values():
+            event.fire_if_applicable()

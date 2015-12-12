@@ -19,9 +19,7 @@ class Broker:
         account.credit(value)
         print("selling", quantity, "shares of", stock, "at", value, "that's", price, "per share")
 
-    def buy(self, budget, stock, account, portfolio, trigger=None):
-        if trigger is not None:
-            self.market.register_event(trigger)
+    def buy(self, budget, stock, account, portfolio):
         price = stock.current_price
         quantity = math.floor(budget/price)
         if quantity > 0:
@@ -34,7 +32,9 @@ class Broker:
     def sell_stop_loss(self, portfolio, account, stock, price, date, blacklist_duration):
         self.sell(stock, account, portfolio, price)
         stock.blacklist(date, blacklist_duration)
+        self.market.delete_event(stock)
 
     def buy_stop_loss(self, budget, portfolio, account, stock, loss, blacklist_duration):
         stop_loss = self.ef.stop_loss(self.market, portfolio, account, stock, budget, loss, blacklist_duration)
-        self.buy(budget, stock, account, portfolio, stop_loss)
+        self.market.register_event(stop_loss)
+        self.buy(budget, stock, account, portfolio)
