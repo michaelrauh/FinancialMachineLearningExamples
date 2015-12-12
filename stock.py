@@ -1,4 +1,4 @@
-import parser
+from parser import DataOrder
 import datetime
 
 
@@ -22,7 +22,7 @@ class Stock:
             return None
 
     def current_performance(self, start_date):
-        start = self.fetch_price(start_date, parser.DataOrder.low)
+        start = self.fetch_price(start_date, DataOrder.low)
         end = self.current_price
         if start is None or end is None:
             return 0

@@ -3,10 +3,16 @@ import market as m
 import portfolio as p
 import broker as b
 import account as a
-from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
+from parser import DataOrder
+import math
 
 
 class Trader:
+
+    @staticmethod
+    def split_money(money, ways):
+        return math.floor(money/ways)
+
     def __init__(self, starting_money, start_date, end_date):
         self.starting_money = starting_money
         self.market = m.Market(start_date, end_date)
@@ -14,47 +20,23 @@ class Trader:
         self.portfolio = p.Portfolio()
         self.broker = b.Broker(self.market)
 
-    def reset(self):
-        self.account = a.Account(self.starting_money)
-        self.portfolio = p.Portfolio()
+    def top_x(self, x, horizon, loss, blacklist_duration):
+        today = self.market.date
+        if self.market.time == DataOrder.close:
+            time_ago = today - datetime.timedelta(horizon)
+            desired_stocks = set(self.sort_by_performance(time_ago)[0:x])
+            current_stocks = set(self.portfolio.stocks())
+            missing_stocks = desired_stocks.difference(current_stocks)
+            extra_stocks = current_stocks.difference(desired_stocks)
+            for stock in extra_stocks:
+                self.broker.sell(stock, self.account, self.portfolio, today)
+            budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
+            for stock in missing_stocks:
+                self.broker.buy_stop_loss(budget, self.portfolio, self.account, stock, loss, blacklist_duration)
+
+    def sort_by_performance(self, start_date):
         for stock in self.market.stocks.values():
-            stock.blacklist_date = datetime.date(1900, 1, 1)
-
-    @staticmethod
-    def date_range(start_date, end_date):
-        return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
-
-    def top_x(self, x, start_date, end_date, horizon, balances, loss, blacklist_duration):
-        for day in self.date_range(start_date, end_date - datetime.timedelta(30)):
-            day = day.date()
-            if self.market.open_on(day):
-                self.portfolio.try_all_events(day)
-                time_ago = day - datetime.timedelta(days=horizon)
-                desired_stocks = set(self.market.get_top_x(x, time_ago, day))
-                current_stocks = set(self.portfolio.stocks())
-                missing_stocks = desired_stocks.difference(current_stocks)
-                extra_stocks = current_stocks.difference(desired_stocks)
-                self.broker.sell(extra_stocks, self.account, self.portfolio, day)
-                balances.append(self.net_worth(day))
-                if self.net_worth(day) < self.starting_money / 100:
-                    return 0
-                self.broker.buy_stop_loss(self.portfolio, self.account, missing_stocks, day, loss, blacklist_duration)
-        self.broker.sell(self.portfolio.stocks(), self.account, self.portfolio, (end_date - datetime.timedelta(30)))
-
-    def balance(self):
-        return self.account.balance
-
-    def net_worth(self, today):
-        worth = 0
-        for stock in self.portfolio.stocks():
-            q = self.portfolio.quantity(stock)
-            price = stock.get_open_price(today)
-            worth += q * price
-        return worth + self.account.balance
-
-    def get_top_x(self, x, start_date, end_date):
-        for stock_data in self.stocks.values():
-            stock_data.set_start_end(start_date, end_date)
-        top_stocks = sorted(list(self.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
+            stock.set_start(start_date)
+        top_stocks = sorted(list(self.market.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
         top_stocks = [s for s in top_stocks if s.performance_key() > 0]
-        return top_stocks[:x]
+        return top_stocks
