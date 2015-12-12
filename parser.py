@@ -26,7 +26,7 @@ def parse(data):
     closes = get_column(4, data)
     volumes = get_column(5, data)
     for i in range(len(dates)):
-        price_map[dates[i]] = (opens[i], highs[i], lows[i], closes[i], volumes[i])
+        price_map[dates[i]] = (opens[i], lows[i], highs[i], closes[i], volumes[i])
     return price_map
 
 
