@@ -1,20 +1,26 @@
 import trader as t
 import datetime as d
 import grapher as g
+import market as m
 
 START_ERA = d.date(2005, 1, 1)
 END_ERA = d.date(2015, 10, 30)
 START_SIM = d.date(2005, 1, 1)
 END_SIM = d.date(2015, 10, 30)
 
+market = m.Market(START_ERA, END_ERA)
+x = 3
+horizon = 365
+loss = -.1
+blacklist_duration = 30
+current_date = START_SIM
 trader = t.Trader(1000000, START_ERA, END_ERA)
+balances = []
 
-for x in [1, 2, 3, 5, 8, 13, 21, 34, 55]:
-    for horizon in [1, 30, 90, 180, 270, 365]:
-        for loss in [-.01, -.05, -.1]:
-            for blacklist_duration in [0, 30, 3650]:
-                trader.reset()
-                balances = list()
-                trader.top_x(x, START_SIM, END_SIM, horizon, balances, loss, blacklist_duration)
-                g.graph(balances, trader.balance(), horizon, x, START_SIM, END_SIM, loss, blacklist_duration)
-                print("x=", x, "horizon=", horizon, "balance=", (trader.balance()))
+while current_date < END_SIM:
+    market.tick()
+    trader.top_x(x, horizon, loss, blacklist_duration)
+    balances.append(trader.portfolio.value() + trader.account.balance)
+
+g.graph(balances, trader.portfolio.value() + trader.account.balance, horizon, x, START_SIM, END_SIM, loss,
+        blacklist_duration)
