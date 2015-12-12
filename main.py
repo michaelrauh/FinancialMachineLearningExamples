@@ -18,9 +18,9 @@ trader = t.Trader(1000000, START_ERA, END_ERA)
 balances = []
 
 while current_date < END_SIM:
-    market.tick()
     trader.top_x(x, horizon, loss, blacklist_duration)
     balances.append(trader.portfolio.value() + trader.account.balance)
+    market.tick()
 
 g.graph(balances, trader.portfolio.value() + trader.account.balance, horizon, x, START_SIM, END_SIM, loss,
         blacklist_duration)
