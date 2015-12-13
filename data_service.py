@@ -57,35 +57,39 @@ class DataService:
         self.data_map = {}
         self.start_date = start_date
         self.end_date = end_date
-        self.load()
 
     def fill_in(self, clean):
-        final = dict()
         started = False
         for day in self.date_range(self.start_date, self.end_date):
             date = day.date()
             if date not in set(clean.keys()):
                 if not started:
-                    final[date] = [None for i in range(5)]
+                    clean[date] = [None for i in range(5)]
                 else:
-                    final[date] = self.next_valid_price(clean, date)
+                    clean[date] = self.next_valid_price(clean, date)
             else:
                 started = True
-        return final
+        return clean
 
     def load(self):
         path = self.__hash_arguments__(self.start_date, self.end_date)
         if not os.path.exists(path):
             print("load must clean all data.")
-            for symbol in static_data.symbols():
+            for symbol in static_data.symbols()[0]:
                 print("loading", symbol)
                 raw = data_cache.fetch(symbol, self.start_date, self.end_date)
+                print("there", len(raw))
                 if raw is not None:
                     dirty = parser.parse(raw)
+                    print("here", len(dirty))
                     clean = self.clean(dirty)
+                    print("go", len(clean))
                     if self.valid(clean):
+                        print("one", len(clean))
                         final = self.fill_in(clean)
+                        print("this", len(final))
                         self.data_map[symbol] = final
+                        print("that", len(self.data_map[symbol]))
                     else:
                         print("blacklisting", str(symbol))
             pickle.dump(self.data_map, open(path, 'wb'))

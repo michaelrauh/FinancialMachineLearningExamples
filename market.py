@@ -6,6 +6,7 @@ from parser import DataOrder
 class Market:
     def __init__(self, start_date, end_date):
         self.data_service = d.DataService(start_date, end_date)
+        self.data_service.load()
         self.price_map = self.data_service.data_map
         self.symbols = self.data_service.symbols()
         self.stocks = {}
