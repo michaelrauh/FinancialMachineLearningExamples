@@ -75,21 +75,21 @@ class DataService:
         path = self.__hash_arguments__(self.start_date, self.end_date)
         if not os.path.exists(path):
             print("load must clean all data.")
-            for symbol in static_data.symbols()[0]:
+            for symbol in static_data.symbols():
                 print("loading", symbol)
                 raw = data_cache.fetch(symbol, self.start_date, self.end_date)
-                print("there", len(raw))
+                print("length of raw info", len(raw))
                 if raw is not None:
                     dirty = parser.parse(raw)
-                    print("here", len(dirty))
+                    print("amount of parsed info", len(dirty))
                     clean = self.clean(dirty)
-                    print("go", len(clean))
+                    print("amount of cleaned info", len(clean))
                     if self.valid(clean):
-                        print("one", len(clean))
+                        print("amount of cleaned info after validation", len(clean))
                         final = self.fill_in(clean)
-                        print("this", len(final))
+                        print("amount of filled in info", len(final))
                         self.data_map[symbol] = final
-                        print("that", len(self.data_map[symbol]))
+                        print("saved this much info", len(self.data_map[symbol]))
                     else:
                         print("blacklisting", str(symbol))
             pickle.dump(self.data_map, open(path, 'wb'))

@@ -20,15 +20,15 @@ class Market:
             self.stocks[symbol] = stock.Stock(symbol)
 
     def tick(self):
-        for stock in self.price_map.values():
-            current_price = stock[self.date][self.time.value]
-            stock.push_price(self.date, self.time, current_price)
+        for symbol in self.price_map.keys():
+            current_price = self.price_map[symbol][self.date][self.time.value]
+            self.stocks[symbol].push_price(self.date, self.time, current_price)
         self.try_all_events()
         if self.time == DataOrder.close:
             self.time = DataOrder.open
             self.date = self.data_service.next_valid_date(self.date)
         else:
-            self.time += 1
+            self.time = DataOrder(int(self.time.value) + 1)
 
     def register_event(self, stock, trigger):
         self.events[stock] = trigger
