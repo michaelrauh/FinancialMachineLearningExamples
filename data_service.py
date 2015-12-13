@@ -95,3 +95,9 @@ class DataService:
 
     def symbols(self):
         return list(self.data_map.keys())
+
+    def next_valid_date(self, date):
+        return self.date_range(date, self.end_date)[1]
+
+    def round_from_weekend(self, date):
+        return self.date_range(date, self.end_date)[0].date()
