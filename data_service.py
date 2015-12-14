@@ -78,18 +78,12 @@ class DataService:
             for symbol in static_data.symbols():
                 print("loading", symbol)
                 raw = data_cache.fetch(symbol, self.start_date, self.end_date)
-                print("length of raw info", len(raw))
                 if raw is not None:
                     dirty = parser.parse(raw)
-                    print("amount of parsed info", len(dirty))
                     clean = self.clean(dirty)
-                    print("amount of cleaned info", len(clean))
                     if self.valid(clean):
-                        print("amount of cleaned info after validation", len(clean))
                         final = self.fill_in(clean)
-                        print("amount of filled in info", len(final))
                         self.data_map[symbol] = final
-                        print("saved this much info", len(self.data_map[symbol]))
                     else:
                         print("blacklisting", str(symbol))
             pickle.dump(self.data_map, open(path, 'wb'))
@@ -101,7 +95,7 @@ class DataService:
         return list(self.data_map.keys())
 
     def next_valid_date(self, date):
-        return self.date_range(date, self.end_date)[1]
+        return self.date_range(date, self.end_date)[1].date()
 
     def round_from_weekend(self, date):
         return self.date_range(date, self.end_date)[0].date()

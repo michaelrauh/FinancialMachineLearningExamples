@@ -14,7 +14,7 @@ horizon = 365
 loss = -.1
 blacklist_duration = 30
 current_date = START_SIM
-trader = t.Trader(1000000, START_ERA, END_ERA)
+trader = t.Trader(1000000, market)
 balances = []
 
 while current_date < END_SIM:

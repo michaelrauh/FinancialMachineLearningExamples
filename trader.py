@@ -11,11 +11,14 @@ class Trader:
 
     @staticmethod
     def split_money(money, ways):
-        return math.floor(money/ways)
+        try:
+            return math.floor(money/ways)
+        except ZeroDivisionError:
+            return 0
 
-    def __init__(self, starting_money, start_date, end_date):
+    def __init__(self, starting_money, market):
         self.starting_money = starting_money
-        self.market = m.Market(start_date, end_date)
+        self.market = market
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
         self.broker = b.Broker(self.market)
