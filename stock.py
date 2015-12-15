@@ -4,21 +4,25 @@ import datetime
 
 class Stock:
 
-    def __init__(self, symbol):
+    def __init__(self, symbol, begin_sim):
         self.symbol = symbol
         self.start_date = None
         self.blacklist_date = datetime.date(1900, 1, 1)
         self.price_history = dict()
         self.current_price = None
+        self.beginning_of_time = begin_sim
 
     def push_price(self, date, time, price):
-        self.price_history[date] = {time: price}
+        if date not in self.price_history:
+            self.price_history[date] = dict()
+        self.price_history[date][time] = price
         self.current_price = price
 
     def fetch_price(self, date, time):
-        try:
+        if date > self.beginning_of_time:
             return self.price_history[date][time]
-        except KeyError:
+        else:
+            print("tried to fetch", date, "that's before", self.beginning_of_time, "the beginning of time")
             return None
 
     def current_performance(self, start_date):

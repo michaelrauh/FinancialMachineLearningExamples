@@ -36,5 +36,5 @@ class Broker:
 
     def buy_stop_loss(self, budget, portfolio, account, stock, loss, blacklist_duration):
         stop_loss = self.ef.stop_loss(self.market, portfolio, account, stock, budget, loss, blacklist_duration)
-        self.market.register_event(stop_loss)
+        self.market.register_event(stock, stop_loss)
         self.buy(budget, stock, account, portfolio)

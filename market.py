@@ -7,17 +7,18 @@ class Market:
     def __init__(self, start_date, end_date):
         self.data_service = d.DataService(start_date, end_date)
         self.data_service.load()
+        self.date = self.data_service.round_from_weekend(start_date)
+        self.start = self.date
         self.price_map = self.data_service.data_map
         self.symbols = self.data_service.symbols()
         self.stocks = {}
         self.load_all_stocks()
-        self.date = self.data_service.round_from_weekend(start_date)
         self.time = DataOrder.open
         self.events = {}
 
     def load_all_stocks(self):
         for symbol in self.symbols:
-            self.stocks[symbol] = stock.Stock(symbol)
+            self.stocks[symbol] = stock.Stock(symbol, self.start)
 
     def tick(self):
         for symbol in self.price_map.keys():
