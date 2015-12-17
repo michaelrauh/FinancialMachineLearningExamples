@@ -1,7 +1,7 @@
 import data_cache
 import static_data
 import parser
-from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR
+from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR, SA, SU
 import os
 import pickle
 
@@ -20,6 +20,10 @@ class DataService:
     @staticmethod
     def date_range(start_date, end_date):
         return rrule(DAILY, dtstart=start_date, until=end_date, byweekday=(MO, TU, WE, TH, FR))
+
+    @staticmethod
+    def all_date_range(start, end):
+        return rrule(DAILY, dtstart=start, until=end, byweekday=(MO, TU, WE, TH, FR, SA, SU))
 
     @staticmethod
     def clean(dirty):
@@ -51,7 +55,10 @@ class DataService:
         for day in self.date_range(start_date, self.end_date):
             date = day.date()
             if date in set(data.keys()):
-                return data[date]
+                if start_date.weekday() in [5, 6]:  # if filling weekend
+                    return [data[date][int(parser.DataOrder.open.value)] for i in range(5)]  # open on the next day
+                else:
+                    return data[date]
 
     def __init__(self, start_date, end_date):
         self.data_map = {}
@@ -60,7 +67,7 @@ class DataService:
 
     def fill_in(self, clean):
         started = False
-        for day in self.date_range(self.start_date, self.end_date):
+        for day in self.all_date_range(self.start_date, self.end_date):
             date = day.date()
             if date not in set(clean.keys()):
                 if not started:

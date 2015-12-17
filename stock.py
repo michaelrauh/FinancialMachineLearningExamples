@@ -18,9 +18,12 @@ class Stock:
         self.price_history[date][time] = price
         self.current_price = price
 
+    def push_day(self, date, data):
+        self.price_history[date] = data
+
     def fetch_price(self, date, time):
         if date > self.beginning_of_time:
-            return self.price_history[date][time]
+            return self.price_history[date][time.value]
         else:
             print("tried to fetch", date, "that's before", self.beginning_of_time, "the beginning of time")
             return None

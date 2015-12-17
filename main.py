@@ -21,6 +21,7 @@ while current_date < END_SIM:
     trader.top_x(x, horizon, loss, blacklist_duration)
     balances.append(trader.portfolio.value() + trader.account.balance)
     market.tick()
+    current_date = market.date
 
 g.graph(balances, trader.portfolio.value() + trader.account.balance, horizon, x, START_SIM, END_SIM, loss,
         blacklist_duration)
