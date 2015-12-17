@@ -25,7 +25,7 @@ class Stock:
         if date > self.beginning_of_time:
             return self.price_history[date][time.value]
         else:
-            print("tried to fetch", date, "that's before", self.beginning_of_time, "the beginning of time")
+            # print("tried to fetch", date, "that's before", self.beginning_of_time, "the beginning of time")
             return None
 
     def current_performance(self, start_date):

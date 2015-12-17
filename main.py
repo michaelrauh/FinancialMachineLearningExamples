@@ -17,7 +17,7 @@ current_date = START_SIM
 trader = t.Trader(1000000, market)
 balances = []
 
-while current_date < END_SIM:
+while current_date < END_SIM - d.timedelta(30):
     trader.top_x(x, horizon, loss, blacklist_duration)
     balances.append(trader.portfolio.value() + trader.account.balance)
     market.tick()
