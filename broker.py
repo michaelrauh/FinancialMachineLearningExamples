@@ -9,9 +9,8 @@ class Broker:
         self.market = market
         self.ef = e.EventFactory(self)
 
-    def sell(self, stock, account, portfolio, price=None):
-        if price is not None:
-            price = stock.current_price
+    def sell(self, stock, account, portfolio):
+        price = stock.current_price
         quantity = portfolio.quantity(stock)
         value = price * quantity
         value -= self.fees
@@ -29,8 +28,8 @@ class Broker:
             print("buying", quantity, "shares of", stock, "at", purchase_price, "that's", price,
                   "per share")
 
-    def sell_stop_loss(self, portfolio, account, stock, price, date, blacklist_duration):
-        self.sell(stock, account, portfolio, price)
+    def sell_stop_loss(self, portfolio, account, stock, date, blacklist_duration):
+        self.sell(stock, account, portfolio)
         stock.blacklist(date, blacklist_duration)
         self.market.delete_event(stock)
 

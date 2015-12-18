@@ -36,7 +36,7 @@ class Trader:
             budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
             for stock in missing_stocks:
                 if not stock.blacklisted(today):
-                    self.broker.buy_stop_loss(budget, self.portfolio, self.account, stock, loss, blacklist_duration)
+                    self.broker.buy(budget, stock, self.account, self.portfolio)
 
     def sort_by_performance(self, start_date):
         for stock in self.market.stocks.values():
