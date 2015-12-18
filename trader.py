@@ -1,5 +1,4 @@
 import datetime
-import market as m
 import portfolio as p
 import broker as b
 import account as a
@@ -27,7 +26,8 @@ class Trader:
         today = self.market.date
         if self.market.time == DataOrder.close:
             time_ago = today - datetime.timedelta(horizon)
-            desired_stocks = set(self.sort_by_performance(time_ago)[0:x])
+            top_stocks = self.sort_by_performance(time_ago)[0:x]
+            desired_stocks = set([i for i in top_stocks if not i.blacklisted(today)])
             current_stocks = set(self.portfolio.stocks())
             missing_stocks = desired_stocks.difference(current_stocks)
             extra_stocks = current_stocks.difference(desired_stocks)
@@ -35,8 +35,7 @@ class Trader:
                 self.broker.sell(stock, self.account, self.portfolio)
             budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
             for stock in missing_stocks:
-                if not stock.blacklisted(today):
-                    self.broker.buy(budget, stock, self.account, self.portfolio)
+                self.broker.buy(budget, stock, self.account, self.portfolio)
 
     def sort_by_performance(self, start_date):
         for stock in self.market.stocks.values():
