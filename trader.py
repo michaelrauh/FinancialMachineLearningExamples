@@ -15,18 +15,23 @@ class Trader:
         except ZeroDivisionError:
             return 0
 
-    def __init__(self, starting_money, market):
+    def __init__(self, starting_money, market, strategy, portfolio_size, horizon, loss=None, blacklist_duration=None):
         self.starting_money = starting_money
         self.market = market
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
         self.broker = b.Broker(self.market)
+        self.portfolio_size = portfolio_size
+        self.horizon = horizon
+        self.loss = loss
+        self.blacklist_duration = blacklist_duration
+        self.strategy = strategy
 
-    def top_x(self, x, horizon, loss, blacklist_duration):
+    def trade(self):
         today = self.market.date
         if self.market.time == DataOrder.close:
-            time_ago = today - datetime.timedelta(horizon)
-            top_stocks = self.sort_by_performance(time_ago)[0:x]
+            time_ago = today - datetime.timedelta(self.horizon)
+            top_stocks = self.sort_by_performance(time_ago)[0:self.portfolio_size]
             desired_stocks = set([i for i in top_stocks if not i.blacklisted(today)])
             current_stocks = set(self.portfolio.stocks())
             missing_stocks = desired_stocks.difference(current_stocks)
@@ -35,7 +40,7 @@ class Trader:
                 self.broker.sell(stock, self.account, self.portfolio)
             budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
             for stock in missing_stocks:
-                self.broker.buy_stop_loss(budget, stock, self.account, self.portfolio, loss, blacklist_duration)
+                self.broker.buy(self.strategy, budget, stock, self.account, self.portfolio, self.loss, self.blacklist_duration)
 
     def sort_by_performance(self, start_date):
         for stock in self.market.stocks.values():

@@ -9,19 +9,22 @@ START_SIM = d.date(2005, 1, 1)
 END_SIM = d.date(2015, 10, 30)
 
 market = m.Market(START_ERA, END_ERA)
-x = 3
+portfolio_size = 3
 horizon = 365
 loss = -.1
 blacklist_duration = 30
 current_date = START_SIM
-trader = t.Trader(1000000, market)
-balances = []
+traders = [t.Trader(10000, market, "vanilla", portfolio_size, horizon, loss, blacklist_duration),
+           t.Trader(10000, market, "stop_loss", portfolio_size, horizon, loss, blacklist_duration)]
+balances = [[] for i in range(len(traders))]
 
 while current_date < END_SIM - d.timedelta(30):
-    trader.top_x(x, horizon, loss, blacklist_duration)
-    balances.append(trader.portfolio.value() + trader.account.balance)
+    for trader, i in zip(traders, range(len(traders))):
+        trader.trade()
+        balances[i].append(trader.portfolio.value() + trader.account.balance)
     market.tick()
     current_date = market.date
 
-g.graph(balances, trader.portfolio.value() + trader.account.balance, horizon, x, START_SIM, END_SIM, loss,
-        blacklist_duration)
+for trader, i in zip(traders, range(len(traders))):
+    g.graph(balances[i], trader.portfolio.value() + trader.account.balance, horizon, portfolio_size, START_SIM, END_SIM, loss,
+        blacklist_duration, i)
