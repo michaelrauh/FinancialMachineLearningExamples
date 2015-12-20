@@ -16,6 +16,7 @@ class Market:
         self.load_all_stocks()
         self.time = DataOrder.open
         self.events = {}
+        print("Done initializing")
 
     def load_all_stocks(self):
         for symbol in self.symbols:
