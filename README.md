@@ -2,7 +2,7 @@
 A Collection of Simulations Designed to Predict the Capital Markets
 
 # TopX
-Own stocks while they are in the top X percent yearly performance
+Own stocks while they are top performers. Employ different order types and money management strategies to mitigate risk.
 
 # ShiftRegress
 Buy stocks with high pearson coefficients against trending time-shifted stocks
