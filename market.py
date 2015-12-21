@@ -39,6 +39,7 @@ class Market:
             self.date = self.data_service.next_valid_date(self.date)
         else:
             self.time = DataOrder(int(self.time.value) + 1)
+        print("current time is", str(self.date), str(self.time.name))
 
     def register_event(self, stock, trigger):
         self.events[stock] = trigger
