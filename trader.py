@@ -15,7 +15,7 @@ class Trader:
         except ZeroDivisionError:
             return 0
 
-    def __init__(self, name, starting_money, market, strategy, portfolio_size, horizon, loss=None, blacklist_duration=None):
+    def __init__(self, starting_money, market, strategy, portfolio_size, horizon, loss=None, blacklist_duration=None):
         self.starting_money = starting_money
         self.market = market
         self.account = a.Account(starting_money)
@@ -26,7 +26,7 @@ class Trader:
         self.loss = loss
         self.blacklist_duration = blacklist_duration
         self.strategy = strategy
-        self.name = name
+        self.name = hash(self)
 
     def trade(self):
         today = self.market.date
