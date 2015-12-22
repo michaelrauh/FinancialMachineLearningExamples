@@ -7,7 +7,6 @@ class Stock:
     def __init__(self, symbol, begin_sim):
         self.symbol = symbol
         self.start_date = None
-        self.blacklist_date = datetime.date(1900, 1, 1)
         self.price_history = dict()
         self.current_price = None
         self.beginning_of_time = begin_sim
@@ -25,7 +24,6 @@ class Stock:
         if date > self.beginning_of_time:
             return self.price_history[date][time.value]
         else:
-            # print("tried to fetch", date, "that's before", self.beginning_of_time, "the beginning of time")
             return None
 
     def current_performance(self, start_date):
@@ -43,9 +41,3 @@ class Stock:
 
     def __repr__(self):
         return self.symbol
-
-    def blacklist(self, date, duration):
-        self.blacklist_date = date + datetime.timedelta(duration)
-
-    def blacklisted(self, date):
-        return date < self.blacklist_date

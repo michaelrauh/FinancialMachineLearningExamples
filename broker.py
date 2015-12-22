@@ -2,6 +2,7 @@ import math
 import event_factory as e
 from event import Event
 
+
 class Broker:
 
     def __init__(self, market):
@@ -25,7 +26,7 @@ class Broker:
 
     def sell_stop_loss(self, trader, portfolio, account, stock, date, blacklist_duration, price):
         self.sell(trader, stock, account, portfolio, price)
-        stock.blacklist(date, blacklist_duration)
+        trader.blacklist(stock, blacklist_duration)
 
     def buy_stop_loss(self, budget, stock, account, portfolio, trader, loss, blacklist_duration):
         purchase_price = stock.current_price
