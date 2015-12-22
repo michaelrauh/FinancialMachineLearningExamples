@@ -2,6 +2,7 @@ import stock
 import data_service as d
 from parser import DataOrder
 import datetime
+from event import Event
 
 
 class Market:
@@ -33,24 +34,10 @@ class Market:
                 saturday_price = self.price_map[symbol][saturday]
                 self.stocks[symbol].push_day(sunday, sunday_price)
                 self.stocks[symbol].push_day(saturday, saturday_price)
-        self.try_all_events()
+        Event.trigger_all()
         if self.time == DataOrder.close:
             self.time = DataOrder.open
             self.date = self.data_service.next_valid_date(self.date)
         else:
             self.time = DataOrder(int(self.time.value) + 1)
         print("current time is", str(self.date), str(self.time.name))
-
-    def register_event(self, stock, trigger):
-        self.events[stock] = trigger
-
-    def delete_event(self, stock):
-        try:
-            del (self.events[stock])
-        except KeyError:
-            pass
-
-    def try_all_events(self):
-        iter_events = dict(self.events)
-        for event in iter_events.values():
-            event.fire_if_applicable()

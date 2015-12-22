@@ -15,11 +15,16 @@ market = m.Market(START_ERA, END_ERA)
 current_date = START_SIM
 traders = []
 
+
+def hash(port, loss, black, strategy):
+    return str(port) + str(loss) + str(black) + strategy
+
 for portfolio_size in [2, 3, 5, 8]:
     for loss in [-.1, -.05]:
         for blacklist_duration in [30]:
             for strategy in ["vanilla", "stop_loss"]:
-                traders.append(t.Trader(10000, market, strategy, portfolio_size, 365, loss, blacklist_duration))
+                name = hash(portfolio_size, loss, blacklist_duration, strategy)
+                traders.append(t.Trader(name, 10000, market, strategy, portfolio_size, 365, loss, blacklist_duration))
 
 for trader in traders:
     print(trader.portfolio_size, trader.loss, trader.blacklist_duration, trader.strategy)

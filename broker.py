@@ -1,6 +1,6 @@
 import math
 import event_factory as e
-
+from event import Event
 
 class Broker:
 
@@ -9,7 +9,7 @@ class Broker:
         self.market = market
         self.ef = e.EventFactory(self)
 
-    def sell(self, stock, account, portfolio, price=None):
+    def sell(self, trader, stock, account, portfolio, price=None):
         if price is None:
             price = stock.current_price
         quantity = portfolio.quantity(stock)
@@ -17,24 +17,23 @@ class Broker:
         value -= self.fees
         portfolio.sell(stock)
         account.credit(value)
-        self.market.delete_event(stock)
+        Event.delete_trigger(trader.name, stock.symbol)
         print("selling", quantity, "shares of", stock, "at", value, "that's", price, "per share")
 
-    def buy(self, strategy, budget, stock, account, portfolio, loss, blacklist_duration):
-        self.strategy_mapping[strategy](self, budget, stock, account, portfolio, loss, blacklist_duration)
+    def buy(self, strategy, budget, stock, account, portfolio, trader, loss, blacklist_duration):
+        self.strategy_mapping[strategy](self, budget, stock, account, portfolio, trader, loss, blacklist_duration)
 
-    def sell_stop_loss(self, portfolio, account, stock, date, blacklist_duration, price):
-        self.sell(stock, account, portfolio, price)
+    def sell_stop_loss(self, trader, portfolio, account, stock, date, blacklist_duration, price):
+        self.sell(trader, stock, account, portfolio, price)
         stock.blacklist(date, blacklist_duration)
 
-    def buy_stop_loss(self, budget, stock, account, portfolio, loss, blacklist_duration):
+    def buy_stop_loss(self, budget, stock, account, portfolio, trader, loss, blacklist_duration):
         purchase_price = stock.current_price
         if purchase_price < budget:
-            stop_loss = self.ef.stop_loss(self.market, portfolio, account, stock, purchase_price, loss, blacklist_duration)
-            self.market.register_event(stock, stop_loss)
+            self.ef.stop_loss(trader, self.market, portfolio, account, stock, purchase_price, loss, blacklist_duration)
             self.buy_vanilla(budget, stock, account, portfolio)
 
-    def buy_vanilla(self, budget, stock, account, portfolio, loss=None, duration=None):
+    def buy_vanilla(self, budget, stock, account, portfolio, trader=None, loss=None, duration=None):
         price = stock.current_price
         quantity = math.floor(budget/price)
         if quantity > 0:
