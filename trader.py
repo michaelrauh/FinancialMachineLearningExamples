@@ -16,14 +16,14 @@ class Trader:
         except ZeroDivisionError:
             return 0
 
-    def __init__(self, starting_money, strategy, portfolio_size, horizon, loss=None, blacklist_duration=None):
+    def __init__(self, starting_money, strategy, portfolio_size, horizon, price_change=None, blacklist_duration=None):
         self.starting_money = starting_money
         self.account = a.Account(starting_money)
         self.portfolio = p.Portfolio()
         self.broker = b.Broker()
         self.portfolio_size = portfolio_size
         self.horizon = horizon
-        self.loss = loss
+        self.price_change = price_change
         self.blacklist_duration = blacklist_duration
         self.strategy = strategy
         self.name = hash(self)
@@ -44,7 +44,7 @@ class Trader:
                 self.broker.sell(self, stock, self.account, self.portfolio)
             budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
             for stock in missing_stocks:
-                self.broker.buy(self.strategy, budget, stock, self.account, self.portfolio, self, self.loss, self.blacklist_duration)
+                self.broker.buy(self.strategy, budget, stock, self.account, self.portfolio, self, self.price_change, self.blacklist_duration)
 
     def blacklist(self, stock, blacklist_duration):
         self.banned_stocks[stock] = Market.date + datetime.timedelta(blacklist_duration)
