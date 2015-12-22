@@ -17,6 +17,7 @@ class Market:
         self.load_all_stocks()
         self.time = DataOrder.open
         self.events = {}
+        self.sorted_stocks = dict()
         print("Done initializing")
 
     def load_all_stocks(self):
@@ -24,6 +25,7 @@ class Market:
             self.stocks[symbol] = stock.Stock(symbol, self.start)
 
     def tick(self):
+        self.sorted_stocks = dict()
         for symbol in self.price_map.keys():
             current_price = self.price_map[symbol][self.date][self.time.value]
             self.stocks[symbol].push_price(self.date, self.time.value, current_price)
@@ -41,3 +43,12 @@ class Market:
         else:
             self.time = DataOrder(int(self.time.value) + 1)
         print("current time is", str(self.date), str(self.time.name))
+
+    def sort_by_performance(self, start_date):
+        if start_date not in self.sorted_stocks:
+            for stock in self.stocks.values():
+                stock.set_start(start_date)
+            top_stocks = sorted(list(self.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
+            top_stocks = [s for s in top_stocks if s.performance_key() > 0]
+            self.sorted_stocks[start_date] = top_stocks
+        return self.sorted_stocks[start_date]
