@@ -6,49 +6,61 @@ from event import Event
 
 
 class Market:
-    def __init__(self, start_date, end_date):
-        self.data_service = d.DataService(start_date, end_date)
-        self.data_service.load()
-        self.date = self.data_service.round_from_weekend(start_date)
-        self.start = self.date
-        self.price_map = self.data_service.data_map
-        self.symbols = self.data_service.symbols()
-        self.stocks = {}
-        self.load_all_stocks()
-        self.time = DataOrder.open
-        self.events = {}
-        self.sorted_stocks = dict()
+
+    stocks = dict()
+    symbols = []
+    start = None
+    price_map = dict()
+    events = {}
+    data_service = None
+    sorted_stocks = dict()
+    date = None
+    time = None
+
+    @classmethod
+    def initialize(cls, start_date, end_date):
+        cls.data_service = d.DataService(start_date, end_date)
+        cls.data_service.load()
+        cls.date = cls.data_service.round_from_weekend(start_date)
+        cls.start = cls.date
+        cls.price_map = cls.data_service.data_map
+        cls.symbols = cls.data_service.symbols()
+        cls.load_all_stocks()
+        cls.time = DataOrder.open
         print("Done initializing")
 
-    def load_all_stocks(self):
-        for symbol in self.symbols:
-            self.stocks[symbol] = stock.Stock(symbol, self.start)
+    @classmethod
+    def load_all_stocks(cls):
+        for symbol in cls.symbols:
+            cls.stocks[symbol] = stock.Stock(symbol, cls.start)
 
-    def tick(self):
-        self.sorted_stocks = dict()
-        for symbol in self.price_map.keys():
-            current_price = self.price_map[symbol][self.date][self.time.value]
-            self.stocks[symbol].push_price(self.date, self.time.value, current_price)
-            if self.date.weekday() == 0 and self.time == DataOrder.open:
-                sunday = self.date - datetime.timedelta(1)
-                saturday = self.date - datetime.timedelta(2)
-                sunday_price = self.price_map[symbol][sunday]
-                saturday_price = self.price_map[symbol][saturday]
-                self.stocks[symbol].push_day(sunday, sunday_price)
-                self.stocks[symbol].push_day(saturday, saturday_price)
+    @classmethod
+    def tick(cls):
+        cls.sorted_stocks = dict()
+        for symbol in cls.price_map.keys():
+            current_price = cls.price_map[symbol][cls.date][cls.time.value]
+            cls.stocks[symbol].push_price(cls.date, cls.time.value, current_price)
+            if cls.date.weekday() == 0 and cls.time == DataOrder.open:
+                sunday = cls.date - datetime.timedelta(1)
+                saturday = cls.date - datetime.timedelta(2)
+                sunday_price = cls.price_map[symbol][sunday]
+                saturday_price = cls.price_map[symbol][saturday]
+                cls.stocks[symbol].push_day(sunday, sunday_price)
+                cls.stocks[symbol].push_day(saturday, saturday_price)
         Event.trigger_all()
-        if self.time == DataOrder.close:
-            self.time = DataOrder.open
-            self.date = self.data_service.next_valid_date(self.date)
+        if cls.time == DataOrder.close:
+            cls.time = DataOrder.open
+            cls.date = cls.data_service.next_valid_date(cls.date)
         else:
-            self.time = DataOrder(int(self.time.value) + 1)
-        print("current time is", str(self.date), str(self.time.name))
+            cls.time = DataOrder(int(cls.time.value) + 1)
+        print("current time is", str(cls.date), str(cls.time.name))
 
-    def sort_by_performance(self, start_date):
-        if start_date not in self.sorted_stocks:
-            for stock in self.stocks.values():
+    @classmethod
+    def sort_by_performance(cls, start_date):
+        if start_date not in cls.sorted_stocks:
+            for stock in cls.stocks.values():
                 stock.set_start(start_date)
-            top_stocks = sorted(list(self.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
+            top_stocks = sorted(list(cls.stocks.values()), key=lambda i: i.performance_key(), reverse=True)
             top_stocks = [s for s in top_stocks if s.performance_key() > 0]
-            self.sorted_stocks[start_date] = top_stocks
-        return self.sorted_stocks[start_date]
+            cls.sorted_stocks[start_date] = top_stocks
+        return cls.sorted_stocks[start_date]

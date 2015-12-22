@@ -1,13 +1,13 @@
 import math
 import event_factory as e
 from event import Event
+from market import Market
 
 
 class Broker:
 
-    def __init__(self, market):
+    def __init__(self):
         self.fees = 9
-        self.market = market
         self.ef = e.EventFactory(self)
 
     def sell(self, trader, stock, account, portfolio, price=None):
@@ -31,7 +31,7 @@ class Broker:
     def buy_stop_loss(self, budget, stock, account, portfolio, trader, loss, blacklist_duration):
         purchase_price = stock.current_price
         if purchase_price < budget:
-            self.ef.stop_loss(trader, self.market, portfolio, account, stock, purchase_price, loss, blacklist_duration)
+            self.ef.stop_loss(trader, portfolio, account, stock, purchase_price, loss, blacklist_duration)
             self.buy_vanilla(budget, stock, account, portfolio)
 
     def buy_vanilla(self, budget, stock, account, portfolio, trader=None, loss=None, duration=None):
