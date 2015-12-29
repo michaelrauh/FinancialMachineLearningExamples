@@ -53,7 +53,6 @@ class Market:
             cls.date = cls.data_service.next_valid_date(cls.date)
         else:
             cls.time = DataOrder(int(cls.time.value) + 1)
-        print("current time is", str(cls.date), str(cls.time.name))
 
     @classmethod
     def sort_by_performance(cls, start_date):

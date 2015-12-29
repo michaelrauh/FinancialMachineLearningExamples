@@ -2,6 +2,7 @@ import math
 import event_factory as e
 from event import Event
 import operator
+from market import Market
 
 
 class Broker:
@@ -19,7 +20,7 @@ class Broker:
         portfolio.sell(stock)
         account.credit(value)
         Event.delete_trigger(trader.name, stock.symbol)
-        print("selling", quantity, "shares of", stock, "at", value, "that's", price, "per share")
+        print("selling", quantity, "shares of", stock, "at", value, "that's", price, "per share", "on", Market.date)
 
     def buy(self, strategy, budget, stock, account, portfolio, trader, price_change, blacklist_duration):
         self.strategy_mapping[strategy](self, budget, stock, account, portfolio, trader, price_change, blacklist_duration)
@@ -43,6 +44,6 @@ class Broker:
             account.debit(purchase_price)
             portfolio.buy(stock, quantity)
             print("buying", quantity, "shares of", stock, "at", purchase_price, "that's", price,
-                  "per share")
+                  "per share on", Market.date)
 
     strategy_mapping = {'price_trigger': buy_price_trigger, 'vanilla': buy_vanilla}

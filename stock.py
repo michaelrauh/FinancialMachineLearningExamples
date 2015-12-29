@@ -1,5 +1,4 @@
 from parser import DataOrder
-import datetime
 
 
 class Stock:
