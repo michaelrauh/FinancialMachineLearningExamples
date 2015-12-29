@@ -1,9 +1,10 @@
 import datetime
+import math
+
 import portfolio as p
 import broker as b
 import account as a
 from parser import DataOrder
-import math
 from market import Market
 
 

@@ -1,7 +1,8 @@
 import math
+import operator
+
 import event_factory as e
 from event import Event
-import operator
 from market import Market
 
 

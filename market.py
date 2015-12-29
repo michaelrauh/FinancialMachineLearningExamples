@@ -1,7 +1,8 @@
+import datetime
+
 import stock
 import data_service as d
 from parser import DataOrder
-import datetime
 from event import Event
 
 

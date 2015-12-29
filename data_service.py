@@ -1,9 +1,11 @@
+import os
+import pickle
+
+from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR, SA, SU
+
 import data_cache
 import static_data
 import parser
-from dateutil.rrule import DAILY, rrule, MO, TU, WE, TH, FR, SA, SU
-import os
-import pickle
 
 
 class DataService:

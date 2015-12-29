@@ -1,8 +1,10 @@
-import trader as t
 import datetime as d
+import time
+
+import trader as t
 import grapher as g
 from market import Market
-import time
+
 
 start_time = time.time()
 

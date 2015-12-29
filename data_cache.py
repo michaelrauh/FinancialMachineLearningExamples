@@ -1,6 +1,7 @@
-import scraper
 import pickle
 import os
+
+import scraper
 
 
 def __hash_arguments__(symbol, start_date, end_date):

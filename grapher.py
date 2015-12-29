@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
 import os
+
+import matplotlib.pyplot as plt
 
 
 def graph(balances, balance, horizon, x, start_sim, end_sim, price_change, blacklist_duration, i, strategy):
