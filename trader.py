@@ -34,18 +34,17 @@ class Trader:
 
     def trade(self):
         today = Market.date
-        if Market.time == DataOrder.close:
-            time_ago = today - datetime.timedelta(self.horizon)
-            top_stocks = Market.sort_by_performance(time_ago)[0:self.portfolio_size]
-            desired_stocks = set([i for i in top_stocks if not self.blacklisted(i)])
-            current_stocks = set(self.portfolio.stocks())
-            missing_stocks = desired_stocks.difference(current_stocks)
-            extra_stocks = current_stocks.difference(desired_stocks)
-            for stock in extra_stocks:
-                self.broker.sell(self, stock, self.account, self.portfolio)
-            budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
-            for stock in missing_stocks:
-                self.broker.buy(self.strategy, budget, stock, self.account, self.portfolio, self, self.price_change, self.blacklist_duration)
+        time_ago = today - datetime.timedelta(self.horizon)
+        top_stocks = Market.sort_by_performance(time_ago)[0:self.portfolio_size]
+        desired_stocks = set([i for i in top_stocks if not self.blacklisted(i)])
+        current_stocks = set(self.portfolio.stocks())
+        missing_stocks = desired_stocks.difference(current_stocks)
+        extra_stocks = current_stocks.difference(desired_stocks)
+        for stock in extra_stocks:
+            self.broker.sell(self, stock, self.account, self.portfolio)
+        budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
+        for stock in missing_stocks:
+            self.broker.buy(self.strategy, budget, stock, self.account, self.portfolio, self, self.price_change, self.blacklist_duration)
 
     def blacklist(self, stock, blacklist_duration):
         self.banned_stocks[stock] = Market.date + datetime.timedelta(blacklist_duration)
