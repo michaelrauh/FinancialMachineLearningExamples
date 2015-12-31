@@ -4,6 +4,7 @@ import time
 import trader as t
 import grapher as g
 from market import Market
+from parser import DataOrder
 
 
 start_time = time.time()
@@ -30,9 +31,10 @@ for trader in traders:
 balances = [[] for i in range(len(traders))]
 
 while Market.date < END_SIM - d.timedelta(30):
-    for trader, i in zip(traders, range(len(traders))):
-        trader.trade()
-        balances[i].append(trader.portfolio.value() + trader.account.balance)
+    if Market.time in [DataOrder.open, DataOrder.close]:
+        for trader, i in zip(traders, range(len(traders))):
+            trader.trade()
+            balances[i].append(trader.portfolio.value() + trader.account.balance)
     Market.tick()
 
 for trader, i in zip(traders, range(len(traders))):
