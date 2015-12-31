@@ -28,15 +28,13 @@ for portfolio_size in [2, 3, 5, 8]:
 for trader in traders:
     print(trader.portfolio_size, trader.price_change, trader.blacklist_duration, trader.strategy)
 
-balances = [[] for i in range(len(traders))]
-
 while Market.date < END_SIM - d.timedelta(30):
     if Market.time in [DataOrder.open, DataOrder.close]:
         for trader, i in zip(traders, range(len(traders))):
             trader.trade()
-            balances[i].append(trader.portfolio.value() + trader.account.balance)
     Market.tick()
 
+balances = [trader.all_net_worths for trader in traders]
 for trader, i in zip(traders, range(len(traders))):
     g.graph(balances[i], trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size,
             START_SIM, END_SIM, trader.price_change, trader.blacklist_duration, i, trader.strategy)

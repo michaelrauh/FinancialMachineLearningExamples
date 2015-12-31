@@ -4,7 +4,6 @@ import math
 import portfolio as p
 import broker as b
 import account as a
-from parser import DataOrder
 from market import Market
 
 
@@ -31,6 +30,7 @@ class Trader:
         self.banned_stocks = dict()
         for stock in Market.stocks.values():
             self.banned_stocks[stock] = datetime.date(1900, 1, 1)
+        self.all_net_worths = list()
 
     def trade(self):
         today = Market.date
@@ -45,6 +45,7 @@ class Trader:
         budget = self.split_money(self.account.balance, len(missing_stocks)) - (self.broker.fees * 2)
         for stock in missing_stocks:
             self.broker.buy(self.strategy, budget, stock, self.account, self.portfolio, self, self.price_change, self.blacklist_duration)
+        self.all_net_worths.append(self.portfolio.value() + self.account.balance)
 
     def blacklist(self, stock, blacklist_duration):
         self.banned_stocks[stock] = Market.date + datetime.timedelta(blacklist_duration)
