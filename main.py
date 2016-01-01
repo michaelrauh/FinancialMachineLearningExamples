@@ -5,6 +5,7 @@ import trader as t
 import grapher as g
 from market import Market
 from parser import DataOrder
+import strategy_thief as s
 
 
 start_time = time.time()
@@ -25,8 +26,10 @@ for portfolio_size in [2, 3, 5, 8]:
 for portfolio_size in [2, 3, 5, 8]:
     traders.append(t.Trader(10000, "vanilla", portfolio_size, 365))
 
-for trader in traders:
-    print(trader.portfolio_size, trader.price_change, trader.blacklist_duration, trader.strategy)
+for horizon in [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 150, 270, 365]:
+    traders.append(s.StrategyThief(10000, horizon))
+
+Market.traders = traders
 
 while Market.date < END_SIM - d.timedelta(30):
     if Market.time in [DataOrder.open, DataOrder.close]:
@@ -37,7 +40,7 @@ while Market.date < END_SIM - d.timedelta(30):
 balances = [trader.all_net_worths for trader in traders]
 for trader, i in zip(traders, range(len(traders))):
     g.graph(balances[i], trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size,
-            START_SIM, END_SIM, trader.price_change, trader.blacklist_duration, i, trader.strategy)
+            START_SIM, END_SIM, trader.price_change, trader.blacklist_duration, trader.strategy)
 
 end_time = time.time()
 

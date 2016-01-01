@@ -17,6 +17,8 @@ class Market:
     sorted_stocks = dict()
     date = None
     time = None
+    traders = list()
+    highest_performing_traders = dict()
 
     @classmethod
     def initialize(cls, start_date, end_date):
@@ -38,6 +40,7 @@ class Market:
     @classmethod
     def tick(cls):
         cls.sorted_stocks = dict()
+        cls.highest_performing_traders = dict()
         for symbol in cls.price_map.keys():
             current_price = cls.price_map[symbol][cls.date][cls.time.value]
             cls.stocks[symbol].push_price(cls.date, cls.time.value, current_price)
@@ -64,3 +67,13 @@ class Market:
             top_stocks = [s for s in top_stocks if s.performance_key() > 0]
             cls.sorted_stocks[start_date] = top_stocks
         return cls.sorted_stocks[start_date]
+
+    @classmethod
+    def get_highest_performing_trader(cls, horizon):
+        if horizon not in cls.highest_performing_traders:
+            top = cls.traders[0]
+            for trader in cls.traders:
+                if trader.performance(horizon) > top.performance(horizon):
+                    top = trader
+            cls.highest_performing_traders[horizon] = top
+        return cls.highest_performing_traders[horizon]
