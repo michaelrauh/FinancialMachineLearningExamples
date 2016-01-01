@@ -26,7 +26,7 @@ for portfolio_size in [2, 3, 5, 8]:
 for portfolio_size in [2, 3, 5, 8]:
     traders.append(t.Trader(10000, "vanilla", portfolio_size, 365))
 
-for horizon in [1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 150, 270, 365]:
+for horizon in [365]:
     traders.append(s.StrategyThief(10000, horizon))
 
 Market.traders = traders

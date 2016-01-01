@@ -59,13 +59,13 @@ class Trader:
     def set_performance_horizon(self, horizon):
         self.performance_horizon = horizon
 
-    def performance(self, horizon):
+    def performance(self):
         try:
-            start = self.all_net_worths[-horizon]
+            start = self.all_net_worths[-self.performance_horizon]
             end = self.all_net_worths[-1]
             ans = (end - start)/start
         except IndexError:
-            ans = -1
+            ans = None
         return ans
 
     def current_stocks(self):

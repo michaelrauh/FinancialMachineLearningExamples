@@ -69,11 +69,12 @@ class Market:
         return cls.sorted_stocks[start_date]
 
     @classmethod
-    def get_highest_performing_trader(cls, horizon):
+    def sort_traders_by_performance(cls, horizon):
         if horizon not in cls.highest_performing_traders:
-            top = cls.traders[0]
             for trader in cls.traders:
-                if trader.performance(horizon) > top.performance(horizon):
-                    top = trader
-            cls.highest_performing_traders[horizon] = top
+                trader.set_performance_horizon(horizon)
+            valid_traders = [trader for trader in cls.traders if trader.performance() is not None]
+            top_traders = sorted(list(valid_traders), key=lambda i: i.performance(), reverse=True)
+            top_traders = [t for t in top_traders if t.performance() >= 0]
+            cls.highest_performing_traders[horizon] = top_traders
         return cls.highest_performing_traders[horizon]

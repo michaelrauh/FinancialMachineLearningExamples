@@ -20,10 +20,12 @@ class StrategyThief(trader.Trader):
         self.portfolio_size = None
 
     def trade(self):
-        best_trader = Market.get_highest_performing_trader(self.horizon)
-        desired_stocks = set(best_trader.current_stocks())
-        self.strategy = best_trader.strategy
-        self.price_change = best_trader.price_change
-        self.blacklist_duration = best_trader.blacklist_duration
-        self.banned_stocks = best_trader.banned_stocks
-        self.optimize_even_weight(desired_stocks)
+        best_traders = Market.sort_traders_by_performance(self.horizon)
+        if len(best_traders) > 0:
+            best_trader = best_traders[0]
+            desired_stocks = set(best_trader.current_stocks())
+            self.strategy = best_trader.strategy
+            self.price_change = best_trader.price_change
+            self.blacklist_duration = best_trader.blacklist_duration
+            self.banned_stocks = best_trader.banned_stocks
+            self.optimize_even_weight(desired_stocks)
