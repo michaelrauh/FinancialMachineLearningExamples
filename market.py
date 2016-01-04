@@ -1,4 +1,5 @@
 import datetime
+import math
 
 import stock
 import data_service as d
@@ -15,7 +16,7 @@ class Market:
     events = {}
     data_service = None
     sorted_stocks = dict()
-    date = None
+    date = datetime.date.today()
     time = None
     traders = list()
     highest_performing_traders = dict()
@@ -67,6 +68,50 @@ class Market:
             top_stocks = [s for s in top_stocks if s.performance_key() > 0]
             cls.sorted_stocks[start_date] = top_stocks
         return cls.sorted_stocks[start_date]
+
+    @classmethod
+    def shift_regress(cls, horizon):
+        best_correlation = -1
+        best_stock = None
+        yesterday = cls.date - datetime.timedelta(1)
+        horizon_ago = yesterday - datetime.timedelta(horizon)
+        top_stocks = cls.sort_by_performance(horizon_ago)
+        for stock in top_stocks:
+            month_before_horizon = horizon_ago - datetime.timedelta(30)
+            slice_a = stock.get_history_slice(month_before_horizon, horizon_ago)
+            for other_stock in list(cls.stocks.values()):
+                month_ago = yesterday - datetime.timedelta(30)
+                slice_b = other_stock.get_history_slice(month_ago, yesterday)
+                if slice_a is not None and slice_b is not None:
+                    correlation = cls.pearson(slice_a, slice_b)
+                    if correlation > best_correlation:
+                        best_correlation = correlation
+                        best_stock = other_stock
+        return best_correlation, best_stock
+
+    @staticmethod
+    def average(x):
+        assert len(x) > 0
+        return float(sum(x)) / len(x)
+
+    @staticmethod
+    def pearson(x, y):
+        assert len(x) == len(y)
+        n = len(x)
+        assert n > 0
+        avg_x = Market.average(x)
+        avg_y = Market.average(y)
+        diffprod = 0
+        xdiff2 = 0
+        ydiff2 = 0
+        for idx in range(n):
+            xdiff = x[idx] - avg_x
+            ydiff = y[idx] - avg_y
+            diffprod += xdiff * ydiff
+            xdiff2 += xdiff * xdiff
+            ydiff2 += ydiff * ydiff
+
+        return diffprod / math.sqrt(xdiff2 * ydiff2)
 
     @classmethod
     def sort_traders_by_performance(cls, horizon):

@@ -1,4 +1,5 @@
 from parser import DataOrder
+import datetime
 
 
 class Stock:
@@ -37,6 +38,19 @@ class Stock:
 
     def performance_key(self):
         return self.current_performance(self.start_date)
+
+    def get_history_slice(self, start_date, end_date):
+        slice = list()
+        current_date = start_date
+        while current_date <= end_date:
+            for time in [DataOrder.open, DataOrder.low, DataOrder.high, DataOrder.close]:
+                current_price = self.fetch_price(current_date, time)
+                if current_price is None:
+                    return None
+                else:
+                    slice.append(current_price)
+            current_date = current_date + datetime.timedelta(1)
+        return slice
 
     def __repr__(self):
         return self.symbol
