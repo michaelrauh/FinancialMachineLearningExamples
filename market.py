@@ -70,13 +70,14 @@ class Market:
         return cls.sorted_stocks[start_date]
 
     @classmethod
-    def shift_regress(cls, horizon):
+    def shift_regress(cls, horizon, top_number):
         best_correlation = -1
-        best_stock = None
+        best_stock_a = None
+        best_stock_b = None
         yesterday = cls.date - datetime.timedelta(1)
         horizon_ago = yesterday - datetime.timedelta(horizon)
         top_stocks = cls.sort_by_performance(horizon_ago)
-        for stock in top_stocks:
+        for stock in top_stocks[:top_number]:
             month_before_horizon = horizon_ago - datetime.timedelta(30)
             slice_a = stock.get_history_slice(month_before_horizon, horizon_ago)
             for other_stock in list(cls.stocks.values()):
@@ -86,8 +87,9 @@ class Market:
                     correlation = cls.pearson(slice_a, slice_b)
                     if correlation > best_correlation:
                         best_correlation = correlation
-                        best_stock = other_stock
-        return best_correlation, best_stock
+                        best_stock_a = stock
+                        best_stock_b = other_stock
+        return best_correlation, best_stock_a, best_stock_b
 
     @staticmethod
     def average(x):

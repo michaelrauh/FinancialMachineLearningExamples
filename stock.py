@@ -42,7 +42,7 @@ class Stock:
     def get_history_slice(self, start_date, end_date):
         slice = list()
         current_date = start_date
-        while current_date <= end_date:
+        while current_date < end_date - datetime.timedelta(1):
             for time in [DataOrder.open, DataOrder.low, DataOrder.high, DataOrder.close]:
                 current_price = self.fetch_price(current_date, time)
                 if current_price is None:
