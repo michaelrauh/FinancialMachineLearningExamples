@@ -33,8 +33,8 @@ while Market.date < END_SIM - datetime.timedelta(30):
     Market.tick()
 
 for trader in Market.traders:
-    grapher.graph(trader.all_net_worths, trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size, START_SIM, END_SIM, trader.price_chance, trader.blacklist_duration, trader.strategy)
+    grapher.graph(trader.all_net_worths, trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size, START_SIM, END_SIM, trader.price_change, trader.blacklist_duration, trader.strategy)
 
 END_TIME = time.time()
-minutes, seconds= divmod(seconds, END_TIME-START_TIME)
+minutes, seconds = divmod(END_TIME-START_TIME, 60)
 print("total time elapsed: ", minutes, "m", seconds, "s")
