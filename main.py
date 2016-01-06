@@ -1,47 +1,40 @@
-import datetime as d
+import datetime
 import time
 
-import trader as t
-import grapher as g
+import trader
+import grapher
 from market import Market
 from parser import DataOrder
-import strategy_thief as s
+import strategy_thief
 
-
-start_time = time.time()
-
-START_ERA = d.date(2005, 1, 1)
-END_ERA = d.date(2015, 10, 30)
-START_SIM = d.date(2005, 1, 1)
-END_SIM = d.date(2015, 10, 30)
+START_TIME = time.time()
+START_ERA = datetime.date(2005, 1, 1)
+END_ERA = datetime.date(2015, 10, 30)
+START_SIM = datetime.date(2005, 1, 1)
+END_SIM = datetime.date(2015, 10, 30)
 
 Market.initialize(START_ERA, END_ERA)
-traders = []
+ 
+for portfolio_size in [2, 3, 5, 8]:
+    for sell_point in [-.05, -.1, .05, .1, .2]:
+        for blacklist_duration_days in [30]:
+                Market.traders.append(trader.Trader(10000, "price_trigger", portfolio_size, 365, sell_point, blacklist_duration_days))
 
 for portfolio_size in [2, 3, 5, 8]:
-    for price_change in [-.05, -.1, .05, .1, .2]:
-        for blacklist_duration in [30]:
-                traders.append(t.Trader(10000, "price_trigger", portfolio_size, 365, price_change, blacklist_duration))
+    Market.traders.append(trader.Trader(10000, "vanilla", portfolio_size, 365))
 
-for portfolio_size in [2, 3, 5, 8]:
-    traders.append(t.Trader(10000, "vanilla", portfolio_size, 365))
+for horizon_days in [365]:
+    Market.traders.append(strategy_thief.StrategyThief(10000, horizon_days))
 
-for horizon in [365]:
-    traders.append(s.StrategyThief(10000, horizon))
-
-Market.traders = traders
-
-while Market.date < END_SIM - d.timedelta(30):
+while Market.date < END_SIM - datetime.timedelta(30):
     if Market.time in [DataOrder.open, DataOrder.close]:
-        for trader, i in zip(traders, range(len(traders))):
+        for trader in Market.traders:
             trader.trade()
     Market.tick()
 
-balances = [trader.all_net_worths for trader in traders]
-for trader, i in zip(traders, range(len(traders))):
-    g.graph(balances[i], trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size,
-            START_SIM, END_SIM, trader.price_change, trader.blacklist_duration, trader.strategy)
+for trader in Market.traders:
+    grapher.graph(trader.all_net_worths, trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size, START_SIM, END_SIM, trader.price_chance, trader.blacklist_duration, trader.strategy)
 
-end_time = time.time()
-
-print("total time elapsed:", (end_time - start_time)/60, "minutes")
+END_TIME = time.time()
+minutes, seconds= divmod(seconds, END_TIME-START_TIME)
+print("total time elapsed: ", minutes, "m", seconds, "s")
