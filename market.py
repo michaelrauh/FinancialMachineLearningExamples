@@ -70,26 +70,20 @@ class Market:
         return cls.sorted_stocks[start_date]
 
     @classmethod
-    def shift_regress(cls, horizon, top_number):
-        best_correlation = -1
-        best_stock_a = None
-        best_stock_b = None
+    def find_correlated_stocks(cls, stock, window, shift, tolerance):
+        results = list()
         yesterday = cls.date - datetime.timedelta(1)
-        horizon_ago = yesterday - datetime.timedelta(horizon)
-        top_stocks = cls.sort_by_performance(horizon_ago)
-        for stock in top_stocks[:top_number]:
-            month_before_horizon = horizon_ago - datetime.timedelta(30)
-            slice_a = stock.get_history_slice(month_before_horizon, horizon_ago)
-            for other_stock in list(cls.stocks.values()):
-                month_ago = yesterday - datetime.timedelta(30)
-                slice_b = other_stock.get_history_slice(month_ago, yesterday)
-                if slice_a is not None and slice_b is not None:
-                    correlation = cls.pearson(slice_a, slice_b)
-                    if correlation > best_correlation:
-                        best_correlation = correlation
-                        best_stock_a = stock
-                        best_stock_b = other_stock
-        return best_correlation, best_stock_a, best_stock_b
+        shift_ago = yesterday - datetime.timedelta(shift)
+        window_before_shift = shift_ago - datetime.timedelta(window)
+        slice_a = stock.get_history_slice(window_before_shift, shift_ago)
+        for other_stock in list(cls.stocks.values()):
+            window_ago = yesterday - datetime.timedelta(window)
+            slice_b = other_stock.get_history_slice(window_ago, yesterday)
+            if slice_a is not None and slice_b is not None:
+                correlation = cls.pearson(slice_a, slice_b)
+                if correlation >= tolerance:
+                    results.append((other_stock, correlation))
+        return results
 
     @staticmethod
     def average(x):
