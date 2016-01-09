@@ -40,15 +40,14 @@ class Stock:
         return self.current_performance(self.start_date)
 
     def get_history_slice(self, start_date, end_date):
+        if self.fetch_price(start_date, DataOrder.open) is None:
+            return None
         slice = list()
         current_date = start_date
         while current_date < end_date - datetime.timedelta(1):
             for time in [DataOrder.open, DataOrder.low, DataOrder.high, DataOrder.close]:
                 current_price = self.fetch_price(current_date, time)
-                if current_price is None:
-                    return None
-                else:
-                    slice.append(current_price)
+                slice.append(current_price)
             current_date = current_date + datetime.timedelta(1)
         return slice
 
