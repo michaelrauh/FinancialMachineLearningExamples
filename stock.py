@@ -52,5 +52,12 @@ class Stock:
             current_date = current_date + datetime.timedelta(1)
         return slice
 
+    def moving_average(self, start_date, end_date):
+        slice = self.get_history_slice(start_date, end_date)
+        if slice is not None:
+            return sum(slice)/len(slice)
+        else:
+            return None
+
     def __repr__(self):
         return self.symbol
