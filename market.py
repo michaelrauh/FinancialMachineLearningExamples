@@ -82,7 +82,7 @@ class Market:
             if slice_a is not None and slice_b is not None:
                 correlation = cls.pearson(slice_a, slice_b)
                 if correlation >= tolerance:
-                    results.append((other_stock, correlation))
+                    results.append(other_stock)
         return results
 
     @staticmethod
@@ -107,7 +107,10 @@ class Market:
             xdiff2 += xdiff * xdiff
             ydiff2 += ydiff * ydiff
 
-        return diffprod / math.sqrt(xdiff2 * ydiff2)
+        try:
+            return diffprod / math.sqrt(xdiff2 * ydiff2)
+        except ZeroDivisionError:
+            return 1
 
     @classmethod
     def sort_traders_by_performance(cls, horizon):

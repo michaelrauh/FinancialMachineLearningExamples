@@ -6,6 +6,7 @@ import grapher
 from market import Market
 from parser import DataOrder
 import strategy_thief
+import shift_trader
 
 START_TIME = time.time()
 START_ERA = datetime.date(2005, 1, 1)
@@ -14,20 +15,14 @@ START_SIM = datetime.date(2005, 1, 1)
 END_SIM = datetime.date(2015, 10, 30)
 
 Market.initialize(START_ERA, END_ERA)
- 
-for portfolio_size in [2, 3, 5, 8]:
-    for sell_point in [-.05, -.1, .05, .1, .2]:
-        for blacklist_duration_days in [30]:
-                Market.traders.append(trader.Trader(10000, "price_trigger", portfolio_size, 365, sell_point, blacklist_duration_days))
 
-for portfolio_size in [2, 3, 5, 8]:
-    Market.traders.append(trader.Trader(10000, "vanilla", portfolio_size, 365))
-
-for horizon_days in [365]:
-    Market.traders.append(strategy_thief.StrategyThief(10000, horizon_days))
+for tolerance in [.95]:
+    for window in [2]:
+        for horizon in [2]:
+            Market.traders.append(shift_trader.ShiftTrader(10000, "vanilla", 5, horizon, tolerance, window))
 
 while Market.date < END_SIM - datetime.timedelta(30):
-    if Market.time in [DataOrder.open, DataOrder.close]:
+    if Market.time in [DataOrder.close]:
         for trader in Market.traders:
             trader.trade()
     Market.tick()
