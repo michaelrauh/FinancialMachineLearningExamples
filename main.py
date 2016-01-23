@@ -22,7 +22,7 @@ for tolerance in [.95]:
             Market.traders.append(shift_trader.ShiftTrader(10000, "vanilla", 5, horizon, tolerance, window, 1))
 
 while Market.date < END_SIM - datetime.timedelta(30):
-    if Market.time in [DataOrder.close]:
+    if Market.time in [DataOrder.close] and Market.date > datetime.date(2012, 1, 1):
         for trader in Market.traders:
             trader.trade()
     Market.tick()
