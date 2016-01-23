@@ -19,7 +19,7 @@ Market.initialize(START_ERA, END_ERA)
 for tolerance in [.95]:
     for window in [2]:
         for horizon in [2]:
-            Market.traders.append(shift_trader.ShiftTrader(10000, "vanilla", 5, horizon, tolerance, window))
+            Market.traders.append(shift_trader.ShiftTrader(10000, "vanilla", 5, horizon, tolerance, window, 1))
 
 while Market.date < END_SIM - datetime.timedelta(30):
     if Market.time in [DataOrder.close]:

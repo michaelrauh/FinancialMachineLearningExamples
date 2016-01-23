@@ -70,8 +70,8 @@ class Market:
         return cls.sorted_stocks[start_date]
 
     @classmethod
-    def find_correlated_stocks(cls, stock, window, shift, tolerance):
-        results = list()
+    def find_correlated_stocks(cls, stock, window, shift, tolerance, amount):
+        results = dict()
         yesterday = cls.date - datetime.timedelta(1)
         shift_ago = yesterday - datetime.timedelta(shift)
         window_before_shift = shift_ago - datetime.timedelta(window)
@@ -82,8 +82,13 @@ class Market:
             if slice_a is not None and slice_b is not None:
                 correlation = cls.pearson(slice_a, slice_b)
                 if correlation >= tolerance:
-                    results.append(other_stock)
-        return results
+                    results[tolerance] = other_stock
+        scores = sorted(list(results.keys()), reverse=True)
+        desired = scores[:amount]
+        final = list()
+        for i in desired:
+            final.append(results[i])
+        return final
 
     @staticmethod
     def average(x):
