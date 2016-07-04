@@ -127,3 +127,13 @@ class Market:
             top_traders = [t for t in top_traders if t.performance() >= 0]
             cls.highest_performing_traders[horizon] = top_traders
         return cls.highest_performing_traders[horizon]
+
+    @classmethod
+    def find_todays_profile(cls):
+        all_high_numbers = {}
+        for stock in cls.stocks.values():
+            high_number = stock.get_high_number()
+            if high_number not in all_high_numbers.keys():
+                all_high_numbers[high_number] = 0
+            all_high_numbers[high_number] += 1
+        return all_high_numbers

@@ -58,5 +58,8 @@ class Stock:
         else:
             return None
 
+    def get_high_number(self):
+        return 0
+
     def __repr__(self):
         return self.symbol
