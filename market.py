@@ -132,7 +132,7 @@ class Market:
     def find_todays_profile(cls):
         all_high_numbers = {}
         for stock in cls.stocks.values():
-            high_number = stock.get_high_number(cls.date - datetime.timedelta(days=365))
+            high_number = stock.get_high_number(cls.date - datetime.timedelta(days=365), cls.date)
             if high_number not in all_high_numbers.keys():
                 all_high_numbers[high_number] = 0
             all_high_numbers[high_number] += 1
