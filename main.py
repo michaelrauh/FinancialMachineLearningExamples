@@ -15,7 +15,7 @@ all_highs = []
 Market.initialize(START_ERA, END_ERA)
 
 while Market.date < END_SIM - datetime.timedelta(30):
-    if Market.time in [DataOrder.close]:
+    if Market.time in [DataOrder.close] and Market.date > START_ERA + datetime.timedelta(days=365):
         all_highs.append(Market.find_todays_profile())
     Market.tick()
 

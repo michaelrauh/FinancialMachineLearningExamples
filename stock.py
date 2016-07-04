@@ -10,6 +10,7 @@ class Stock:
         self.price_history = dict()
         self.current_price = None
         self.beginning_of_time = begin_sim
+        self.performance_history = []
 
     def push_price(self, date, time, price):
         if date not in self.price_history:
@@ -58,7 +59,11 @@ class Stock:
         else:
             return None
 
-    def get_high_number(self):
+    def get_high_number(self, start_date):
+        performance = self.current_performance(start_date)
+        self.performance_history.append(performance)
+        if performance >= max(self.performance_history[-60:]):
+            return 1
         return 0
 
     def __repr__(self):
