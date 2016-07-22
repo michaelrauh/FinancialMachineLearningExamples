@@ -36,10 +36,18 @@ for high_number in range(100):
 
 means = []
 devs = []
+
+
+for key in final_highs:
+    final_highs[key] = [x for x in final_highs[key] if x != 0]
+
 for i in range(100):
     if i in final_highs.keys():
         l = final_highs[i]
-        temp = [x for x in l if x != 0]
+        temp = l
+        plt.hist(l, bins=100)
+        plt.savefig("output/" + str(i) + ".png")
+        plt.gcf().clear()
         try:
             avg = float(sum(temp))/len(temp)
             dev = statistics.stdev(temp)
