@@ -20,6 +20,7 @@ class Market:
     time = None
     traders = list()
     highest_performing_traders = dict()
+    interesting_stocks = {}
 
     @classmethod
     def initialize(cls, start_date, end_date):
@@ -32,6 +33,10 @@ class Market:
         cls.load_all_stocks()
         cls.time = DataOrder.open
         print("Done initializing")
+
+    @classmethod
+    def get_price(cls, symbol, date):
+        return cls.price_map[symbol][date][DataOrder.open.value]
 
     @classmethod
     def load_all_stocks(cls):
@@ -130,10 +135,5 @@ class Market:
 
     @classmethod
     def find_todays_profile(cls):
-        all_high_numbers = {}
         for stock in cls.stocks.values():
-            high_number = stock.get_high_number(cls.date - datetime.timedelta(days=365), cls.date)
-            if high_number not in all_high_numbers.keys():
-                all_high_numbers[high_number] = 0
-            all_high_numbers[high_number] += 1
-        return all_high_numbers
+            stock.get_high_number(cls.date - datetime.timedelta(days=365), cls.date)

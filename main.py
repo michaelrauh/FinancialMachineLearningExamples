@@ -4,6 +4,7 @@ import time
 from market import Market
 from parser import DataOrder
 import matplotlib.pyplot as plt
+import statistics
 
 START_TIME = time.time()
 START_ERA = datetime.date(2005, 1, 1)
@@ -11,33 +12,47 @@ END_ERA = datetime.date(2015, 10, 30)
 START_SIM = datetime.date(2005, 1, 1)
 END_SIM = datetime.date(2015, 10, 30)
 
-all_highs = []
-
 Market.initialize(START_ERA, END_ERA)
 
 while Market.date < END_SIM - datetime.timedelta(30):
     if Market.time in [DataOrder.close] and Market.date > START_ERA + datetime.timedelta(days=365):
-        all_highs.append(Market.find_todays_profile())
+        Market.find_todays_profile()
     Market.tick()
     print(Market.date)
 
-final_highs = {}
-for high_profile in all_highs:
-    for high_number in high_profile.keys():
-        if high_number not in final_highs:
-            final_highs[high_number] = 0
-        final_highs[high_number] += high_profile[high_number]
+final_highs = {i: [] for i in range(100)}
+for high_number in range(100):
+    all_on_high = Market.interesting_stocks[high_number]
+    highest_date = None
+    highest_count = 0
+    for date in all_on_high:
+        if len(all_on_high[date]) > highest_count:
+            highest_count = len(all_on_high[date])
+            highest_date = date
+    del(all_on_high[highest_date])
+    for date in all_on_high:
+        for thing in all_on_high[date]:
+            final_highs[high_number].append(thing)
 
-g = []
-for i in range(30):
+means = []
+devs = []
+for i in range(100):
     if i in final_highs.keys():
-        g.append(final_highs[i])
+        l = final_highs[i]
+        temp = [x for x in l if x != 0]
+        try:
+            avg = float(sum(temp))/len(temp)
+            dev = statistics.stdev(temp)
+        except:
+            dev = 0
+            avg = 0
+        devs.append(dev)
+        means.append(avg)
 
-plt.plot(g)
-plt.show()
+plt.errorbar(range(len(means)), means, yerr=devs)
+plt.savefig("output/" + "means" + ".png")
+plt.gcf().clear()
 
 END_TIME = time.time()
 minutes, seconds = divmod(END_TIME-START_TIME, 60)
 print("total time elapsed: ", minutes, "m", seconds, "s")
-print(all_highs)
-print(final_highs)

@@ -1,6 +1,6 @@
 from parser import DataOrder
 import datetime
-
+import market
 
 class Stock:
 
@@ -36,6 +36,13 @@ class Stock:
             return 0
         return (end-start)/start
 
+    def custom_performance(self, price):
+        start = self.current_price
+        end = price
+        if start is None or end is None:
+            return 0
+        return (end-start)/start
+
     def set_start(self, start_date):
         self.start_date = start_date
 
@@ -65,13 +72,18 @@ class Stock:
         performance = self.current_performance(start_date)
         self.performance_history.append(performance)
         if performance >= max(self.performance_history[-15:]):
+            future_price = market.Market.get_price(self.symbol, market.Market.date + datetime.timedelta(days=21))
+            perf = self.custom_performance(future_price)
             if end_date <= (self.most_recent_high + datetime.timedelta(days=21)):
                 self.most_recent_high_number += 1
             else:
                 self.most_recent_high_number = 0
             self.most_recent_high = end_date
-            return self.most_recent_high_number
-        return None
+            if self.most_recent_high_number not in market.Market.interesting_stocks:
+                market.Market.interesting_stocks[self.most_recent_high_number] = {}
+            if market.Market.date not in market.Market.interesting_stocks[self.most_recent_high_number]:
+                market.Market.interesting_stocks[self.most_recent_high_number][market.Market.date] = []
+            market.Market.interesting_stocks[self.most_recent_high_number][market.Market.date].append(perf)
 
     def __repr__(self):
         return self.symbol
