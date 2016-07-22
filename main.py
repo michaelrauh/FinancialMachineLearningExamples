@@ -5,6 +5,7 @@ from market import Market
 from parser import DataOrder
 import matplotlib.pyplot as plt
 import statistics
+import math
 
 START_TIME = time.time()
 START_ERA = datetime.date(2005, 1, 1)
@@ -35,8 +36,7 @@ for high_number in range(100):
             final_highs[high_number].append(thing)
 
 means = []
-devs = []
-
+intervals = []
 
 for key in final_highs:
     final_highs[key] = [x for x in final_highs[key] if x != 0]
@@ -44,20 +44,19 @@ for key in final_highs:
 for i in range(100):
     if i in final_highs.keys():
         l = final_highs[i]
-        temp = l
-        plt.hist(l, bins=100)
-        plt.savefig("output/" + str(i) + ".png")
-        plt.gcf().clear()
         try:
-            avg = float(sum(temp))/len(temp)
-            dev = statistics.stdev(temp)
+            mean = float(sum(l))/len(l)
+            dev = statistics.stdev(l)
+            n = len(l)
+            std_error = dev/math.sqrt(n)
+            interval = 1.96 * std_error
         except:
-            dev = 0
-            avg = 0
-        devs.append(dev)
-        means.append(avg)
+            mean = 0
+            interval = 0
+        means.append(mean)
+        intervals.append(interval)
 
-plt.errorbar(range(len(means)), means, yerr=devs)
+plt.errorbar(range(len(means)), means, yerr=intervals)
 plt.savefig("output/" + "means" + ".png")
 plt.gcf().clear()
 
