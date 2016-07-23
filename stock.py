@@ -1,6 +1,8 @@
 from parser import DataOrder
 import datetime
 import market
+import collections
+
 
 class Stock:
 
@@ -13,12 +15,14 @@ class Stock:
         self.performance_history = []
         self.most_recent_high = begin_sim
         self.most_recent_high_number = 0
+        self.years_prices = collections.deque(maxlen=252 * 4)
 
     def push_price(self, date, time, price):
         if date not in self.price_history:
             self.price_history[date] = dict()
         self.price_history[date][time] = price
         self.current_price = price
+        self.years_prices.append(price)
 
     def push_day(self, date, data):
         self.price_history[date] = data
@@ -68,21 +72,27 @@ class Stock:
         else:
             return None
 
+    def on_high(self, start_date, end_date):
+        try:
+            return self.current_price >= max(self.years_prices)
+        except:
+            return False
+
     def get_high_number(self, start_date, end_date):
-        performance = self.current_performance(start_date)
-        self.performance_history.append(performance)
-        if performance >= max(self.performance_history[-15:]):
-            future_price = market.Market.get_price(self.symbol, market.Market.date + datetime.timedelta(days=21))
-            perf = self.custom_performance(future_price)
-            if end_date <= (self.most_recent_high + datetime.timedelta(days=21)):
+        hold_period = 21
+        horizon = 15
+        if self.on_high(start_date, end_date):
+            if end_date <= (self.most_recent_high + datetime.timedelta(days=horizon)):
                 self.most_recent_high_number += 1
             else:
                 self.most_recent_high_number = 0
             self.most_recent_high = end_date
+            future_price = market.Market.get_price(self.symbol, market.Market.date + datetime.timedelta(days=hold_period))
             if self.most_recent_high_number not in market.Market.interesting_stocks:
                 market.Market.interesting_stocks[self.most_recent_high_number] = {}
             if market.Market.date not in market.Market.interesting_stocks[self.most_recent_high_number]:
                 market.Market.interesting_stocks[self.most_recent_high_number][market.Market.date] = []
+            perf = self.custom_performance(future_price)
             market.Market.interesting_stocks[self.most_recent_high_number][market.Market.date].append(perf)
 
     def __repr__(self):

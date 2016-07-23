@@ -23,17 +23,18 @@ while Market.date < END_SIM - datetime.timedelta(30):
 
 final_highs = {i: [] for i in range(100)}
 for high_number in range(100):
-    all_on_high = Market.interesting_stocks[high_number]
-    highest_date = None
-    highest_count = 0
-    for date in all_on_high:
-        if len(all_on_high[date]) > highest_count:
-            highest_count = len(all_on_high[date])
-            highest_date = date
-    del(all_on_high[highest_date])
-    for date in all_on_high:
-        for thing in all_on_high[date]:
-            final_highs[high_number].append(thing)
+    if high_number in Market.interesting_stocks:
+        all_on_high = Market.interesting_stocks[high_number]
+        highest_date = None
+        highest_count = 0
+        for date in all_on_high:
+            if len(all_on_high[date]) > highest_count:
+                highest_count = len(all_on_high[date])
+                highest_date = date
+        del(all_on_high[highest_date])
+        for date in all_on_high:
+            for thing in all_on_high[date]:
+                final_highs[high_number].append(thing)
 
 means = []
 intervals = []
