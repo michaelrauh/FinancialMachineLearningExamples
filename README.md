@@ -1,11 +1,11 @@
 # HighProfiler
-A Collection of Simulations Designed to Predict the Capital Markets
+A Simulation Designed to Create Stock Trading Strategies that Perform Well in Reference to the General Market.
 
-# TopX
-Own stocks while they are top performers. Employ different order types and money management strategies to mitigate risk.
+# Running the Simulation
+python3 main.py
 
-# ShiftRegress
-Buy stocks with high pearson coefficients against trending time-shifted stocks
+# Development Tracking
+https://trello.com/b/U1JHatTf/highprofiler
 
-# HighProfiler
-Buy stocks that correlate with historical out-performers in the same 52 week high saturation category
+# More Information
+See the wiki for necessary data and the general vision of the program
