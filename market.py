@@ -1,5 +1,4 @@
 import datetime
-import math
 
 import stock
 import data_service as d
@@ -16,11 +15,8 @@ class Market:
     events = {}
     data_service = None
     sorted_stocks = dict()
-    date = datetime.date.today()
+    date = None
     time = None
-    traders = list()
-    highest_performing_traders = dict()
-    interesting_stocks = {}
 
     @classmethod
     def initialize(cls, start_date, end_date):
@@ -35,10 +31,6 @@ class Market:
         print("Done initializing")
 
     @classmethod
-    def get_price(cls, symbol, date):
-        return cls.price_map[symbol][date][DataOrder.open.value]
-
-    @classmethod
     def load_all_stocks(cls):
         for symbol in cls.symbols:
             cls.stocks[symbol] = stock.Stock(symbol, cls.start)
@@ -46,7 +38,6 @@ class Market:
     @classmethod
     def tick(cls):
         cls.sorted_stocks = dict()
-        cls.highest_performing_traders = dict()
         for symbol in cls.price_map.keys():
             current_price = cls.price_map[symbol][cls.date][cls.time.value]
             cls.stocks[symbol].push_price(cls.date, cls.time.value, current_price)
@@ -73,67 +64,3 @@ class Market:
             top_stocks = [s for s in top_stocks if s.performance_key() > 0]
             cls.sorted_stocks[start_date] = top_stocks
         return cls.sorted_stocks[start_date]
-
-    @classmethod
-    def find_correlated_stocks(cls, stock, window, shift, tolerance, amount):
-        results = dict()
-        yesterday = cls.date - datetime.timedelta(1)
-        shift_ago = yesterday - datetime.timedelta(shift)
-        window_before_shift = shift_ago - datetime.timedelta(window)
-        slice_a = stock.get_history_slice(window_before_shift, shift_ago)
-        for other_stock in list(cls.stocks.values()):
-            window_ago = yesterday - datetime.timedelta(window)
-            slice_b = other_stock.get_history_slice(window_ago, yesterday)
-            if slice_a is not None and slice_b is not None:
-                correlation = cls.pearson(slice_a, slice_b)
-                if correlation >= tolerance:
-                    results[tolerance] = other_stock
-        scores = sorted(list(results.keys()), reverse=True)
-        desired = scores[:amount]
-        final = list()
-        for i in desired:
-            final.append(results[i])
-        return final
-
-    @staticmethod
-    def average(x):
-        assert len(x) > 0
-        return float(sum(x)) / len(x)
-
-    @staticmethod
-    def pearson(x, y):
-        assert len(x) == len(y)
-        n = len(x)
-        assert n > 0
-        avg_x = Market.average(x)
-        avg_y = Market.average(y)
-        diffprod = 0
-        xdiff2 = 0
-        ydiff2 = 0
-        for idx in range(n):
-            xdiff = x[idx] - avg_x
-            ydiff = y[idx] - avg_y
-            diffprod += xdiff * ydiff
-            xdiff2 += xdiff * xdiff
-            ydiff2 += ydiff * ydiff
-
-        try:
-            return diffprod / math.sqrt(xdiff2 * ydiff2)
-        except ZeroDivisionError:
-            return 1
-
-    @classmethod
-    def sort_traders_by_performance(cls, horizon):
-        if horizon not in cls.highest_performing_traders:
-            for trader in cls.traders:
-                trader.set_performance_horizon(horizon)
-            valid_traders = [trader for trader in cls.traders if trader.performance() is not None]
-            top_traders = sorted(list(valid_traders), key=lambda i: i.performance(), reverse=True)
-            top_traders = [t for t in top_traders if t.performance() >= 0]
-            cls.highest_performing_traders[horizon] = top_traders
-        return cls.highest_performing_traders[horizon]
-
-    @classmethod
-    def find_todays_profile(cls):
-        for stock in cls.stocks.values():
-            stock.get_high_number(cls.date - datetime.timedelta(days=365), cls.date)

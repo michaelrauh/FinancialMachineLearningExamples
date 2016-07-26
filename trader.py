@@ -37,9 +37,6 @@ class Trader:
         time_ago = today - datetime.timedelta(self.horizon)
         top_stocks = Market.sort_by_performance(time_ago)[0:self.portfolio_size]
         desired_stocks = set([i for i in top_stocks if not self.blacklisted(i)])
-        self.optimize_even_weight(desired_stocks)
-
-    def optimize_even_weight(self, desired_stocks):
         current_stocks = set(self.portfolio.stocks())
         missing_stocks = desired_stocks.difference(current_stocks)
         extra_stocks = current_stocks.difference(desired_stocks)
@@ -55,18 +52,3 @@ class Trader:
 
     def blacklisted(self, stock):
         return Market.date < self.banned_stocks[stock]
-
-    def set_performance_horizon(self, horizon):
-        self.performance_horizon = horizon
-
-    def performance(self):
-        try:
-            start = self.all_net_worths[-self.performance_horizon]
-            end = self.all_net_worths[-1]
-            ans = (end - start)/start
-        except IndexError:
-            ans = None
-        return ans
-
-    def current_stocks(self):
-        return self.portfolio.stocks()
