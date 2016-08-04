@@ -5,7 +5,6 @@ import trader as t
 import grapher as g
 from market import Market
 from parser import DataOrder
-import matplotlib.pyplot as plt
 
 
 start_time = time.time()
@@ -20,27 +19,17 @@ traders = []
 portfolio_size = 8
 traders.append(t.Trader(10000, "vanilla", portfolio_size, 365))
 
-apple = Market.price_map["aapl"]
-
-def perf(start, end):
-    return (end-start)/start
-
-questions = []
-answers = []
-
 while Market.date < END_SIM - d.timedelta(30):
-    if Market.time == DataOrder.open:
-        open_price = apple[Market.date][0]
-        close_price = apple[Market.date][3]
-        next_open = apple[Market.date + d.timedelta(days=1)][0]
-        question = perf(open_price, close_price)
-        answer = perf(close_price, next_open)
-        questions.append(question)
-        answers.append(answer)
+    if Market.time in [DataOrder.open, DataOrder.close]:
+        for trader, i in zip(traders, range(len(traders))):
+            trader.trade()
     Market.tick()
 
-plt.scatter(questions, answers)
-plt.show()
+balances = [trader.all_net_worths for trader in traders]
+for trader, i in zip(traders, range(len(traders))):
+    g.graph(balances[i], trader.portfolio.value() + trader.account.balance, trader.horizon, trader.portfolio_size,
+            START_SIM, END_SIM, trader.price_change, trader.blacklist_duration, i, trader.strategy)
+
 end_time = time.time()
 
 print("total time elapsed:", (end_time - start_time)/60, "minutes")
